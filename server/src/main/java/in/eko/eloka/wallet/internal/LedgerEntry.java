@@ -37,6 +37,10 @@ class LedgerEntry extends BaseEntity {
 	protected LedgerEntry() {
 	}
 
+	in.eko.eloka.wallet.LedgerLine toLine() {
+		return new in.eko.eloka.wallet.LedgerLine(reference, postedAt, narration, amount, "CR".equals(direction), balanceAfter);
+	}
+
 	LedgerEntry(long accountId, boolean credit, BigDecimal amount, BigDecimal balanceAfter, String reference,
 			String narration, Instant postedAt) {
 		this.accountId = accountId;

@@ -28,6 +28,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.flywaydb:flyway-mysql")
+	implementation("org.dhatim:fastexcel:0.20.2") // XLSX exports (history, network)
+	implementation("com.github.librepdf:openpdf:3.0.5") // PDF exports
 	implementation("org.springframework.modulith:spring-modulith-starter-core")
 	implementation("org.springframework.modulith:spring-modulith-starter-jpa")
 	developmentOnly("org.springframework.boot:spring-boot-docker-compose")

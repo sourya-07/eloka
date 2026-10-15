@@ -9,7 +9,19 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-interface AppUserRepository extends JpaRepository<AppUser, UUID> {
+interface AppUserRepository extends JpaRepository<AppUser, UUID>,
+		org.springframework.data.jpa.repository.JpaSpecificationExecutor<AppUser> {
+
+	List<AppUser> findByOrgIdAndIdIn(long orgId, java.util.Collection<UUID> ids);
+
+	Optional<AppUser> findByOrgIdAndMobileHashAndStatusNot(long orgId, byte[] mobileHash, in.eko.eloka.network.UserStatus status);
+
+	/** Re-roots a subtree after a transfer (bulk update; bypasses optimistic locking on purpose). */
+	@org.springframework.data.jpa.repository.Modifying(clearAutomatically = true)
+	@Query("update AppUser u set u.hierarchyPath = concat(:newPrefix, substring(u.hierarchyPath, :oldLength + 1)) "
+			+ "where u.orgId = :orgId and u.hierarchyPath like concat(:oldPrefix, '%')")
+	int rebase(@Param("orgId") long orgId, @Param("oldPrefix") String oldPrefix, @Param("oldLength") int oldLength,
+			@Param("newPrefix") String newPrefix);
 
 	Optional<AppUser> findByOrgIdAndMobileHash(long orgId, byte[] mobileHash);
 
@@ -38,6 +50,8 @@ interface AppUserRepository extends JpaRepository<AppUser, UUID> {
 interface ShopProfileRepository extends JpaRepository<ShopProfile, UUID> {
 
 	Optional<ShopProfile> findByUserId(UUID userId);
+
+	List<ShopProfile> findByUserIdIn(java.util.Collection<UUID> userIds);
 }
 
 interface IdSequenceRepository extends JpaRepository<IdSequence, String> {

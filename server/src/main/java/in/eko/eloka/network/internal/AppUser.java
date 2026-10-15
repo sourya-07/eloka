@@ -61,6 +61,21 @@ class AppUser extends BaseEntity {
 	@Column(name = "hierarchy_path", length = 800)
 	private String hierarchyPath;
 
+	@Column
+	private java.time.LocalDate dob;
+
+	@Column(length = 10)
+	private String gender;
+
+	@Column(name = "marital_status", length = 10)
+	private String maritalStatus;
+
+	@Column(length = 30)
+	private String qualification;
+
+	@Column(length = 15)
+	private String gstin;
+
 	protected AppUser() {
 	}
 
@@ -127,6 +142,37 @@ class AppUser extends BaseEntity {
 
 	String getHierarchyPath() {
 		return hierarchyPath;
+	}
+
+	java.time.LocalDate getDob() { return dob; }
+	String getGender() { return gender; }
+	String getMaritalStatus() { return maritalStatus; }
+	String getQualification() { return qualification; }
+	String getGstin() { return gstin; }
+
+	void changeStatus(UserStatus newStatus) {
+		if (status == UserStatus.DELETED) {
+			throw new in.eko.eloka.shared.error.ConflictException("USER_DELETED", "This user has been removed");
+		}
+		this.status = newStatus;
+	}
+
+	void changeType(int newType) {
+		this.userType = newType;
+	}
+
+	void rename(String newName) {
+		if (newName != null && !newName.isBlank()) {
+			this.name = newName.trim();
+		}
+	}
+
+	/** Updates the personal details that are given (null fields stay as they are). */
+	void updatePersonal(in.eko.eloka.network.PersonalInfo info) {
+		if (info.dob() != null) this.dob = info.dob();
+		if (info.gender() != null) this.gender = info.gender();
+		if (info.maritalStatus() != null) this.maritalStatus = info.maritalStatus();
+		if (info.qualification() != null) this.qualification = info.qualification();
 	}
 
 	/** Places the user in the network; called once after the id exists. */

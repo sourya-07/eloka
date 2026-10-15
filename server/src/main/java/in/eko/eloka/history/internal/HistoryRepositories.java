@@ -9,7 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-interface TxnRecordRepository extends JpaRepository<TxnRecord, UUID> {
+interface TxnRecordRepository extends JpaRepository<TxnRecord, UUID>,
+		org.springframework.data.jpa.repository.JpaSpecificationExecutor<TxnRecord> {
 
 	List<TxnRecord> findByOrgIdAndUserIdOrderByOccurredAtDesc(long orgId, UUID userId, Pageable page);
 

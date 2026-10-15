@@ -18,4 +18,12 @@ public interface WalletApi {
 	 * @throws in.eko.eloka.shared.error.ConflictException on insufficient balance
 	 */
 	WalletAccountView post(LedgerPosting posting);
+
+	/**
+	 * E-value wallet statement, newest first.
+	 *
+	 * @param from inclusive date (Indian time), or null
+	 * @param to inclusive date (Indian time), or null
+	 */
+	StatementPage statement(long orgId, UUID userId, java.time.LocalDate from, java.time.LocalDate to, int offset, int limit);
 }

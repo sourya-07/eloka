@@ -53,20 +53,20 @@ Status: ✅ implemented in `server/` · ⬜ not yet · ➖ out of scope (runs in
 
 | Key | Screen | Status |
 |---|---|---|
-| tf GET `/network/agents` (paging + filters, `search_value`, `document=1`) | My Network, agent profile | ⬜ |
-| tf GET `/network/agent-list` (`usertype`, `user_id`) | network users, change role | ⬜ |
-| dojson tf POST `/network/agents/updateStatus` → 1831 | mark active/inactive | ⬜ |
-| tf PUT `/network/agents/profile/changeRole/{upgrademerchant 1842, promotecsps 1967, transfercsps 1872}` | change role | ⬜ |
-| dojson tf POST `/network/agents/profile/personalInfo/update`, `/address/update` | edit agent | ⬜ |
-| dojson tf POST `/network/agent` (delete demo) | demo users | ⬜ |
-| 792 | download agreement | ⬜ |
-| tf GET `/network/agents/transaction_history[/recent_transaction[/account_statement]]` | network statement (legacy) | ⬜ |
-| tf GET `/network/agents/ids` | notification creator | ⬜ |
-| 154 (`isNetworkTransactionHistory`, `account_id`, filters, paging 25) | history, network transactions | ⬜ |
-| 183 export | history export | ⬜ |
-| `POST /reports/agent-subnetwork` (FE-4) | network export | ⬜ |
-| 401 (personal / shop) | profile | ⬜ |
-| 373 | account summary GSTIN | ⬜ |
+| tf GET `/network/agents` (paging + filters, `search_value` → 1827, `document=1`) | My Network, agent profile (KYC images with `document=1` arrive in P5) | ✅ |
+| tf GET `/network/agent-list` (`usertype`, `user_id`) | network users, change role | ✅ |
+| dojson tf POST `/network/agents/updateStatus` → 1831 | mark active/inactive | ✅ |
+| tf PUT `/network/agents/profile/changeRole/{upgrademerchant 1842, promotecsps 1967, transfercsps 1872}` | change role | ✅ |
+| dojson tf POST `/network/agents/profile/personalInfo/update`, `/address/update` | edit agent | ✅ |
+| dojson tf POST `/network/agent` (delete demo) | demo users | ✅ |
+| 792 | download agreement (needs agent agreements, P5) | ⬜ |
+| tf GET `/network/agents/transaction_history[/recent_transaction[/account_statement]]` | network statement (legacy) | ✅ |
+| tf GET `/network/agents/ids` | notification creator (page not in the menu) | ➖ |
+| 154 (`isNetworkTransactionHistory`, `account_id`, filters, paging 25) | history, network transactions | ✅ |
+| 183 export (`reporttype` xlsx / pdf / csv) | history export | ✅ |
+| `POST /reports/agent-subnetwork` (needs the session token: FE-4, done) | network export (xlsx / pdf) | ✅ |
+| 401 (personal / shop) | profile | ✅ |
+| 373 | account summary GSTIN | ✅ |
 
 ### Settings, pricing, onboard agents, support (P4)
 
@@ -92,10 +92,10 @@ Status: ✅ implemented in `server/` · ⬜ not yet · ➖ out of scope (runs in
 | 298 | selfie location (1076) | ⬜ |
 | 522 | business details (1567) | ⬜ |
 | tf POST `/karza/digilocker-redirection-url` + 552 | DigiLocker (1621) | ⬜ |
-| 454 / 155 | bank (1445) / bank list | ⬜ |
+| 454 / 155 | bank (1445) / bank list (155 done in P3) | ⬜ |
 | 170 / 10005 / 5 | secret PIN (1646 / key / 9) | ⬜ |
 | 287 / 293 | agreement (1069/1613 / 1615) | ⬜ |
-| 519 / 387 | shop types / states | ⬜ |
+| 519 / 387 | shop types / states (done in P3, used by the profile) | ✅ |
 | 194 / 197 / refresh-profile `{csp_id}` | assisted onboarding | ⬜ |
 
 ### Out of scope for Release 1

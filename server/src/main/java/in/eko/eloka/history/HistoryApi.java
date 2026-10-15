@@ -16,6 +16,13 @@ public interface HistoryApi {
 	EarningsSummary earnings(long orgId, UUID userId);
 
 	/**
+	 * Newest first.
+	 *
+	 * @param userIds users whose transactions to include, or {@code null} for the whole org
+	 */
+	List<TxnView> search(long orgId, Collection<UUID> userIds, HistoryFilter filter, int offset, int limit);
+
+	/**
 	 * @param userIds users in scope, or {@code null} for the whole org
 	 * @param txTypeId only this transaction type, or {@code null} for all
 	 */

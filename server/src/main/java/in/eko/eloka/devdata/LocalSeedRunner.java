@@ -136,7 +136,8 @@ class LocalSeedRunner implements ApplicationRunner, UnsafeInProduction {
 	private static NewUser toNewUser(long orgId, LocalSeed.SeedUser user, java.util.UUID parentId) {
 		LocalSeed.SeedShop shop = user.shop();
 		ShopView shopView = shop == null ? null
-				: new ShopView(shop.shopName(), shop.shopType(), shop.addressLine(), shop.city(), shop.state(), shop.pincode());
+				: new ShopView(shop.shopName(), shop.shopType(), shop.addressLine(), null, shop.city(), shop.state(),
+						shop.pincode(), "India", "Owned", null, null);
 		return new NewUser(orgId, user.mobile(), user.name(), user.email(), user.userType(), user.orgAdmin(),
 				UserStatus.ACTIVE, user.code(), user.joined(), false, shopView, parentId);
 	}

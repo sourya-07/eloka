@@ -85,6 +85,10 @@ public class ProfileAssembler {
 		personal.put("name", user.name());
 		personal.put("email", user.email() == null ? "" : user.email());
 		personal.put("mobile", user.mobile());
+		personal.put("dob", user.personal().dob() == null ? null : user.personal().dob().toString());
+		personal.put("gender", user.personal().gender());
+		personal.put("marital_status", user.personal().maritalStatus());
+		personal.put("qualification", user.personal().qualification());
 		return personal;
 	}
 
@@ -93,6 +97,7 @@ public class ProfileAssembler {
 		details.put("shop_name", shop.shopName());
 		details.put("shop_type", shop.shopType());
 		details.put("shop_address", shop.addressLine());
+		details.put("shop_address_line2", shop.addressLine2());
 		details.put("city", shop.city());
 		details.put("state", shop.state());
 		details.put("pincode", shop.pincode());

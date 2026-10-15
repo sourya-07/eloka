@@ -33,6 +33,21 @@ class ShopProfile extends BaseEntity {
 	@Column(length = 6)
 	private String pincode;
 
+	@Column(name = "address_line2", length = 300)
+	private String addressLine2;
+
+	@Column(length = 60)
+	private String country;
+
+	@Column(name = "ownership_type", length = 20)
+	private String ownershipType;
+
+	@Column(precision = 9, scale = 6)
+	private java.math.BigDecimal latitude;
+
+	@Column(precision = 9, scale = 6)
+	private java.math.BigDecimal longitude;
+
 	protected ShopProfile() {
 	}
 
@@ -41,16 +56,27 @@ class ShopProfile extends BaseEntity {
 		update(shop);
 	}
 
+	/** Copies every non-null field of {@code shop} (partial update). */
 	void update(ShopView shop) {
-		this.shopName = shop.shopName();
-		this.shopType = shop.shopType();
-		this.addressLine = shop.addressLine();
-		this.city = shop.city();
-		this.state = shop.state();
-		this.pincode = shop.pincode();
+		if (shop.shopName() != null) this.shopName = shop.shopName();
+		if (shop.shopType() != null) this.shopType = shop.shopType();
+		if (shop.addressLine() != null) this.addressLine = shop.addressLine();
+		if (shop.addressLine2() != null) this.addressLine2 = shop.addressLine2();
+		if (shop.city() != null) this.city = shop.city();
+		if (shop.state() != null) this.state = shop.state();
+		if (shop.pincode() != null) this.pincode = shop.pincode();
+		if (shop.country() != null) this.country = shop.country();
+		if (shop.ownershipType() != null) this.ownershipType = shop.ownershipType();
+		if (shop.latitude() != null) this.latitude = shop.latitude();
+		if (shop.longitude() != null) this.longitude = shop.longitude();
+	}
+
+	UUID getUserId() {
+		return userId;
 	}
 
 	ShopView toView() {
-		return new ShopView(shopName, shopType, addressLine, city, state, pincode);
+		return new ShopView(shopName, shopType, addressLine, addressLine2, city, state, pincode, country, ownershipType,
+				latitude, longitude);
 	}
 }

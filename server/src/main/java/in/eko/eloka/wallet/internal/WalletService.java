@@ -73,6 +73,23 @@ class WalletService implements WalletApi {
 		return toView(account);
 	}
 
+	@Override
+	public in.eko.eloka.wallet.StatementPage statement(long orgId, UUID userId, java.time.LocalDate from,
+			java.time.LocalDate to, int offset, int limit) {
+		java.time.ZoneId ist = java.time.ZoneId.of("Asia/Kolkata");
+		Instant start = from == null ? Instant.EPOCH : from.atStartOfDay(ist).toInstant();
+		Instant end = to == null ? Instant.now(clock).plusSeconds(1) : to.plusDays(1).atStartOfDay(ist).toInstant();
+		return accounts.findByOrgIdAndUserIdAndTypeId(orgId, userId, WalletAccountView.TYPE_EVALUE)
+			.map(account -> {
+				var page = ledger.findByAccountIdAndPostedAtGreaterThanEqualAndPostedAtLessThan(account.getId(), start, end,
+						new in.eko.eloka.shared.persistence.OffsetPage(Math.max(0, offset), Math.max(1, Math.min(limit, 1000)),
+								org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "postedAt")));
+				return new in.eko.eloka.wallet.StatementPage(page.getContent().stream().map(LedgerEntry::toLine).toList(),
+						page.getTotalElements());
+			})
+			.orElse(new in.eko.eloka.wallet.StatementPage(List.of(), 0));
+	}
+
 	private static WalletAccountView toView(WalletAccount account) {
 		return new WalletAccountView(account.getId(), account.getTypeId(), account.getAccountNumber(), account.getBalance());
 	}

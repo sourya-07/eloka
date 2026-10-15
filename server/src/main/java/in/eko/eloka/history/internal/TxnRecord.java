@@ -59,6 +59,9 @@ class TxnRecord extends BaseEntity {
 	@Column(name = "customer_mobile_enc", columnDefinition = "VARBINARY(128)")
 	private byte[] customerMobileEnc;
 
+	@Column(name = "customer_mobile_hash", columnDefinition = "BINARY(32)")
+	private byte[] customerMobileHash;
+
 	@Column(name = "occurred_at", nullable = false)
 	private Instant occurredAt;
 
@@ -70,7 +73,7 @@ class TxnRecord extends BaseEntity {
 
 	TxnRecord(long tid, long orgId, UUID userId, String userCode, Long accountId, int txTypeId, String txName,
 			boolean debit, BigDecimal amount, BigDecimal fee, BigDecimal commission, TxnStatus status,
-			String customerName, byte[] customerMobileEnc, Instant occurredAt, String details) {
+			String customerName, byte[] customerMobileEnc, byte[] customerMobileHash, Instant occurredAt, String details) {
 		this.tid = tid;
 		this.orgId = orgId;
 		this.userId = userId;
@@ -85,6 +88,7 @@ class TxnRecord extends BaseEntity {
 		this.status = status;
 		this.customerName = customerName;
 		this.customerMobileEnc = customerMobileEnc;
+		this.customerMobileHash = customerMobileHash;
 		this.occurredAt = occurredAt;
 		this.details = details;
 	}

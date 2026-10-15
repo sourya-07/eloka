@@ -12,10 +12,13 @@ import java.util.UUID;
 import in.eko.eloka.history.DashboardStats;
 import in.eko.eloka.history.EarningsSummary;
 import in.eko.eloka.history.HistoryApi;
+import in.eko.eloka.history.HistoryFilter;
 import in.eko.eloka.history.NewTxn;
 import in.eko.eloka.history.TxnStatus;
 import in.eko.eloka.history.TxnView;
+import in.eko.eloka.shared.crypto.BlindIndex;
 import in.eko.eloka.shared.crypto.FieldCipher;
+import in.eko.eloka.shared.crypto.Mobiles;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,13 +35,16 @@ class HistoryService implements HistoryApi {
 	private final TxnRecordRepository records;
 	private final TidAllocator tids;
 	private final FieldCipher cipher;
+	private final BlindIndex index;
 	private final JsonMapper json;
 	private final Clock clock;
 
-	HistoryService(TxnRecordRepository records, TidAllocator tids, FieldCipher cipher, JsonMapper json, Clock clock) {
+	HistoryService(TxnRecordRepository records, TidAllocator tids, FieldCipher cipher, BlindIndex index, JsonMapper json,
+			Clock clock) {
 		this.records = records;
 		this.tids = tids;
 		this.cipher = cipher;
+		this.index = index;
 		this.json = json;
 		this.clock = clock;
 	}
@@ -49,7 +55,7 @@ class HistoryService implements HistoryApi {
 		TxnRecord record = records.save(new TxnRecord(tids.next(txn.occurredAt().getEpochSecond()), txn.orgId(), txn.userId(),
 				txn.userCode(), txn.accountId(), txn.txTypeId(), txn.txName(), txn.debit(), txn.amount(),
 				orZero(txn.fee()), orZero(txn.commission()), txn.status(), txn.customerName(),
-				cipher.encrypt(txn.customerMobile()), txn.occurredAt(),
+				cipher.encrypt(txn.customerMobile()), customerHash(txn.customerMobile()), txn.occurredAt(),
 				json.writeValueAsString(txn.details() == null ? Map.of() : new TreeMap<>(txn.details()))));
 		return toView(record);
 	}
@@ -61,6 +67,29 @@ class HistoryService implements HistoryApi {
 			.stream()
 			.map(this::toView)
 			.toList();
+	}
+
+	@Override
+	public List<TxnView> search(long orgId, java.util.Collection<UUID> userIds, HistoryFilter f, int offset, int limit) {
+		int size = Math.max(1, Math.min(limit, 50_000));
+		org.springframework.data.jpa.domain.Specification<TxnRecord> spec = (root, query, cb) -> {
+			List<jakarta.persistence.criteria.Predicate> p = new java.util.ArrayList<>();
+			p.add(cb.equal(root.get("orgId"), orgId));
+			if (userIds != null) {
+				p.add(userIds.isEmpty() ? cb.disjunction() : root.get("userId").in(userIds));
+			}
+			if (f.accountId() != null) p.add(cb.equal(root.get("accountId"), f.accountId()));
+			if (f.txTypeId() != null) p.add(cb.equal(root.get("txTypeId"), f.txTypeId()));
+			if (f.tid() != null) p.add(cb.equal(root.get("tid"), f.tid()));
+			if (f.amount() != null) p.add(cb.equal(root.get("amount"), f.amount()));
+			if (f.customerMobile() != null) p.add(cb.equal(root.get("customerMobileHash"), customerHash(f.customerMobile())));
+			if (f.from() != null) p.add(cb.greaterThanOrEqualTo(root.get("occurredAt"), f.from().atStartOfDay(IST).toInstant()));
+			if (f.to() != null) p.add(cb.lessThan(root.get("occurredAt"), f.to().plusDays(1).atStartOfDay(IST).toInstant()));
+			return cb.and(p.toArray(jakarta.persistence.criteria.Predicate[]::new));
+		};
+		var page = new in.eko.eloka.shared.persistence.OffsetPage(Math.max(0, offset), size,
+				org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "occurredAt"));
+		return records.findAll(spec, page).stream().map(this::toView).toList();
 	}
 
 	@Override
@@ -154,6 +183,18 @@ class HistoryService implements HistoryApi {
 		return new TxnView(r.getTid(), r.getOrgId(), r.getUserId(), r.getUserCode(), r.getAccountId(), r.getTxTypeId(),
 				r.getTxName(), r.isDebit(), r.getAmount(), r.getFee(), r.getCommission(), r.getStatus(),
 				r.getCustomerName(), cipher.decrypt(r.getCustomerMobileEnc()), r.getOccurredAt(), details);
+	}
+
+	private byte[] customerHash(String mobile) {
+		if (mobile == null || mobile.isBlank()) {
+			return null;
+		}
+		try {
+			return index.hash("customer_mobile", Mobiles.normalize(mobile));
+		}
+		catch (in.eko.eloka.shared.error.ValidationException notAMobile) {
+			return index.hash("customer_mobile", mobile.trim());
+		}
 	}
 
 	private static BigDecimal orZero(BigDecimal value) {

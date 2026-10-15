@@ -23,4 +23,7 @@ interface WalletAccountRepository extends JpaRepository<WalletAccount, Long> {
 interface LedgerEntryRepository extends JpaRepository<LedgerEntry, UUID> {
 
 	boolean existsByAccountIdAndReference(long accountId, String reference);
+
+	org.springframework.data.domain.Page<LedgerEntry> findByAccountIdAndPostedAtGreaterThanEqualAndPostedAtLessThan(long accountId,
+			java.time.Instant from, java.time.Instant to, org.springframework.data.domain.Pageable page);
 }

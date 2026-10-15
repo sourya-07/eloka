@@ -23,6 +23,7 @@ public final class TxnRows {
 		row.put("commission_earned", t.commission());
 		row.put("status", statusLabel(t.status()));
 		row.put("status_id", t.status().statusId());
+		row.put("response_status_id", t.status() == TxnStatus.FAILED ? 1 : 0); // client hides amounts of failed rows
 		row.put("datetime", EpsDates.format(t.occurredAt()));
 		row.put("customer_name", t.customerName());
 		row.put("customer_mobile", t.customerMobile());

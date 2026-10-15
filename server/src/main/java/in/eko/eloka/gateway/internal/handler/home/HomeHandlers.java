@@ -11,7 +11,6 @@ import in.eko.eloka.gateway.internal.dispatch.RouteKey;
 import in.eko.eloka.gateway.internal.envelope.EpsEnvelope;
 import in.eko.eloka.gateway.internal.envelope.EpsResponse;
 import in.eko.eloka.gateway.internal.handler.EpsDates;
-import in.eko.eloka.gateway.internal.handler.TxnRows;
 import in.eko.eloka.history.EarningsSummary;
 import in.eko.eloka.history.HistoryApi;
 import in.eko.eloka.notification.InboxItem;
@@ -92,39 +91,6 @@ final class HomeHandlers {
 			data.put("prev_month", e.previousMonth());
 			data.put("commission_due", e.commissionDue());
 			return EpsEnvelope.ok().data(data).build();
-		}
-	}
-
-	/** 154 (home widget form): the caller's latest transactions. */
-	@Component
-	static class RecentTransactions implements EpsHandler {
-
-		private final HistoryApi history;
-
-		RecentTransactions(HistoryApi history) {
-			this.history = history;
-		}
-
-		@Override
-		public List<RouteKey> routes() {
-			return List.of(RouteKey.interaction(154));
-		}
-
-		@Override
-		public AccessPolicy access() {
-			return AccessPolicy.USER;
-		}
-
-		@Override
-		public EpsResponse handle(EpsCall call) {
-			Caller caller = call.caller();
-			int offset = call.params().integer("start_index", 0);
-			int limit = call.params().integer("limit", 10);
-			List<Map<String, Object>> rows = history.recentFor(caller.orgId(), caller.userId(), offset, limit)
-				.stream()
-				.map(TxnRows::row)
-				.toList();
-			return EpsEnvelope.ok().data(Map.of("transaction_list", rows)).build();
 		}
 	}
 

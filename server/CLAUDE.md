@@ -3,7 +3,7 @@
 The ELOKA backend: **Java 25, Spring Boot 4.1, Spring Modulith 2.1, MySQL 8.4, Flyway, Gradle (Kotlin DSL)**.
 Read the root [`CLAUDE.md`](../CLAUDE.md) first. Decisions: ADR-0004 (system of record, EPS wire format), ADR-0005 (opaque tokens), ADR-0006 (logging, secrets). Plan and phases: [`docs/BACKEND_PLAN.md`](../docs/BACKEND_PLAN.md).
 
-> Status: **P1 + P2 done** (foundation, login, org lookup, home, dashboards). Next: P3 (network, history, profile). Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
+> Status: **P1–P3 done** (foundation, login, org lookup, home, dashboards, network, history, profile). Next: P4 (settings, pricing, onboard agents, support). Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
 
 ## Commands
 
@@ -26,14 +26,15 @@ src/main/java/in/eko/eloka/
 ├── shared/        OPEN module: errors (DomainException family), Caller/Role/SecurityConfig, crypto (FieldCipher,
 │                  BlindIndex, Tokens, Masking, Mobiles), logging (RequestIdFilter, PiiMasker), ProductionSafetyGuard,
 │                  BaseEntity (UUIDv7 id, version, timestamps), clock
-├── gateway/       EPS wire format → domain calls. internal/{envelope, dispatch, web, handler/<area>}
+├── gateway/       EPS wire format → domain calls. internal/{envelope, dispatch, web, report (XLSX/PDF/CSV), handler/<area>}
 ├── identity/      login OTP (OtpService), sessions (SessionService = CallerResolver), IdentityApi
 ├── tenant/        orgs, domains, public metadata, org tokens (OrgApi, OrgTokens)
-├── network/       users, shops (UserDirectory, UserCommands)
+├── network/       users, shops, hierarchy; scoped queries + commands (UserDirectory, UserCommands, NetworkQueries, NetworkCommands)
 ├── notification/  SmsSender port + LogOnlySmsSender; in-app inbox (NotificationApi)
 ├── wallet/        wallet accounts + append-only ledger (WalletApi); opened on UserCreated
 ├── history/       transaction read model, earnings, dashboard aggregates (HistoryApi)
 ├── pricing/       product catalog = app menu (CatalogApi); pricing rules from P4
+├── reference/     dropdown lists: states, shop types, banks (ReferenceData)
 ├── audit/         AuditLog: hash-chained audit_event, mirrored to eloka-audit.log
 ├── devdata/       local profile only: LocalSeedRunner (devdata/local-seed.json)
 ├── system/        /v1/system/info, migrate profile runner

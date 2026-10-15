@@ -42,6 +42,28 @@ public final class EpsParams {
 		});
 	}
 
+	public Optional<Long> longValue(String name) {
+		return string(name).map(value -> {
+			try {
+				return Long.valueOf(value);
+			}
+			catch (NumberFormatException ex) {
+				throw ValidationException.field(name, name + " must be a number");
+			}
+		});
+	}
+
+	public Optional<java.math.BigDecimal> decimal(String name) {
+		return string(name).map(value -> {
+			try {
+				return new java.math.BigDecimal(value);
+			}
+			catch (NumberFormatException ex) {
+				throw ValidationException.field(name, name + " must be an amount");
+			}
+		});
+	}
+
 	public int integer(String name, int fallback) {
 		return integer(name).orElse(fallback);
 	}
