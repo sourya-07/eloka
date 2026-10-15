@@ -1,0 +1,58 @@
+# Settings shared by every environment. Environment-specific values live in
+# application-<profile>.yaml. Secrets come only from environment variables.
+spring:
+  application:
+    name: eloka-server
+  profiles:
+    default: local
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate # the schema is owned by Flyway migrations, never by Hibernate
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    locations: classpath:db/migration
+  mvc:
+    problemdetails:
+      enabled: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 25MB
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+  forward-headers-strategy: native # trust X-Forwarded-* only from proxies in server.tomcat.remoteip
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: false
+
+logging:
+  file:
+    path: ${ELOKA_LOG_DIR:logs}
+
+eloka:
+  environment: ${ELOKA_ENVIRONMENT:local}
+  identity:
+    otp-length: 6
+    otp-ttl: 5m
+    otp-max-attempts: 5
+    session-idle-timeout: 2h
+    session-absolute-ttl: 12h
+  tenant:
+    org-token-ttl: 30d

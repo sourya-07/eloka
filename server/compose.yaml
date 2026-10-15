@@ -1,0 +1,23 @@
+# Local-only infrastructure for the server.
+# `./gradlew bootRun` starts this automatically (spring-boot-docker-compose, `local` profile).
+# The credentials below are for a throwaway local database. Never reuse them anywhere else.
+services:
+  mysql:
+    image: "mysql:8.4"
+    environment:
+      MYSQL_DATABASE: eloka
+      MYSQL_USER: eloka
+      MYSQL_PASSWORD: eloka_local
+      MYSQL_ROOT_PASSWORD: root_local
+    ports:
+      - "3307:3306"
+    volumes:
+      - eloka-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot_local"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  eloka-mysql:

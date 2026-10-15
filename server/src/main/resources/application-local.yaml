@@ -1,0 +1,40 @@
+# Developer laptop. MySQL comes from compose.yaml (started automatically by bootRun).
+# Every value here is a published DEVELOPMENT value: ProductionSafetyGuard refuses them in production.
+server:
+  port: ${SERVER_PORT:8090} # 8080 is often taken by other local containers
+
+spring:
+  docker:
+    compose:
+      lifecycle-management: start-only
+  jpa:
+    show-sql: false
+
+logging:
+  level:
+    in.eko.eloka: DEBUG
+
+eloka:
+  environment: local
+  cors-allowed-origin-patterns:
+    - http://localhost:[*]
+    - http://*.localhost:[*]
+    - http://127.0.0.1:[*]
+  crypto:
+    field-key: ZWxva2EtbG9jYWwtZmllbGQta2V5LTMyLWJ5dGVzISE=
+    index-key: ZWxva2EtbG9jYWwtaW5kZXgta2V5LTMyLWJ5dGVzISE=
+  identity:
+    otp-pepper: eloka-local-otp-pepper
+    fixed-otp: "123456"
+    expose-otp-in-response: true
+    otp-min-gap: 0s
+    otp-max-per-hour: 1000
+    otp-max-per-day: 1000
+    otp-max-per-ip-per-hour: 1000
+  tenant:
+    root-domain: eloka.localhost
+    org-meta-secret: eloka-local-org-meta-secret
+    org-token-key: ZWxva2EtbG9jYWwtb3JnLXRva2VuLWtleS0zMmJ5dGU=
+  notification:
+    sms-provider: log
+    sms-reveal-secrets: true

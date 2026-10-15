@@ -1,0 +1,30 @@
+-- Transaction history read model. Customer mobiles are encrypted.
+CREATE TABLE txn_record
+(
+    id                  BINARY(16)     NOT NULL,
+    tid                 BIGINT         NOT NULL,
+    org_id              BIGINT         NOT NULL,
+    user_id             BINARY(16)     NOT NULL,
+    user_code           VARCHAR(20)    NOT NULL,
+    account_id          BIGINT         NULL,
+    tx_typeid           INT            NOT NULL,
+    tx_name             VARCHAR(80)    NOT NULL,
+    debit               BOOLEAN        NOT NULL,
+    amount              DECIMAL(18, 2) NOT NULL,
+    fee                 DECIMAL(18, 2) NOT NULL,
+    commission          DECIMAL(18, 2) NOT NULL,
+    status              VARCHAR(20)    NOT NULL,
+    customer_name       VARCHAR(150)   NULL,
+    customer_mobile_enc VARBINARY(128) NULL,
+    occurred_at         DATETIME(6)    NOT NULL,
+    details             VARCHAR(4000)  NULL,
+    version             BIGINT         NOT NULL,
+    created_at          DATETIME(6)    NOT NULL,
+    updated_at          DATETIME(6)    NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT txn_record_tid_uk UNIQUE (tid),
+    INDEX txn_record_user_time_idx (org_id, user_id, occurred_at),
+    INDEX txn_record_org_time_idx (org_id, occurred_at),
+    INDEX txn_record_type_time_idx (org_id, tx_typeid, occurred_at),
+    CONSTRAINT txn_record_status_chk CHECK (status IN ('SUCCESS', 'FAILED', 'PENDING', 'REFUNDED'))
+);

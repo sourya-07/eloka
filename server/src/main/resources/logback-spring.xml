@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Logging (ADR-0006). Three rolling files under ${ELOKA_LOG_DIR} (default ./logs):
+    eloka-app.log     application log (30 days)
+    eloka-access.log  one line per request (90 days)
+    eloka-audit.log   audit trail mirror (365 days; the audit_event table is the record)
+  Local: readable text with personal data masked. prod profile: JSON (ECS) to files and console.
+-->
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+	<conversionRule conversionWord="maskedMsg" class="in.eko.eloka.shared.logging.MaskedMessageConverter"/>
+
+	<springProperty name="LOG_DIR" source="logging.file.path" defaultValue="logs"/>
+	<property name="TEXT_PATTERN"
+		value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%X{request_id:--}] [org=%X{org_id:--} user=%X{user_code:--}] %logger{36} - %maskedMsg%n%wEx"/>
+
+	<springProfile name="!prod">
+		<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+			<encoder>
+				<pattern>%clr(%d{HH:mm:ss.SSS}){faint} %clr(%5level) %clr([%X{request_id:--}]){faint} %clr(%logger{30}){cyan} - %maskedMsg%n%wEx</pattern>
+			</encoder>
+		</appender>
+		<appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${LOG_DIR}/eloka-app.log</file>
+			<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<fileNamePattern>${LOG_DIR}/eloka-app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+				<maxFileSize>100MB</maxFileSize>
+				<maxHistory>30</maxHistory>
+				<totalSizeCap>5GB</totalSizeCap>
+			</rollingPolicy>
+			<encoder><pattern>${TEXT_PATTERN}</pattern></encoder>
+		</appender>
+		<appender name="ACCESS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${LOG_DIR}/eloka-access.log</file>
+			<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<fileNamePattern>${LOG_DIR}/eloka-access.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+				<maxFileSize>100MB</maxFileSize>
+				<maxHistory>90</maxHistory>
+				<totalSizeCap>5GB</totalSizeCap>
+			</rollingPolicy>
+			<encoder><pattern>${TEXT_PATTERN}</pattern></encoder>
+		</appender>
+		<appender name="AUDIT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${LOG_DIR}/eloka-audit.log</file>
+			<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<fileNamePattern>${LOG_DIR}/eloka-audit.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+				<maxFileSize>100MB</maxFileSize>
+				<maxHistory>365</maxHistory>
+				<totalSizeCap>10GB</totalSizeCap>
+			</rollingPolicy>
+			<encoder><pattern>${TEXT_PATTERN}</pattern></encoder>
+		</appender>
+	</springProfile>
+
+	<springProfile name="prod">
+		<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+			<encoder class="org.springframework.boot.logging.logback.StructuredLogEncoder">
+				<format>ecs</format>
+				<charset>UTF-8</charset>
+			</encoder>
+		</appender>
+		<appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${LOG_DIR}/eloka-app.log</file>
+			<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<fileNamePattern>${LOG_DIR}/eloka-app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+				<maxFileSize>100MB</maxFileSize>
+				<maxHistory>30</maxHistory>
+				<totalSizeCap>5GB</totalSizeCap>
+			</rollingPolicy>
+			<encoder class="org.springframework.boot.logging.logback.StructuredLogEncoder">
+				<format>ecs</format>
+				<charset>UTF-8</charset>
+			</encoder>
+		</appender>
+		<appender name="ACCESS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${LOG_DIR}/eloka-access.log</file>
+			<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<fileNamePattern>${LOG_DIR}/eloka-access.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+				<maxFileSize>100MB</maxFileSize>
+				<maxHistory>90</maxHistory>
+				<totalSizeCap>5GB</totalSizeCap>
+			</rollingPolicy>
+			<encoder class="org.springframework.boot.logging.logback.StructuredLogEncoder">
+				<format>ecs</format>
+				<charset>UTF-8</charset>
+			</encoder>
+		</appender>
+		<appender name="AUDIT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${LOG_DIR}/eloka-audit.log</file>
+			<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<fileNamePattern>${LOG_DIR}/eloka-audit.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+				<maxFileSize>100MB</maxFileSize>
+				<maxHistory>365</maxHistory>
+				<totalSizeCap>10GB</totalSizeCap>
+			</rollingPolicy>
+			<encoder class="org.springframework.boot.logging.logback.StructuredLogEncoder">
+				<format>ecs</format>
+				<charset>UTF-8</charset>
+			</encoder>
+		</appender>
+	</springProfile>
+
+	<logger name="eloka.access" level="INFO" additivity="false">
+		<appender-ref ref="ACCESS_FILE"/>
+	</logger>
+	<logger name="eloka.audit" level="INFO" additivity="false">
+		<appender-ref ref="AUDIT_FILE"/>
+	</logger>
+
+	<root level="INFO">
+		<appender-ref ref="CONSOLE"/>
+		<appender-ref ref="APP_FILE"/>
+	</root>
+</configuration>
