@@ -1,0 +1,61 @@
+# Build and test only the side of the repo that changed.
+name: CI
+
+on:
+    pull_request:
+        branches: [dev, main]
+    push:
+        branches: [dev]
+
+jobs:
+    changes:
+        runs-on: ubuntu-latest
+        outputs:
+            client: ${{ steps.filter.outputs.client }}
+            server: ${{ steps.filter.outputs.server }}
+        steps:
+            - uses: actions/checkout@v4
+            - uses: dorny/paths-filter@v3
+              id: filter
+              with:
+                  filters: |
+                      client:
+                        - 'client/**'
+                      server:
+                        - 'server/**'
+
+    client:
+        needs: changes
+        if: needs.changes.outputs.client == 'true'
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: client
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version-file: client/.nvmrc
+                  cache: npm
+                  cache-dependency-path: client/package-lock.json
+            - run: npm ci
+            - run: npm run lint:error
+            - run: npm run test:mock
+            - run: npm test -- --ci
+            - run: npm run build
+
+    server:
+        needs: changes
+        if: needs.changes.outputs.server == 'true'
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: server
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: "25"
+                  cache: gradle
+            - run: ./gradlew --no-daemon build # compiles, runs all tests (Testcontainers uses the runner's Docker)

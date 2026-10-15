@@ -1,0 +1,21 @@
+# Repo-wide ignores. client/ and server/ have their own .gitignore files.
+
+# OS / editors
+.DS_Store
+.idea/
+*.iml
+
+# Secrets and local overrides: never commit
+.env
+.env*.local
+*.pem
+
+# Claude Code
+.claude/worktrees/
+.claude/settings.local.json
+
+# Generated PDFs from docs/onboarding/pdf-build
+docs/onboarding/pdf-build/out/
+
+# Deployment secrets
+deploy/.env

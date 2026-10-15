@@ -1,0 +1,33 @@
+{
+  "editor.detectIndentation": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.addMissingImports.ts": "explicit",
+    "source.organizeImports": "explicit",
+  },
+  "typescript.tsdk": "client/node_modules/typescript/lib",
+  "eslint.workingDirectories": [{ "directory": "client", "changeProcessCWD": true }],
+  "java.import.gradle.wrapper.enabled": true,
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#091968",
+    "activityBar.background": "#11299E",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#ffad23",
+    "activityBarBadge.foreground": "#000",
+    "sash.hoverBorder": "#1F3ABC",
+    "statusBar.background": "#11299E",
+    "activityBar.activeBorder": "#f38300",
+  },
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": "docs/commit-message-instructions.md"
+    }
+  ],
+  "chat.promptFiles": true,
+}
