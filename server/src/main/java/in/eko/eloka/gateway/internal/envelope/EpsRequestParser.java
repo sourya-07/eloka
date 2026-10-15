@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.util.WebUtils;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
@@ -53,13 +54,19 @@ public class EpsRequestParser {
 		List<UploadedFile> files = new ArrayList<>();
 		String contentType = Optional.ofNullable(request.getContentType()).orElse("").toLowerCase();
 
-		if (request instanceof MultipartHttpServletRequest multipart) {
+		// Unwrap: security filters wrap the request, hiding the multipart view.
+		MultipartHttpServletRequest multipart = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
+		if (multipart != null) {
 			readFormParameters(params, multipart.getParameterMap());
 			for (Map.Entry<String, List<MultipartFile>> entry : multipart.getMultiFileMap().entrySet()) {
 				for (MultipartFile file : entry.getValue()) {
 					files.add(new UploadedFile(entry.getKey(), file.getOriginalFilename(), file.getContentType(), file.getBytes()));
 				}
 			}
+		}
+		else if (contentType.startsWith("multipart/")) {
+			// Multipart that was not resolved into a MultipartHttpServletRequest: read text fields only.
+			readFormParameters(params, request.getParameterMap());
 		}
 		else if (contentType.startsWith("application/x-www-form-urlencoded")) {
 			readFormParameters(params, request.getParameterMap());

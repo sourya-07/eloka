@@ -195,6 +195,35 @@ describe("network", until(3), () => {
 	});
 });
 
+describe("onboard agents", until(4), () => {
+	it("onboards a retailer by form and reports each row", async () => {
+		const token = await login("9000000003");
+		const res = await (
+			await fetch(`${base}/transactions/dojson`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": "/network/agent/multiple_onboarding",
+					"tf-req-method": "POST",
+				},
+				body: JSON.stringify({
+					applicant_type: "0",
+					CspList: [
+						{
+							agent_name: "Contract Test",
+							agent_mobile: `98${Date.now().toString().slice(-8)}`,
+						},
+					],
+				}),
+			})
+		).json();
+		assert.equal(res.status, 0);
+		assert.equal(res.data.csp_list.length, 1);
+	});
+});
+
 describe("self-onboarding journey", until(5), () => {
 	it("takes a new retailer from role selection to onboarded", async () => {
 		const mobile = "9000000004";

@@ -72,16 +72,16 @@ Status: ✅ implemented in `server/` · ⬜ not yet · ➖ out of scope (runs in
 
 | Key | Screen | Status |
 |---|---|---|
-| 737 (operation 0/2/3/4/5) | business settings toggles | ⬜ |
-| 726 | commission frequency, distributor pricing | ⬜ |
-| tf v2 `/network/agreement/recent-signature`, customupload `/network/agreement/upload-doc-sign-config` | agreement signing | ⬜ |
-| 553 / 554 / 555 (`intent_id 16`) | email OTP | ⬜ |
-| 353 | pincode lookup | ⬜ |
-| 837 / 1046 / 838 / 756 | pricing config | ⬜ |
-| dojson tf POST `/network/agent/multiple_onboarding` (+ demo) | onboard agents | ⬜ |
-| customupload tf POST `/network/agent/bulk_onboarding` | onboard via file | ⬜ |
-| 692 / 10016 / 10017 / 10018 / 10020 | query center | ⬜ |
-| 10022 / 10000 (JSON or multipart `/transactions/upload`) | raise issue | ⬜ |
+| 737 (operation 0/2/3/4/5) | business settings toggles | ✅ |
+| 726 | commission frequency, distributor pricing | ✅ |
+| tf v2 `/network/agreement/recent-signature`, customupload `/network/agreement/upload-doc-sign-config` | agreement signing | ✅ |
+| 553 / 554 / 555 (`intent_id 16`) | email OTP | ✅ |
+| 353 | pincode lookup | ✅ |
+| 837 / 1046 / 838 / 756 | pricing config | ✅ |
+| dojson tf POST `/network/agent/multiple_onboarding` (+ demo) | onboard agents | ✅ |
+| customupload tf POST `/network/agent/bulk_onboarding` | onboard via file (.xlsx or .csv: Mobile, Name, Distributor Mobile; old .xls rejected with a clear message) | ✅ |
+| 692 / 10016 / 10017 / 10018 / 10020 | query center | ✅ |
+| 10022 / 10000 (JSON or multipart `/transactions/upload`) | raise issue | ✅ |
 
 ### Agent onboarding (P5)
 

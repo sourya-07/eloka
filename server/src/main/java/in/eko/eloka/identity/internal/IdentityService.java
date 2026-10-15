@@ -72,6 +72,26 @@ class IdentityService implements IdentityApi {
 	}
 
 	@Override
+	@Transactional
+	public void sendEmailOtp(long orgId, String email, String clientIp) {
+		otps.issueEmail(orgId, normalizeEmail(email), clientIp);
+	}
+
+	@Override
+	@Transactional(noRollbackFor = RuntimeException.class)
+	public boolean verifyEmailOtp(long orgId, String email, String code) {
+		return otps.checkEmail(orgId, normalizeEmail(email), code) instanceof OtpService.Check.Valid;
+	}
+
+	static String normalizeEmail(String email) {
+		String value = email == null ? "" : email.trim().toLowerCase(java.util.Locale.ROOT);
+		if (!value.matches("[^@\\s]+@[^@\\s]+\\.[^@\\s]+") || value.length() > 254) {
+			throw in.eko.eloka.shared.error.ValidationException.field("email", "Enter a valid email address");
+		}
+		return value;
+	}
+
+	@Override
 	public Optional<TokenPair> refresh(String refreshToken) {
 		return sessions.refresh(refreshToken);
 	}

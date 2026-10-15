@@ -9,7 +9,7 @@ import in.eko.eloka.shared.security.Role;
  */
 public record UserView(UUID id, long orgId, String userCode, int userType, boolean orgAdmin, UserStatus status,
 		String name, String mobile, String email, LocalDate dateOfJoining, boolean demo, UUID parentUserId,
-		PersonalInfo personal, String gstin) {
+		PersonalInfo personal, String gstin, String businessEmail, LocalDate demoExpiresOn) {
 
 	public Role role() {
 		return UserTypes.roleOf(userType, orgAdmin);

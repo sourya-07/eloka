@@ -24,6 +24,12 @@ public interface IdentityApi {
 	/** Ends the session that owns this access or refresh token. Unknown tokens are ignored. */
 	void revoke(String token, String reason);
 
+	/** Sends a code to verify an email address the caller wants to use. */
+	void sendEmailOtp(long orgId, String email, String clientIp);
+
+	/** @return true when the code matches the latest live code sent to this email */
+	boolean verifyEmailOtp(long orgId, String email, String code);
+
 	/** Links a pre-registration session to the account created during self-onboarding. */
 	void attachUser(UUID sessionId, UUID userId);
 }

@@ -26,6 +26,9 @@ public interface NetworkCommands {
 	/** Replaces the shop / address fields that are non-null in {@code shop}. */
 	void updateShop(Caller caller, String userCode, ShopView shop);
 
+	/** Stores the caller's business email after it was verified by OTP. */
+	void setVerifiedBusinessEmail(Caller caller, String email);
+
 	/** Removes a demo user (marks it DELETED). */
 	void removeDemoUser(Caller caller, String userCode);
 }

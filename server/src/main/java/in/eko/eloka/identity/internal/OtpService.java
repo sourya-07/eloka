@@ -46,42 +46,66 @@ class OtpService implements SafetyCheck {
 	private final OtpChallengeRepository challenges;
 	private final OtpCodeGenerator generator;
 	private final SmsSender sms;
+	private final in.eko.eloka.notification.EmailSender emails;
 	private final BlindIndex index;
 	private final IdentityProperties properties;
 	private final Clock clock;
 	private final SecureRandom random = new SecureRandom();
 
-	OtpService(OtpChallengeRepository challenges, OtpCodeGenerator generator, SmsSender sms, BlindIndex index,
-			IdentityProperties properties, Clock clock) {
+	OtpService(OtpChallengeRepository challenges, OtpCodeGenerator generator, SmsSender sms,
+			in.eko.eloka.notification.EmailSender emails, BlindIndex index, IdentityProperties properties, Clock clock) {
 		this.challenges = challenges;
 		this.generator = generator;
 		this.sms = sms;
+		this.emails = emails;
 		this.index = index;
 		this.properties = properties;
 		this.clock = clock;
 	}
 
-	/** @return the generated code (callers decide whether it may be revealed) */
+	/** Login OTP by SMS. @return the generated code (callers decide whether it may be revealed) */
 	String issue(long orgId, String mobile, String clientIp) {
-		Instant now = Instant.now(clock);
-		byte[] mobileHash = index.hash("mobile", mobile);
-		byte[] ipHash = clientIp == null ? null : index.hash("ip", clientIp);
-		enforceLimits(orgId, mobileHash, ipHash, now);
-
-		String code = generator.generate(properties.otpLength());
-		byte[] salt = new byte[16];
-		random.nextBytes(salt);
-		challenges.save(new OtpChallenge(orgId, mobileHash, OtpChallenge.PURPOSE_LOGIN, salt, hash(salt, code), ipHash,
-				now.plus(properties.otpTtl()), properties.otpMaxAttempts()));
-		sms.send(new SmsMessage(mobile, "LOGIN_OTP",
-				Map.of("otp", code, "minutes", Long.toString(properties.otpTtl().toMinutes())), "otp"));
-		return code;
+		return issue(orgId, OtpChallenge.PURPOSE_LOGIN, index.hash("mobile", mobile), clientIp,
+				code -> sms.send(new SmsMessage(mobile, "LOGIN_OTP",
+						Map.of("otp", code, "minutes", Long.toString(properties.otpTtl().toMinutes())), "otp")));
 	}
 
 	Check check(long orgId, String mobile, String code) {
+		return check(orgId, OtpChallenge.PURPOSE_LOGIN, index.hash("mobile", mobile), code);
+	}
+
+	/** Email verification OTP. */
+	String issueEmail(long orgId, String email, String clientIp) {
+		return issue(orgId, OtpChallenge.PURPOSE_EMAIL, index.hash("email", email), clientIp,
+				code -> email(email, code));
+	}
+
+	Check checkEmail(long orgId, String email, String code) {
+		return check(orgId, OtpChallenge.PURPOSE_EMAIL, index.hash("email", email), code);
+	}
+
+	/**
+	 * Creates a challenge for any target (mobile, email) and hands the code to {@code deliver}.
+	 * Limits are counted per target across purposes.
+	 */
+	private String issue(long orgId, String purpose, byte[] targetHash, String clientIp,
+			java.util.function.Consumer<String> deliver) {
+		Instant now = Instant.now(clock);
+		byte[] ipHash = clientIp == null ? null : index.hash("ip", clientIp);
+		enforceLimits(orgId, purpose, targetHash, ipHash, now);
+		String code = generator.generate(properties.otpLength());
+		byte[] salt = new byte[16];
+		random.nextBytes(salt);
+		challenges.save(new OtpChallenge(orgId, targetHash, purpose, salt, hash(salt, code), ipHash,
+				now.plus(properties.otpTtl()), properties.otpMaxAttempts()));
+		deliver.accept(code);
+		return code;
+	}
+
+	private Check check(long orgId, String purpose, byte[] targetHash, String code) {
 		Instant now = Instant.now(clock);
 		Optional<OtpChallenge> latest = challenges.findFirstByOrgIdAndMobileHashAndPurposeOrderByCreatedAtDesc(orgId,
-				index.hash("mobile", mobile), OtpChallenge.PURPOSE_LOGIN);
+				targetHash, purpose);
 		if (latest.isEmpty() || !latest.get().isLive(now)) {
 			return new Check.NoLiveOtp();
 		}
@@ -92,6 +116,11 @@ class OtpService implements SafetyCheck {
 		}
 		challenge.consume(now);
 		return new Check.Valid();
+	}
+
+	private void email(String to, String code) {
+		emails.send(new in.eko.eloka.notification.EmailMessage(to, "EMAIL_OTP", "Your verification code",
+				Map.of("otp", code, "minutes", Long.toString(properties.otpTtl().toMinutes())), "otp"));
 	}
 
 	@Override
@@ -106,8 +135,8 @@ class OtpService implements SafetyCheck {
 		return problems;
 	}
 
-	private void enforceLimits(long orgId, byte[] mobileHash, byte[] ipHash, Instant now) {
-		challenges.findFirstByOrgIdAndMobileHashAndPurposeOrderByCreatedAtDesc(orgId, mobileHash, OtpChallenge.PURPOSE_LOGIN)
+	private void enforceLimits(long orgId, String purpose, byte[] mobileHash, byte[] ipHash, Instant now) {
+		challenges.findFirstByOrgIdAndMobileHashAndPurposeOrderByCreatedAtDesc(orgId, mobileHash, purpose)
 			.map(OtpChallenge::getCreatedAt)
 			.filter(last -> last.plus(properties.otpMinGap()).isAfter(now))
 			.ifPresent(last -> {

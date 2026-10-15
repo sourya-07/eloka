@@ -18,6 +18,8 @@ const APPLICANT_TYPE_TO_USER_TYPE = {
 /**
  * Finish the roles an interaction covers and answer with its success id.
  * @param {object} ctx - Request context
+ * @param ctx.body
+ * @param ctx.store
  * @param {Array<number>} roles - Roles completed by this call
  * @param {number} responseTypeId - Success id the step waits for
  * @returns {object} Envelope
@@ -31,7 +33,12 @@ const completeStep = ({ body, store }, roles, responseTypeId) => {
 
 /** @type {Record<string, (ctx: object) => object>} keyed by interaction_type_id */
 export const onboardingInteractions = {
-	/** Role selection: create the partial account. */
+	/**
+	 * Role selection: create the partial account.
+	 * @param root0
+	 * @param root0.body
+	 * @param root0.store
+	 */
 	521: ({ body, store }) => {
 		const userType =
 			APPLICANT_TYPE_TO_USER_TYPE[Number(body.applicant_type)];
@@ -40,7 +47,10 @@ export const onboardingInteractions = {
 		return ok({}, { response_type_id: 1566, message: "Role saved" });
 	},
 
-	/** Upload document (multipart). `doc_type` decides which step it finishes. */
+	/**
+	 * Upload document (multipart). `doc_type` decides which step it finishes.
+	 * @param ctx
+	 */
 	523: (ctx) =>
 		completeStep(
 			ctx,
@@ -58,7 +68,11 @@ export const onboardingInteractions = {
 	5: (ctx) => completeStep(ctx, STEP_COMPLETION[5], 9),
 	293: (ctx) => completeStep(ctx, STEP_COMPLETION[293], 1615),
 
-	/** Secret PIN booklet. Not a PinTwin user → plain PIN entry. */
+	/**
+	 * Secret PIN booklet. Not a PinTwin user → plain PIN entry.
+	 * @param root0
+	 * @param root0.body
+	 */
 	170: ({ body }) =>
 		ok(
 			{
@@ -80,7 +94,12 @@ export const onboardingInteractions = {
 	155: () => list(BANKS),
 	353: () => list([{ value: "560001", label: "560001 - Bengaluru" }]),
 
-	/** Assisted onboarding: add an agent by mobile. */
+	/**
+	 * Assisted onboarding: add an agent by mobile.
+	 * @param root0
+	 * @param root0.body
+	 * @param root0.store
+	 */
 	194: ({ body, store }) => {
 		const agent = store.find(body.csp_id);
 		if (agent)
@@ -91,7 +110,11 @@ export const onboardingInteractions = {
 		);
 	},
 
-	/** Assisted onboarding: verify the agent's OTP. */
+	/**
+	 * Assisted onboarding: verify the agent's OTP.
+	 * @param root0
+	 * @param root0.body
+	 */
 	197: ({ body }) =>
 		String(body.otp) === MOCK_OTP
 			? ok({ csp_id: body.csp_id }, { response_type_id: 876 })
@@ -100,7 +123,11 @@ export const onboardingInteractions = {
 
 /** @type {Record<string, (ctx: object) => object>} keyed by tf-req-uri */
 export const onboardingTfRoutes = {
-	/** DigiLocker consent link. Opens the mock consent page served by this server. */
+	/**
+	 * DigiLocker consent link. Opens the mock consent page served by this server.
+	 * @param root0
+	 * @param root0.origin
+	 */
 	"/karza/digilocker-redirection-url": ({ origin }) => {
 		const requestId = `MOCK-DL-${Date.now()}`;
 		return ok({
@@ -109,9 +136,25 @@ export const onboardingTfRoutes = {
 		});
 	},
 
-	/** Bulk onboarding by form / file (admin). */
-	"/network/agent/multiple_onboarding": () =>
-		ok({}, { message: "Agents queued for onboarding (mock)" }),
+	/**
+	 * Bulk onboarding by form / file (admin).
+	 * @param root0
+	 * @param root0.body
+	 */
+	"/network/agent/multiple_onboarding": ({ body }) => {
+		const rows = (Array.isArray(body.CspList) ? body.CspList : []).map(
+			(agent) => ({
+				name: agent.agent_name,
+				mobile: agent.agent_mobile,
+				status: "Success",
+				reason: "",
+			})
+		);
+		return ok(
+			{ csp_list: rows, processed_records: rows.length, failed_count: 0 },
+			{ message: "All agents onboarded (mock)" }
+		);
+	},
 	"/network/agent/bulk_onboarding": () =>
 		ok({}, { message: "File accepted (mock)" }),
 };

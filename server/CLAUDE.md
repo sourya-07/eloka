@@ -3,7 +3,7 @@
 The ELOKA backend: **Java 25, Spring Boot 4.1, Spring Modulith 2.1, MySQL 8.4, Flyway, Gradle (Kotlin DSL)**.
 Read the root [`CLAUDE.md`](../CLAUDE.md) first. Decisions: ADR-0004 (system of record, EPS wire format), ADR-0005 (opaque tokens), ADR-0006 (logging, secrets). Plan and phases: [`docs/BACKEND_PLAN.md`](../docs/BACKEND_PLAN.md).
 
-> Status: **P1–P3 done** (foundation, login, org lookup, home, dashboards, network, history, profile). Next: P4 (settings, pricing, onboard agents, support). Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
+> Status: **P1–P4 done** (foundation, login, org lookup, home, dashboards, network, history, profile, settings, pricing, onboard agents, support). Next: P5 (agent onboarding). Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
 
 ## Commands
 
@@ -33,7 +33,9 @@ src/main/java/in/eko/eloka/
 ├── notification/  SmsSender port + LogOnlySmsSender; in-app inbox (NotificationApi)
 ├── wallet/        wallet accounts + append-only ledger (WalletApi); opened on UserCreated
 ├── history/       transaction read model, earnings, dashboard aggregates (HistoryApi)
-├── pricing/       product catalog = app menu (CatalogApi); pricing rules from P4
+├── pricing/       product catalog = app menu (CatalogApi); pricing rules and commissions (PricingApi)
+├── support/       issue types, tickets, comments, attachments (query center, raise issue)
+├── documents/     uploaded files: type-checked, encrypted at rest, DocumentStorage port (filesystem now)
 ├── reference/     dropdown lists: states, shop types, banks (ReferenceData)
 ├── audit/         AuditLog: hash-chained audit_event, mirrored to eloka-audit.log
 ├── devdata/       local profile only: LocalSeedRunner (devdata/local-seed.json)

@@ -28,7 +28,7 @@ Definition: [`deploy/docker-compose.yml`](../../deploy/docker-compose.yml).
 
 `ELOKA_ENVIRONMENT=production` turns on `ProductionSafetyGuard`. The server **refuses to start** and lists the reasons if any of these hold:
 - a development key or secret from `application-local.yaml` is used;
-- `ELOKA_SMS_PROVIDER=log` (users could not receive OTPs) or `ELOKA_SMS_REVEAL_SECRETS=true`;
+- `ELOKA_SMS_PROVIDER=log` or `ELOKA_EMAIL_PROVIDER=log` (users could not receive OTPs) or `ELOKA_SMS_REVEAL_SECRETS=true`;
 - local-only beans are present (fixed OTP, seeder).
 
 Until a real SMS provider is integrated, run as `ELOKA_ENVIRONMENT=staging` and read OTPs from the app log only if `ELOKA_SMS_REVEAL_SECRETS=true` (staging only).
@@ -55,6 +55,6 @@ Rotation: daily or 100 MB, gzip; kept 30 (app), 90 (access), 365 (audit) days. P
 
 ## Environment variables (server)
 
-See `deploy/.env.example` for the full list with notes. Required: `ELOKA_DB_*`, `ELOKA_CRYPTO_FIELD_KEY`, `ELOKA_CRYPTO_INDEX_KEY`, `ELOKA_ORG_TOKEN_KEY`, `ELOKA_ORG_META_SECRET`, `ELOKA_OTP_PEPPER`, `ELOKA_PLATFORM_ROOT_DOMAIN`, `ELOKA_CORS_ALLOWED_ORIGIN_PATTERNS`. Optional: `ELOKA_ENVIRONMENT`, `ELOKA_SMS_PROVIDER`, `ELOKA_SMS_REVEAL_SECRETS`, `ELOKA_SESSION_IDLE_TIMEOUT`, `ELOKA_SESSION_ABSOLUTE_TTL`, `ELOKA_TRUSTED_PROXIES`, `MANAGEMENT_SERVER_PORT`.
+See `deploy/.env.example` for the full list with notes. Required: `ELOKA_DB_*`, `ELOKA_CRYPTO_FIELD_KEY`, `ELOKA_CRYPTO_INDEX_KEY`, `ELOKA_ORG_TOKEN_KEY`, `ELOKA_ORG_META_SECRET`, `ELOKA_OTP_PEPPER`, `ELOKA_PLATFORM_ROOT_DOMAIN`, `ELOKA_CORS_ALLOWED_ORIGIN_PATTERNS`. Optional: `ELOKA_ENVIRONMENT`, `ELOKA_SMS_PROVIDER`, `ELOKA_SMS_REVEAL_SECRETS`, `ELOKA_EMAIL_PROVIDER`, `ELOKA_STORAGE_PATH` (default `/app/data/files`, keep it on the `server-files` volume and back it up), `ELOKA_SESSION_IDLE_TIMEOUT`, `ELOKA_SESSION_ABSOLUTE_TTL`, `ELOKA_TRUSTED_PROXIES`, `MANAGEMENT_SERVER_PORT`.
 
 The client must use the same `ELOKA_ORG_META_SECRET` as its `ORG_META_SERVICE_SECRET`, `NEXT_PUBLIC_API_BASE_URL=https://<api host>`, `ORG_META_SERVICE=<internal server URL>/`, and in production `NEXT_PUBLIC_DISABLE_TRANSACTIONS=true`.

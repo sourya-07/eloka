@@ -1,9 +1,9 @@
 /**
- * Document upload URLs, malware scanning, versions, review status and retention.
+ * Uploaded files (KYC images, signatures, ticket attachments). Files are checked by content
+ * (JPEG, PNG or PDF only, at most 10 MB), encrypted at rest and stored through a
+ * {@link in.eko.eloka.documents.DocumentStorage} port (local filesystem today, object storage later).
  *
- * <p>Status: planned. See docs/onboarding/ARCHITECTURE.md §4 at the repo root.
- * Only types in this package (the module's public API) may be used by other modules;
- * sub-packages such as {@code internal} are private to the module.
+ * <p>Public API: {@link in.eko.eloka.documents.DocumentApi}.
  */
 @ApplicationModule(displayName = "Documents")
 package in.eko.eloka.documents;

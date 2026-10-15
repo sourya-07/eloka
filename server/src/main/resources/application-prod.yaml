@@ -47,6 +47,9 @@ eloka:
     root-domain: ${ELOKA_PLATFORM_ROOT_DOMAIN}
     org-meta-secret: ${ELOKA_ORG_META_SECRET}
     org-token-key: ${ELOKA_ORG_TOKEN_KEY}
+  documents:
+    storage-path: ${ELOKA_STORAGE_PATH:/app/data/files}
   notification:
     sms-provider: ${ELOKA_SMS_PROVIDER:log}
     sms-reveal-secrets: ${ELOKA_SMS_REVEAL_SECRETS:false}
+    email-provider: ${ELOKA_EMAIL_PROVIDER:log}

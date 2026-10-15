@@ -1,0 +1,54 @@
+{
+  "_comment": "Products an org admin can price (interaction 837). productId is what rules are stored against; txTypeId links a product to history/commission rows (the client ignores it). Validation: percentage/fixed min-max per slab.",
+  "product_list": [
+    {
+      "label": "Money Transfer", "desc": "Set the fee agents charge for money transfer", "serviceType": "Banking", "pricingType": "pricing",
+      "provider": [{
+        "label": "Domestic Money Transfer",
+        "agentPricing": { "label": "Agent Pricing", "productId": 101, "txTypeId": 221,
+          "paymentMode": [{ "label": "Default", "productId": 101,
+            "slabs": [
+              { "min": 100, "max": 1000, "validation": { "percentage": false, "fixed": { "min": 5, "max": 15 } } },
+              { "min": 1001, "max": 5000, "validation": { "percentage": { "min": 0.5, "max": 1.2 }, "fixed": false } }
+            ] }] },
+        "distributorCommission": { "label": "Distributor Commission", "productId": 102, "txTypeId": 221,
+          "slabs": [ { "min": 100, "max": 5000, "validation": { "percentage": { "min": 0, "max": 0.3 }, "fixed": { "min": 0, "max": 5 } } } ] }
+      }]
+    },
+    {
+      "label": "AePS Cashout", "desc": "Set the commission agents earn on AePS cash withdrawal", "serviceType": "Banking", "pricingType": "commission",
+      "provider": [{
+        "label": "AePS",
+        "agentPricing": { "label": "Agent Commission", "productId": 111, "txTypeId": 225,
+          "slabs": [
+            { "min": 100, "max": 999, "validation": { "percentage": false, "fixed": { "min": 0, "max": 3 } } },
+            { "min": 1000, "max": 10000, "validation": { "percentage": { "min": 0, "max": 0.5 }, "fixed": { "min": 0, "max": 12 } } }
+          ] },
+        "distributorCommission": { "label": "Distributor Commission", "productId": 112, "txTypeId": 225,
+          "slabs": [ { "min": 100, "max": 10000, "validation": { "percentage": { "min": 0, "max": 0.1 }, "fixed": { "min": 0, "max": 3 } } } ] }
+      }]
+    },
+    {
+      "label": "Bill Payment", "desc": "Set the commission agents earn on bill payments", "serviceType": "Payments", "pricingType": "commission",
+      "provider": [{
+        "label": "BBPS",
+        "agentPricing": { "label": "Agent Commission", "txTypeId": 244,
+          "paymentMode": [
+            { "label": "Cash", "categoryList": [
+              { "label": "Electricity", "productId": 121, "slabs": [ { "min": 1, "max": 100000, "validation": { "percentage": { "min": 0, "max": 1 }, "fixed": false } } ] },
+              { "label": "Water", "productId": 122, "slabs": [ { "min": 1, "max": 100000, "validation": { "percentage": { "min": 0, "max": 1 }, "fixed": false } } ] }
+            ] },
+            { "label": "Wallet", "productId": 123, "slabs": [ { "min": 1, "max": 100000, "validation": { "percentage": { "min": 0, "max": 0.8 }, "fixed": false } } ] }
+          ] }
+      }]
+    },
+    {
+      "label": "QR Payment", "desc": "Set the commission agents earn on QR collections", "serviceType": "Payments", "pricingType": "commission",
+      "provider": [{
+        "label": "UPI QR",
+        "agentPricing": { "label": "Agent Commission", "productId": 131, "txTypeId": 860,
+          "slabs": [ { "min": 1, "max": 2000, "validation": { "percentage": { "min": 0, "max": 0.2 }, "fixed": false } } ] }
+      }]
+    }
+  ]
+}

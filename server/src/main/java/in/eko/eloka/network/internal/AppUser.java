@@ -54,6 +54,9 @@ class AppUser extends BaseEntity {
 	@Column(nullable = false)
 	private boolean demo;
 
+	@Column(name = "demo_expires_on")
+	private LocalDate demoExpiresOn;
+
 	@Column(name = "parent_user_id", columnDefinition = "BINARY(16)")
 	private java.util.UUID parentUserId;
 
@@ -75,6 +78,9 @@ class AppUser extends BaseEntity {
 
 	@Column(length = 15)
 	private String gstin;
+
+	@Column(name = "business_email_enc", columnDefinition = "VARBINARY(512)")
+	private byte[] businessEmailEnc;
 
 	protected AppUser() {
 	}
@@ -136,6 +142,16 @@ class AppUser extends BaseEntity {
 		return demo;
 	}
 
+	LocalDate getDemoExpiresOn() {
+		return demoExpiresOn;
+	}
+
+	/** Turns this into a demo account that expires on the given day (null = no expiry). */
+	void makeDemo(LocalDate expiresOn) {
+		this.demo = true;
+		this.demoExpiresOn = expiresOn;
+	}
+
 	java.util.UUID getParentUserId() {
 		return parentUserId;
 	}
@@ -149,6 +165,11 @@ class AppUser extends BaseEntity {
 	String getMaritalStatus() { return maritalStatus; }
 	String getQualification() { return qualification; }
 	String getGstin() { return gstin; }
+	byte[] getBusinessEmailEnc() { return businessEmailEnc; }
+
+	void setVerifiedBusinessEmail(byte[] encrypted) {
+		this.businessEmailEnc = encrypted;
+	}
 
 	void changeStatus(UserStatus newStatus) {
 		if (status == UserStatus.DELETED) {

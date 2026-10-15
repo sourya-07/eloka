@@ -59,14 +59,16 @@ class NetworkService implements NetworkQueries, NetworkCommands {
 	private final ShopProfileRepository shops;
 	private final UserMapper mapper;
 	private final BlindIndex index;
+	private final in.eko.eloka.shared.crypto.FieldCipher cipher;
 	private final AuditLog audit;
 
 	NetworkService(AppUserRepository users, ShopProfileRepository shops, UserMapper mapper, BlindIndex index,
-			AuditLog audit) {
+			in.eko.eloka.shared.crypto.FieldCipher cipher, AuditLog audit) {
 		this.users = users;
 		this.shops = shops;
 		this.mapper = mapper;
 		this.index = index;
+		this.cipher = cipher;
 		this.audit = audit;
 	}
 
@@ -241,6 +243,14 @@ class NetworkService implements NetworkQueries, NetworkCommands {
 		shops.findByUserId(user.getId())
 			.ifPresentOrElse(existing -> existing.update(shop), () -> shops.save(new ShopProfile(user.getId(), shop)));
 		audit(caller, "USER_SHOP_UPDATED", user, Map.of());
+	}
+
+	@Override
+	@Transactional
+	public void setVerifiedBusinessEmail(Caller caller, String email) {
+		AppUser user = self(caller);
+		user.setVerifiedBusinessEmail(cipher.encrypt(email));
+		audit(caller, "BUSINESS_EMAIL_VERIFIED", user, Map.of());
 	}
 
 	@Override

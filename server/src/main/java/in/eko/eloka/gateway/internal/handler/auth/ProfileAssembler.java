@@ -46,7 +46,20 @@ public class ProfileAssembler {
 		body.put("personal_details", personal(profile.user()));
 		body.put("shop_details", shop(profile.shop()));
 		body.put("account_details", accounts(profile.user()));
+		body.put("business_details", business(profile.shop()));
 		return body;
+	}
+
+	/** The business address used by agreement signing (the shop address). */
+	private static Map<String, Object> business(ShopView shop) {
+		Map<String, Object> business = new LinkedHashMap<>();
+		business.put("address_line1", shop.addressLine());
+		business.put("address_line2", shop.addressLine2());
+		business.put("pincode", shop.pincode());
+		business.put("city", shop.city());
+		business.put("state", shop.state());
+		business.put("country", shop.country());
+		return business;
 	}
 
 	/** Session object for a verified mobile with no account yet: the client starts self-onboarding. */
@@ -77,6 +90,7 @@ public class ProfileAssembler {
 		detail.put("onboarding_steps", List.of());
 		detail.put("role_list", "");
 		detail.put("is_demo", user.demo() ? 1 : 0);
+		detail.put("business_email", user.businessEmail());
 		return detail;
 	}
 

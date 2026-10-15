@@ -19,7 +19,6 @@ import in.eko.eloka.shared.error.NotFoundException;
 import in.eko.eloka.shared.security.Caller;
 import in.eko.eloka.wallet.WalletAccountView;
 import in.eko.eloka.wallet.WalletApi;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 /** Calls the agent home page makes right after login. */
@@ -172,29 +171,6 @@ final class HomeHandlers {
 				notifications.markStatus(caller.orgId(), caller.userId(), id, call.params().integer("notification_status", 1));
 			}
 			return EpsEnvelope.ok().build();
-		}
-	}
-
-	/**
-	 * tf GET /network/agent/pricing_commission: the caller's commission slabs.
-	 * Pricing rules arrive in P4; until then the list is empty (the widget stays hidden).
-	 */
-	@Component
-	static class Commissions implements EpsHandler {
-
-		@Override
-		public List<RouteKey> routes() {
-			return List.of(RouteKey.tf("/ekoicici/v1", HttpMethod.GET, "/network/agent/pricing_commission"));
-		}
-
-		@Override
-		public AccessPolicy access() {
-			return AccessPolicy.USER;
-		}
-
-		@Override
-		public EpsResponse handle(EpsCall call) {
-			return EpsEnvelope.ok().data(Map.of("pricing_commission_data", List.of())).build();
 		}
 	}
 }

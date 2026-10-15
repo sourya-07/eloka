@@ -28,15 +28,21 @@ public final class FieldCipher {
 	}
 
 	public byte[] encrypt(String plaintext) {
-		if (plaintext == null) {
-			return null;
-		}
+		return plaintext == null ? null : encryptBytes(plaintext.getBytes(StandardCharsets.UTF_8));
+	}
+
+	public String decrypt(byte[] stored) {
+		return stored == null ? null : new String(decryptBytes(stored), StandardCharsets.UTF_8);
+	}
+
+	/** Encrypts arbitrary bytes (e.g. uploaded documents) with the same format. */
+	public byte[] encryptBytes(byte[] plaintext) {
 		try {
 			byte[] nonce = new byte[NONCE_BYTES];
 			random.nextBytes(nonce);
 			Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 			cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(TAG_BITS, nonce));
-			byte[] sealed = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
+			byte[] sealed = cipher.doFinal(plaintext);
 			return ByteBuffer.allocate(1 + NONCE_BYTES + sealed.length).put(VERSION).put(nonce).put(sealed).array();
 		}
 		catch (GeneralSecurityException ex) {
@@ -44,10 +50,7 @@ public final class FieldCipher {
 		}
 	}
 
-	public String decrypt(byte[] stored) {
-		if (stored == null) {
-			return null;
-		}
+	public byte[] decryptBytes(byte[] stored) {
 		try {
 			ByteBuffer buffer = ByteBuffer.wrap(stored);
 			byte version = buffer.get();
@@ -60,7 +63,7 @@ public final class FieldCipher {
 			buffer.get(sealed);
 			Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 			cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(TAG_BITS, nonce));
-			return new String(cipher.doFinal(sealed), StandardCharsets.UTF_8);
+			return cipher.doFinal(sealed);
 		}
 		catch (GeneralSecurityException ex) {
 			throw new IllegalStateException("Decryption failed", ex);

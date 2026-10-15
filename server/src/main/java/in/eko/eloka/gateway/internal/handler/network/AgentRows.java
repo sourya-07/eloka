@@ -42,7 +42,8 @@ final class AgentRows {
 	static Map<String, Object> detail(UserView user, ShopView shop, BigDecimal balance) {
 		Map<String, Object> row = listRow(user, shop, balance);
 		row.put("status", EpsValues.statusLabel(user));
-		row.put("demo_account_expiry_date", null);
+		row.put("demo_account_expiry_date", user.demoExpiresOn() == null ? null
+				: user.demoExpiresOn().format(java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy", java.util.Locale.ENGLISH)));
 		row.put("line_1", shop.addressLine());
 		row.put("line_2", shop.addressLine2());
 		row.put("city", shop.city());

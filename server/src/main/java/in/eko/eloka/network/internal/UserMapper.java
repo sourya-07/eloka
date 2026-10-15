@@ -20,6 +20,6 @@ class UserMapper {
 				user.getStatus(), user.getName(), cipher.decrypt(user.getMobileEnc()), cipher.decrypt(user.getEmailEnc()),
 				user.getDateOfJoining(), user.isDemo(), user.getParentUserId(),
 				new PersonalInfo(user.getDob(), user.getGender(), user.getMaritalStatus(), user.getQualification()),
-				user.getGstin());
+				user.getGstin(), cipher.decrypt(user.getBusinessEmailEnc()), user.getDemoExpiresOn());
 	}
 }

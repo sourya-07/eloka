@@ -15,10 +15,12 @@ import jakarta.persistence.Table;
 class OtpChallenge extends BaseEntity {
 
 	static final String PURPOSE_LOGIN = "LOGIN";
+	static final String PURPOSE_EMAIL = "EMAIL";
 
 	@Column(name = "org_id", nullable = false)
 	private long orgId;
 
+	/** Blind index of the target (mobile for login, email for email verification). */
 	@Column(name = "mobile_hash", nullable = false, columnDefinition = "BINARY(32)")
 	private byte[] mobileHash;
 

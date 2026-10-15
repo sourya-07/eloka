@@ -1,0 +1,13 @@
+package in.eko.eloka.documents;
+
+/** Why a file was uploaded. Decides who may read it back. */
+public enum DocumentPurpose {
+	AADHAAR_FRONT,
+	AADHAAR_BACK,
+	PAN_CARD,
+	SELFIE,
+	BANK_PROOF,
+	SIGNATURE,
+	TICKET_ATTACHMENT,
+	BULK_ONBOARDING_FILE
+}
