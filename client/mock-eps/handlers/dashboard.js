@@ -15,7 +15,11 @@ import { NETWORK_USERS } from "../data/users.js";
 
 /** @type {Record<string, (ctx: object) => object>} keyed by interaction_type_id */
 export const dashboardInteractions = {
-	/** Wallet balance. */
+	/**
+	 * Wallet balance.
+	 * @param root0
+	 * @param root0.user
+	 */
 	9: ({ user }) => ok({ balance: user?.balance ?? 0 }),
 
 	10010: () => ok({ notifications: NOTIFICATIONS }),
@@ -45,4 +49,29 @@ export const dashboardTfRoutes = {
 	"/network/agent/pricing_commission": () =>
 		ok({ pricing_commission_data: [] }),
 	"/network/agent-list": () => ok({ csp_list: NETWORK_USERS }),
+	/**
+	 * Network list, or one agent's profile with search_value (1827).
+	 * @param root0
+	 * @param root0.body
+	 */
+	"/network/agents": ({ body }) => {
+		const rows = NETWORK_USERS.filter(
+			(u) =>
+				!body.search_value ||
+				u.mobile === body.search_value ||
+				u.user_code === body.search_value
+		).map((u) => ({
+			agent_name: u.name,
+			agent_mobile: u.mobile,
+			user_id: u.user_code,
+			eko_code: u.user_code,
+			user_type_id: u.user_type_id,
+			account_status_id: 16,
+			account_status: "Active",
+		}));
+		return ok(
+			{ totalRecords: rows.length, agent_details: rows },
+			body.search_value ? { response_type_id: 1827 } : {}
+		);
+	},
 };

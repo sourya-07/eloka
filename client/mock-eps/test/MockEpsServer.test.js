@@ -14,7 +14,10 @@ import { MOCK_OTP } from "../data/users.js";
 
 const EXTERNAL = process.env.EPS_CONTRACT_BASE_URL;
 const PHASE = Number(process.env.EPS_CONTRACT_PHASE ?? 99);
-/** Skip a block when testing the real server before it implements that phase. */
+/**
+ * Skip a block when testing the real server before it implements that phase.
+ * @param phase
+ */
 const until = (phase) => ({
 	skip:
 		EXTERNAL && PHASE < phase ? `server phase ${PHASE} < P${phase}` : false,
@@ -46,7 +49,12 @@ after(() => server?.close());
 
 beforeEach(() => server?.store.reset());
 
-/** POST JSON, the way pages/api/transaction.js does. */
+/**
+ * POST JSON, the way pages/api/transaction.js does.
+ * @param path
+ * @param body
+ * @param token
+ */
 async function post(path, body, token) {
 	const res = await fetch(base + path, {
 		method: "POST",
@@ -59,7 +67,10 @@ async function post(path, body, token) {
 	return res.json();
 }
 
-/** Log in with the OTP flow and return the access token. */
+/**
+ * Log in with the OTP flow and return the access token.
+ * @param mobile
+ */
 const login = async (mobile) => {
 	const sent = await post("/", {
 		interaction_type_id: "515",
@@ -159,12 +170,28 @@ describe("boot calls", until(2), () => {
 
 describe("network", until(3), () => {
 	it("answers tf-req calls sent through the proxy as GET paths", async () => {
+		const token = await login("9000000003");
 		const res = await (
 			await fetch(
-				`${base}/ekoicici/v1/network/agent-list?user_code=30000003`
+				`${base}/ekoicici/v1/network/agent-list?user_code=99029899`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
 			)
 		).json();
 		assert.ok(res.data.csp_list.length > 0);
+	});
+
+	it("finds an agent profile in the network (1827)", async () => {
+		const token = await login("9000000002");
+		const res = await (
+			await fetch(
+				`${base}/ekoicici/v1/network/agents?record_count=1&search_value=9000000001`,
+				{ headers: { Authorization: `Bearer ${token}` } }
+			)
+		).json();
+		assert.equal(res.response_type_id, 1827);
+		assert.equal(res.data.agent_details[0].agent_mobile, "9000000001");
 	});
 });
 

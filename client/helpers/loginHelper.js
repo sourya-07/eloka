@@ -66,7 +66,8 @@ async function sendOtpRequest(
 			_verifiedMobileNumber = data?.data?.mobile; // Verified mobile number
 			// Infer OTP length from actual OTP value (UAT) or explicit otp_length field (production)
 			if (_otp?.length > 0) _otpLength = _otp.length;
-			else if (data?.data?.otp_length > 0) _otpLength = data.data.otp_length;
+			else if (data?.data?.otp_length > 0)
+				_otpLength = data.data.otp_length;
 		} else {
 			errMsg = data?.message || data?.invalid_params?.csp_id;
 			_sendOtpLimitExhausted =
@@ -115,7 +116,11 @@ async function sendOtpRequest(
 		}
 	}
 
-	return { otp_sent: success, verifiedMobileNumber: _verifiedMobileNumber, otpLength: _otpLength };
+	return {
+		otp_sent: success,
+		verifiedMobileNumber: _verifiedMobileNumber,
+		otpLength: _otpLength,
+	};
 }
 
 /**
@@ -218,10 +223,20 @@ function setUserDetails(data) {
  */
 function setandUpdateAuthTokens(data, isAndroid, isNewLogin = false) {
 	try {
-		sessionStorage.setItem("access_token", data?.access_token);
-		sessionStorage.setItem("refresh_token", data?.refresh_token);
-		sessionStorage.setItem("access_token_lite", data?.access_token_lite);
-		sessionStorage.setItem("access_token_crm", data?.access_token_crm);
+		// Missing tokens are removed, not stored as the string "undefined" (which later
+		// went out as "Bearer undefined" after a page reload).
+		[
+			"access_token",
+			"refresh_token",
+			"access_token_lite",
+			"access_token_crm",
+		].forEach((key) => {
+			if (data?.[key]) {
+				sessionStorage.setItem(key, data[key]);
+			} else {
+				sessionStorage.removeItem(key);
+			}
+		});
 	} catch (err) {
 		console.warn("Updating to session-storage failed: ", err);
 	}

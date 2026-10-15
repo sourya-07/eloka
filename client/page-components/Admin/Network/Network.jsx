@@ -312,6 +312,8 @@ const Network = () => {
 
 		fetch(reportUrl, {
 			method: "POST",
+			// The report contains network members' details: it needs the session (FE-4).
+			headers: { Authorization: `Bearer ${accessToken}` },
 		})
 			.then((res) => {
 				if (!res.ok) {

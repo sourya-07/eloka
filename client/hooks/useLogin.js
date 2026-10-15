@@ -97,6 +97,14 @@ function useLogin(login, setStep, setEmail, setCachedSocialResponse) {
 									access_token:
 										responseData?.data
 											?.otp_verification_token,
+									// Keep the session's refresh token and lifetime so the
+									// token can be renewed before it expires (FE-3).
+									refresh_token:
+										responseData?.data?.refresh_token,
+									access_token_lite:
+										responseData?.data?.access_token,
+									token_expiration:
+										responseData?.data?.token_expiration,
 									details: profileResponse?.data?.user_detail,
 									personalDetails:
 										profileResponse?.data?.personal_detail,
@@ -120,6 +128,10 @@ function useLogin(login, setStep, setEmail, setCachedSocialResponse) {
 								);
 								processLoginResponse({
 									access_token: otpToken,
+									refresh_token:
+										responseData?.data?.refresh_token,
+									token_expiration:
+										responseData?.data?.token_expiration,
 									details: {
 										mobile: data.mobile,
 										onboarding: 1,
