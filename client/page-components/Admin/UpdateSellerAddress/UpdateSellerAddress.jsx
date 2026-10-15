@@ -1,0 +1,360 @@
+import { Box, Divider, Flex, Text, useToast } from "@chakra-ui/react";
+import { ActionButtonGroup, PageTitle } from "components";
+import { Endpoints, ParamType } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
+import { useCountryStates } from "hooks";
+import { useRouter } from "next/router";
+import { useAgentDetails } from "page-components/Admin/Network/hooks";
+import { useEffect } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { Form } from "tf-components";
+
+const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
+
+const ownership_type_list = [
+	{ label: "Owned", value: "Owned" },
+	{ label: "Rented", value: "Rented" },
+	{ label: "Family Owned", value: "Family Owned" },
+	{ label: "Other", value: "Other" },
+];
+
+const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
+
+/**
+ * A UpdateSellerAddress page-component
+ * @param 	{object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<UpdateSellerAddress></UpdateSellerAddress>`
+ */
+const UpdateSellerAddress = () => {
+	const { accessToken } = useSession();
+	const toast = useToast();
+	const { states: statesList } = useCountryStates();
+	const {
+		handleSubmit,
+		register,
+		formState: { errors, isSubmitting, isDirty, isValid },
+		control,
+		reset,
+	} = useForm({ mode: "onChange" });
+
+	const watcher = useWatch({ control });
+
+	const router = useRouter();
+	const { mobile } = router.query;
+
+	// Use the agent details hook with session caching
+	const { agent: agentData } = useAgentDetails(mobile);
+
+	useEffect(() => {
+		let defaultValues = {};
+
+		const _state =
+			agentData?.state == "Delhi"
+				? "National Capital Territory of Delhi (UT)"
+				: agentData?.state;
+
+		const state = findObjectByValue(statesList, _state);
+
+		const ownership_type = findObjectByValue(
+			ownership_type_list,
+			agentData?.address_details?.ownership_type
+		);
+
+		defaultValues.address_line1 = agentData?.line_1;
+		defaultValues.address_line2 = agentData?.line_2;
+		defaultValues.pincode = agentData?.zip;
+		defaultValues.city = agentData?.city;
+		defaultValues.country_state = state;
+		defaultValues.country = "India";
+		defaultValues.shop_ownership_type = ownership_type;
+
+		reset({ ...defaultValues });
+	}, [agentData, statesList]);
+
+	const handleFormSubmit = (submittedData) => {
+		const keysToFlatten = ["country_state", "shop_ownership_type"];
+
+		const finalData = Object.entries(submittedData).reduce(
+			(acc, [key, value]) => {
+				if (keysToFlatten.includes(key)) {
+					if (value?.value !== undefined && value?.value !== "") {
+						acc[key] = value.value;
+					}
+				} else {
+					if (value !== undefined && value !== "") {
+						acc[key] = value;
+					}
+				}
+				return acc;
+			},
+			{}
+		);
+
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
+			{
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": "/network/agents/profile/address/update",
+					"tf-req-method": "POST",
+				},
+				body: {
+					...finalData,
+					merchant_code: agentData?.eko_code,
+					intent_id: 17,
+					address_type_id: 3,
+				},
+				token: accessToken,
+			}
+		)
+			.then((response) => {
+				toast({
+					title: response?.message,
+					status: getStatus(response?.status),
+					duration: 2000,
+					isClosable: true,
+				});
+
+				if (response?.status == 0) {
+					router.push(
+						"/admin/my-network/profile?mobile=" +
+							agentData.agent_mobile
+					);
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	const current_address_parameter_list = [
+		{
+			name: "address_line1",
+			label: "Address Line 1",
+			validations: {
+				required: true,
+			},
+		},
+		{
+			name: "address_line2",
+			label: "Address Line 2",
+			required: false,
+		},
+		{
+			name: "pincode",
+			label: "Postal Code",
+			parameter_type_id: ParamType.NUMERIC,
+			step: "1",
+			maxLength: 6,
+			max: 999999,
+			validations: {
+				required: "Postal code is required",
+				pattern: {
+					value: /^[1-9][0-9]{5}$/,
+					message: "Enter a valid 6-digit postal code",
+				},
+				minLength: {
+					value: 6,
+					message: "Postal code must be 6 digits",
+				},
+				maxLength: {
+					value: 6,
+					message: "Postal code must be 6 digits",
+				},
+			},
+		},
+		{
+			name: "city",
+			label: "City",
+			validations: {
+				required: "City is required",
+				pattern: {
+					value: /^[a-zA-Z\s]+$/,
+					message: "City name can only contain letters and spaces",
+				},
+			},
+		},
+		{
+			name: "country_state",
+			label: "State",
+			parameter_type_id: ParamType.LIST,
+			list_elements: statesList,
+		},
+		{
+			name: "country",
+			label: "Country",
+			disabled: true,
+		},
+		{
+			name: "shop_ownership_type",
+			label: "Ownership Type",
+			parameter_type_id: ParamType.LIST,
+			list_elements: ownership_type_list,
+		},
+	];
+
+	const buttonConfigList = [
+		{
+			type: "submit",
+			size: "lg",
+			label: "Save",
+			loading: isSubmitting,
+			disabled: !isValid || !isDirty,
+		},
+		{
+			variant: "link",
+			label: "Cancel",
+			onClick: () => router.back(),
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
+		},
+	];
+
+	// const permanentAddressFormFields = [
+	// 	{
+	// 		name: "permanent_address_line1",
+	// 		label: "Address Line 1",
+	// 	},
+	// 	{
+	// 		name: "permanent_address_line2",
+	// 		label: "Address Line 2",
+	// 		required: false,
+	// 	},
+	// 	{
+	// 		name: "permanent_address_pincode",
+	// 		label: "Postel Code",
+	// 		parameter_type_id: ParamType.NUMERIC,
+	// 		step: "1",
+	// 	},
+	// 	{
+	// 		name: "permanent_address_city",
+	// 		label: "City",
+	// 	},
+	// 	{
+	// 		name: "permanent_address_state",
+	// 		label: "State",
+	// 		parameter_type_id: ParamType.LIST,
+	// 		list_elements: statesList,
+	// 	},
+	// 	{
+	// 		name: "permanent_address_country",
+	// 		label: "Country",
+	// 		disabled: true,
+	// 		value: "India",
+	// 	},
+	// 	{
+	// 		name: "permanent_address_shop_ownership_type",
+	// 		label: "Ownership Type",
+	// 		parameter_type_id: ParamType.LIST,
+	// 		list_elements: ownership_type_list,
+	// 	},
+	// ];
+
+	return (
+		<>
+			<PageTitle title="Update Agent Address" />
+			<Flex
+				direction="column"
+				borderRadius={{ base: "0", md: "10px 10px 0 0" }}
+				w="100%"
+				bg="white"
+				p={{ base: "16px", md: "30px 30px 20px" }}
+				gap="4"
+				fontSize="sm"
+				mt={{ base: "-10px", md: "0" }}
+			>
+				<Flex direction="column" gap="2">
+					<Text
+						fontSize="2xl"
+						color="primary.DEFAULT"
+						fontWeight="semibold"
+					>
+						{agentData?.agent_name}
+					</Text>
+				</Flex>
+				<Divider display={{ base: "none", md: "block" }} />
+			</Flex>
+
+			<Box px={{ base: "20px", md: "0" }} mb="32">
+				<Flex
+					direction="column"
+					w="100%"
+					bg="white"
+					borderRadius={{ base: "10px", md: "0 0 10px 10px" }}
+					p={{ base: "20px", md: "0 30px 30px" }}
+					marginTop={{ base: "20px", md: "0" }}
+					gap="2"
+				>
+					<form onSubmit={handleSubmit(handleFormSubmit)}>
+						<Flex direction="column" gap="8">
+							<Form
+								{...{
+									register,
+									control,
+									formValues: watcher,
+									parameter_list:
+										current_address_parameter_list,
+									errors,
+									templateColumns: {
+										base: "1fr",
+										lg: "repeat(auto-fit,minmax(500px,1fr))",
+									},
+									columnGap: 2,
+									width: {
+										base: "100%",
+										lg: "90%",
+									},
+									size: "md",
+								}}
+							/>
+
+							{/* <Flex align="center" gap="8">
+								<Text fontSize="sm" fontWeight="semibold">
+									Is your permanent address is same as above ?
+								</Text>
+								<Switch
+									initialValue={true}
+									onChange={setIsPermanentAddress}
+								/>
+							</Flex>
+
+							{!isPermanentAddress && (
+								<Form
+									{...{
+										list_elements: statesList,
+										addressFormLabel: "Permanent Address",
+										register,
+										formState: {
+											errors,
+										},
+										control,
+										parameter_list:
+											permanentAddressFormFields,
+									}}
+								/>
+							)} */}
+
+							<ActionButtonGroup {...{ buttonConfigList }} />
+						</Flex>
+					</form>
+				</Flex>
+			</Box>
+		</>
+	);
+};
+
+export default UpdateSellerAddress;

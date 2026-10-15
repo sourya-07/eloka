@@ -1,0 +1,24 @@
+import { PaddingBox } from "components";
+// import { {{pascalCase name}}Component } from "page-components";
+
+const {{pascalCase name}} = () => {
+	return (
+		<PaddingBox>
+			<h1>Add Page Content Here</h1>
+			{/* <{{pascalCase name}}Component /> */}
+		</PaddingBox>
+	);
+};
+
+// If the "subPage" property is set, then this page will hide the top app header in mobile view.
+// Pages can show their own header bar with back button.
+{{pascalCase name}}.pageMeta = {
+	title: "{{titleCase name}}",
+	isSubPage: false,
+};
+
+// Use a diferent layout, if needed...
+// First, import the alternate layout: import { LayoutLogin } from "layout-components";
+// {{pascalCase name}}.getLayout = LayoutLogin;
+
+export default {{pascalCase name}};

@@ -1,0 +1,5 @@
+# Hooks run from the repo root; the frontend tooling lives in client/.
+cd client || exit 1
+
+# Lint + format staged client files (server/ and docs/ are ignored by lint-staged here)
+npm run lint-staged

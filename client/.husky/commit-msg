@@ -1,0 +1,4 @@
+# Hooks run from the repo root; commitlint and its config live in client/.
+MSG_FILE="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+cd client || exit 1
+npx --no -- commitlint --edit "$MSG_FILE"

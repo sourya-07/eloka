@@ -1,0 +1,16 @@
+node_modules
+build
+coverage
+.next
+next-env.d.ts
+.swc
+.vscode
+yarn.lock
+package-lock.json
+plop-templates
+public
+.git
+.cache
+yarn.lock
+*.md
+**/*.md

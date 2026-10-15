@@ -1,0 +1,35 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"test-utils": ["./__tests__/test-utils/test-utils"],
+			"components": ["./components/*"],
+			"constants": ["./constants/*"],
+			"contexts": ["./contexts/*"],
+			"hooks": ["./hooks/*"],
+			"utils": ["./utils/*"],
+			"components/*": ["./components/*"],
+			"page-components/*": [
+				"./page-components/*",
+				"./page-components/Admin/*"
+			],
+			"tf-components/*": ["./tf-components/*"],
+			"layout-components/*": ["./layout-components/*"],
+			"public/*": ["./public/*"],
+			"helpers/*": ["./helpers/*"],
+			"libs/*": ["./libs/*"]
+		}
+	},
+	"include": ["**/*.js", "**/*.jsx"],
+	"exclude": [
+		"node_modules",
+		".next",
+		".swc",
+		".vscode",
+		"coverage",
+		"plop-templates",
+		"public",
+		"stories",
+		"styles"
+	]
+}

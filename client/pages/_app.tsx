@@ -1,0 +1,420 @@
+import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
+import { GoogleTagManager } from "@next/third-parties/google";
+import { ErrorBoundary, RouteProtecter } from "components";
+import { KBarLazyProvider } from "components/CommandBar";
+import {
+	AppSourceProvider,
+	CommissionSummaryProvider,
+	DashboardDataProvider,
+	EarningSummaryProvider,
+	GlobalSearchProvider,
+	NetworkUsersProvider,
+	NotificationProvider,
+	OrgDetailProvider,
+	OrgDetailSessionStorageKey,
+	PubSubProvider,
+	TodoProvider,
+	UserProvider,
+	WalletProvider,
+} from "contexts";
+import { MenuProvider } from "contexts/MenuContext";
+import { localStorageProvider } from "helpers";
+import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
+import { Layout } from "layout-components";
+import App from "next/app";
+// import { Inter } from "next/font/google";
+import { MockAdminUser, MockUser } from "__tests__/fixtures/session";
+import { CopilotProvider } from "libs";
+import Head from "next/head";
+import { SWRConfig } from "swr";
+import { light } from "../styles/themes";
+
+// Variable Font
+// const inter = Inter({
+// 	weight: "variable",
+// 	subsets: ["latin"],
+// 	fallback: ["system-ui", "sans-serif"],
+// });
+
+// Configure Chakra Toast default properties
+const toastDefaultOptions = {
+	position: "bottom-right" as ToastPosition,
+	duration: 6000,
+	isClosable: true,
+};
+
+/**
+ * Main App component for the Infinity application.
+ * This component wraps the entire application and provides global context providers.
+ * It also handles the initial loading of organization details and sets up the theme.
+ * @param {object} props - The properties passed to the component.
+ * @param {object} props.Component - The current page component.
+ * @param {object} props.pageProps - The properties passed to the current page component.
+ * @param {object} props.router - The Next.js router object.
+ * @param {object} props.org - The organization details.
+ * @returns {JSX.Element} The rendered component.
+ */
+export default function InfinityApp({ Component, pageProps, router, org }) {
+	console.log("[_app.tsx] Started: ", {
+		org,
+		is_local: typeof window === "undefined" ? false : true,
+		path: router.pathname,
+	});
+
+	// Read initial data from SessionStorage (if available)
+	if (typeof window !== "undefined") {
+		// Fallback if org data not received from getInitialProps()
+		// Fix: this may not be required as we are loading org details
+		// 		from local storage within getInitialProps()
+		if (!org) {
+			try {
+				org = JSON.parse(
+					sessionStorage.getItem(OrgDetailSessionStorageKey)
+				);
+				console.log("[_app.tsx] loading org details from local: ", org);
+			} catch (err) {
+				console.error(
+					"[_app.tsx] Error reading initial org data from SessionStorage: ",
+					err
+				);
+			}
+		}
+	}
+
+	// Setup custom theme...
+	const colors = org?.metadata?.theme;
+	const theme = colors
+		? {
+				...light,
+				colors: {
+					...light.colors,
+					navstyle: colors.navstyle,
+					primary: {
+						...light.colors.primary,
+						light:
+							colors?.primary_light || light.colors.primary.light,
+						DEFAULT:
+							colors?.primary || light.colors.primary.DEFAULT,
+						dark: colors?.primary_dark || light.colors.primary.dark,
+					},
+					accent: {
+						...light.colors.accent,
+						light:
+							colors?.accent_light || light.colors.accent.light,
+						DEFAULT: colors?.accent || light.colors.accent.DEFAULT,
+						dark: colors?.accent_dark || light.colors.accent.dark,
+					},
+				},
+			}
+		: {
+				...light,
+			};
+
+	// Add NavBar style colors (light or default dark)...
+	const lightNav = colors?.navstyle === "light";
+	theme.colors = {
+		...theme.colors,
+		navbar: {
+			...light.colors.navbar,
+			bg: lightNav ? theme.colors.primary.DEFAULT : "#FFF",
+			bgAlt: lightNav ? "#FFFFFF30" : "#00000020",
+			text: lightNav ? "#FFFFFFEE" : "#000000DD",
+			textLight: lightNav ? "#FFFFFF70" : "#00000070",
+			dark: lightNav ? "#FFFFFF" : "#000000",
+		},
+		sidebar: {
+			...light.colors.sidebar,
+			bg: lightNav ? "#FFF" : theme.colors.primary.DEFAULT,
+			text: lightNav ? "#333" : "#FFF",
+			dark: lightNav ? "#000000" : "#FFFFFF",
+			sel: lightNav
+				? theme.colors.primary.DEFAULT // theme.colors.primary.DEFAULT + "40"
+				: theme.colors.primary.dark, // Selection color
+
+			divider: lightNav
+				? theme.colors.primary.light + "40"
+				: theme.colors.primary.light,
+		},
+		status: {
+			...light.colors.status,
+			bg: lightNav ? theme.colors.primary.DEFAULT + "30" : "#00000050",
+			bgLight: lightNav ? "#FFF" : "#00000030",
+			text: lightNav ? "#111" : "#FFF",
+			wm: lightNav ? "#00000050" : "#FFFFFF50", // Watermark color
+			wmLight: lightNav ? "#00000030" : "#FFFFFF25",
+			title: lightNav ? theme.colors.primary.dark : "#FFD93B",
+			borderRightColor: lightNav ? "#FFF" : "#00000050",
+		},
+		logo: {
+			text: lightNav ? "#fff" : "primary.dark",
+		},
+	};
+
+	// Setup default toast options for small screen...
+	if (typeof window !== "undefined") {
+		if (window.innerWidth < 768) {
+			toastDefaultOptions.position = "top-right" as ToastPosition;
+		}
+	}
+
+	// Mock login for local testing...
+	let mockUser = null;
+	if (process.env.NEXT_PUBLIC_ENV === "development") {
+		if (process.env.NEXT_PUBLIC_MOCK_LOGIN === "agent") {
+			mockUser = MockUser;
+		} else if (process.env.NEXT_PUBLIC_MOCK_LOGIN === "admin") {
+			mockUser = MockAdminUser;
+		}
+
+		console.log("[_app.tsx] !! Mock User: ", mockUser);
+	}
+
+	// Get standard or custom Layout for the page...
+	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx). Eg: See the login page (pages/index.tsx)
+	// - For hiding the top navbar on small screens, define isSubPage = true in the page Component (pages/<MyPage>/index.jsx).
+	const getLayout = (page) => {
+		const CurrentLayout = Component.getLayout || Layout;
+		return (
+			<CurrentLayout
+				// fontClassName={inter.className}
+				appName={org?.app_name}
+				pageMeta={Component?.pageMeta || {}}
+			>
+				{page}
+			</CurrentLayout>
+		);
+	};
+
+	// Is this a login page? This should help decide if features like CommandBar should be loaded.
+	const isLoginPage =
+		router.pathname === "/" || router.pathname === "/signup" ? true : false;
+
+	const AppCompArray = (
+		<ChakraProvider
+			theme={theme}
+			resetCSS={true}
+			toastOptions={{ defaultOptions: toastDefaultOptions }}
+		>
+			<AppSourceProvider>
+				<OrgDetailProvider initialData={org || null}>
+					<UserProvider userMockData={mockUser}>
+						<CopilotProvider
+							runtimeUrl={
+								process.env.NEXT_PUBLIC_API_BASE_URL +
+								"/copilotkit"
+							}
+							showPopup
+						>
+							<KBarLazyProvider load={!isLoginPage}>
+								<GlobalSearchProvider>
+									<MenuProvider>
+										<WalletProvider>
+											<DashboardDataProvider>
+											<RouteProtecter
+												router={router}
+												pageMeta={
+													Component?.pageMeta || {}
+												}
+											>
+												<SWRConfig
+													value={{
+														provider:
+															localStorageProvider,
+													}}
+												>
+													<PubSubProvider>
+														<NotificationProvider>
+															<EarningSummaryProvider>
+																<CommissionSummaryProvider>
+																	<NetworkUsersProvider>
+																		<TodoProvider>
+																			<ErrorBoundary>
+																				{getLayout(
+																					<Component
+																						{...pageProps}
+																					/>
+																				)}
+																			</ErrorBoundary>
+																		</TodoProvider>
+																	</NetworkUsersProvider>
+																</CommissionSummaryProvider>
+															</EarningSummaryProvider>
+														</NotificationProvider>
+													</PubSubProvider>
+												</SWRConfig>
+											</RouteProtecter>
+										</DashboardDataProvider>
+										</WalletProvider>
+									</MenuProvider>
+								</GlobalSearchProvider>
+							</KBarLazyProvider>
+						</CopilotProvider>
+					</UserProvider>
+				</OrgDetailProvider>
+			</AppSourceProvider>
+		</ChakraProvider>
+	);
+
+	// const useDefaultGoogleLogin = org?.login_types?.google?.default
+	// 	? true
+	// 	: false;
+	// const showGoogleLogin =
+	// 	useDefaultGoogleLogin || org?.login_types?.google?.client_id;
+	// const AppCompArrayWithSocialLogin = showGoogleLogin && false ? (
+	// 	<GoogleOAuthProvider
+	// 		clientId={
+	// 			useDefaultGoogleLogin
+	// 				? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""
+	// 				: org?.login_types?.google?.client_id
+	// 		}
+	// 	>
+	// 		{AppCompArray}
+	// 	</GoogleOAuthProvider>
+	// ) : (
+	// 	AppCompArray
+	// );
+
+	return (
+		<>
+			<Head>
+				<meta
+					name="viewport"
+					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+				/>
+				<link
+					rel="icon"
+					type="image/png"
+					href="/favicon-32x32.png"
+					sizes="32x32"
+				/>
+				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+				<link
+					rel="manifest"
+					href="/manifest.json"
+					crossOrigin="anonymous"
+				/>
+				<link rel="canonical" href={org?.canonicalUrl} />
+			</Head>
+
+			{/* {process.env.NEXT_PUBLIC_GTM_ID ? (
+				<Script id="google-tag-manager" strategy="lazyOnload">
+					{`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${process.env.NEXT_PUBLIC_GTM_ID}');`}
+				</Script>
+			) : null} */}
+
+			{/* {AppCompArrayWithSocialLogin} */}
+			{AppCompArray}
+
+			{/* Delay-Load Google Tag Manager after the page is hydrated */}
+			{process.env.NEXT_PUBLIC_GTM_ID ? (
+				<GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
+			) : null}
+		</>
+	);
+}
+
+InfinityApp.getInitialProps = async function (appContext) {
+	const { ctx } = appContext;
+
+	const defaultProps = App.getInitialProps(appContext);
+
+	if (ctx?.pathname === "/404") {
+		return {
+			...defaultProps,
+		};
+	}
+
+	// If we are on the client side, try to get org details from SessionStorage
+	// This can happen on page refresh or when user navigates to a different page
+	if (typeof window !== "undefined" && window.sessionStorage) {
+		console.log("[_app.tsx] getInitialProps from SessionStorage.");
+
+		const orgDetails = window.sessionStorage.getItem(
+			OrgDetailSessionStorageKey
+		);
+
+		if (orgDetails) {
+			return {
+				...defaultProps,
+				org: {
+					...JSON.parse(orgDetails),
+					canonicalUrl: window?.location?.href?.replace(
+						/^http:\/\//i,
+						"https://"
+					),
+				},
+			};
+		}
+	}
+
+	const { req, res } = ctx;
+
+	// This should be executed server-side only...
+	const host = req?.headers?.host; // || window?.location?.host;
+
+	if (!host) {
+		console.error("[_app.tsx - getInitialProps] Host not found");
+		return {
+			...defaultProps,
+		};
+	}
+
+	// Get org details (like, logo, name, etc) from server
+	const org_details = await fetchOrgDetails(host, false);
+
+	console.debug(
+		"[_app.tsx] getInitialProps:: ",
+		JSON.stringify(
+			{
+				host: host,
+				org: org_details?.props?.data,
+			},
+			null,
+			2
+		)
+	);
+
+	if (org_details?.props?.data?.not_found || org_details?.notFound) {
+		const source = org_details?.props?.data?.not_found
+			? "backend"
+			: "cache";
+
+		console.error(
+			"[_app.tsx - getInitialProps] Org not found. Redirecting to 404. Source=" +
+				source
+		);
+
+		// TODO: Redirect to marketing landing page...
+		// res.writeHead(302, { Location: "https://eko.in/eloka" });
+		// res.end();
+		res.statusCode = 404;
+		res.end();
+		return {};
+	}
+
+	return {
+		...defaultProps,
+		org: {
+			...org_details?.props?.data,
+			canonicalUrl: "https://" + host + req?.url,
+		},
+	};
+};
+
+// TODO: Remove from production...
+// export function reportWebVitals(metric) {
+// 	console.log("📈 WebVitals: ", metric.name + "=" + metric.value, metric);
+// }
+
+// Console warning to show to end users in the browser...
+if (typeof window !== "undefined") {
+	console.info(
+		`%cWARNING!\n\n%cUsing this console may allow attackers to pretend to be you and steal your information using an attack called Self-XSS.\nAvoid entering or pasting code if you're unsure about it. (${process.env.NEXT_PUBLIC_ENV})`,
+		"color:red;background:yellow;font-size:20px",
+		"font-size:16px"
+	);
+}
