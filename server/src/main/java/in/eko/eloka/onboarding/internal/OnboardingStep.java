@@ -55,7 +55,7 @@ class OnboardingStep extends BaseEntity {
 	@Column(name = "reopen_reason_code", length = 40)
 	private String reopenReasonCode;
 
-	@Column(name = "reviewer_message", length = 500)
+	@Column(name = "reviewer_message", length = 1000)
 	private String reviewerMessage;
 
 	@Column(name = "completed_at")

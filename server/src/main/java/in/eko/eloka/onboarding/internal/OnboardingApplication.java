@@ -76,10 +76,13 @@ class OnboardingApplication extends BaseEntity {
 		recordActivity(now, idleExpiry);
 	}
 
-	/** Every applicant write extends the idle window (and bumps the version used as ETag). */
+	/**
+	 * Every applicant write extends the idle window (and bumps the version used as ETag). An open
+	 * correction keeps its own due date instead (T15).
+	 */
 	void recordActivity(Instant now, Duration idleExpiry) {
 		this.lastApplicantActivityAt = now;
-		this.expiresAt = now.plus(idleExpiry);
+		this.expiresAt = correctionDueAt != null ? correctionDueAt : now.plus(idleExpiry);
 	}
 
 	/** Called by {@link ApplicationStateMachine} only. */
@@ -105,12 +108,20 @@ class OnboardingApplication extends BaseEntity {
 		this.panHash = hash;
 	}
 
+	boolean isBoundTo(byte[] hash) {
+		return panHash != null && java.security.MessageDigest.isEqual(panHash, hash);
+	}
+
 	void assignTo(UUID staffId) {
 		this.assignedStaffId = staffId;
 	}
 
+	/** Opens ({@code dueAt}) or closes ({@code null}) a correction; an open one expires on its due date. */
 	void correctionDue(Instant dueAt) {
 		this.correctionDueAt = dueAt;
+		if (dueAt != null) {
+			this.expiresAt = dueAt;
+		}
 	}
 
 	boolean isAssignedTo(UUID staffId) {
@@ -127,6 +138,10 @@ class OnboardingApplication extends BaseEntity {
 
 	boolean isIdleSince(Instant cutoff) {
 		return lastApplicantActivityAt.isBefore(cutoff);
+	}
+
+	boolean isCorrectionOverdue(Instant now) {
+		return status == ApplicationStatus.CORRECTION_REQUIRED && correctionDueAt != null && correctionDueAt.isBefore(now);
 	}
 
 	String getPublicId() {

@@ -163,7 +163,7 @@ class ApplicationService {
 		}
 		Instant now = Instant.now(clock);
 		StepContext context = new StepContext(application, steps.findByApplicationId(application.getId()), profiles,
-				timeline, now, sessionId);
+				timeline, json, now, sessionId);
 		T result = action.apply(context);
 		application.recordActivity(now, properties.idleExpiry());
 		applications.saveAndFlush(application);
@@ -280,27 +280,36 @@ class ApplicationService {
 		return snapshot(application);
 	}
 
-	/** T15: expires one idle application (called by {@link ExpiryJob}, one transaction each). */
+	/**
+	 * T15: expires one application (called by {@link ExpiryJob}, one transaction each). An
+	 * application in progress expires after the idle window; one waiting for a correction expires
+	 * on the correction's due date only, however long the review took.
+	 */
 	@Transactional
 	boolean expireIfIdle(UUID applicationId) {
 		OnboardingApplication application = applications.lockById(applicationId).orElse(null);
+		if (application == null) {
+			return false;
+		}
 		Instant now = Instant.now(clock);
-		Instant cutoff = now.minus(properties.idleExpiry());
-		boolean correctionOverdue = application != null && application.getStatus() == ApplicationStatus.CORRECTION_REQUIRED
-				&& application.getCorrectionDueAt() != null && application.getCorrectionDueAt().isBefore(now);
-		if (application == null || !(application.isIdleSince(cutoff) || correctionOverdue)
-				|| !stateMachine.allows(application, LifecycleEvent.EXPIRE)) {
+		boolean due = switch (application.getStatus()) {
+			case IN_PROGRESS -> application.isIdleSince(now.minus(properties.idleExpiry()));
+			case CORRECTION_REQUIRED -> application.isCorrectionOverdue(now);
+			default -> false;
+		};
+		if (!due || !stateMachine.allows(application, LifecycleEvent.EXPIRE)) {
 			return false;
 		}
 		stateMachine.apply(application, LifecycleEvent.EXPIRE, "SYSTEM");
 		return true;
 	}
 
+	/** Candidates for {@link #expireIfIdle}: idle applications in progress and overdue corrections. */
 	List<UUID> idleApplicationIds() {
 		Instant now = Instant.now(clock);
-		List<UUID> ids = new ArrayList<>(applications.findIdleIds(
-				EnumSet.of(ApplicationStatus.IN_PROGRESS, ApplicationStatus.CORRECTION_REQUIRED), now.minus(properties.idleExpiry())));
-		applications.findOverdueCorrections(now).stream().filter(id -> !ids.contains(id)).forEach(ids::add);
+		List<UUID> ids = new ArrayList<>(
+				applications.findIdleIds(EnumSet.of(ApplicationStatus.IN_PROGRESS), now.minus(properties.idleExpiry())));
+		ids.addAll(applications.findOverdueCorrections(now));
 		return ids;
 	}
 

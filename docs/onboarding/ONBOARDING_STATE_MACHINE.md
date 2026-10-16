@@ -157,7 +157,7 @@ Every transition goes through one backend function, `transition(application_id, 
 | T12 | `PROVISIONING` | `PROVISIONING_FAILED` | `PROVISIONING_FAILED` | A step exhausted its retries | Page ops |
 | T13 | `PROVISIONING_FAILED` | `RETRY_PROVISIONING` | `PROVISIONING` | Actor has `onboarding.provision` | Resume from the first non-succeeded step |
 | T14 | `GO_LIVE_PENDING` | `ACTIVATE` | `ACTIVE` | **Activation gate**, see §7 | Tenant → ACTIVE, Local Admin → ACTIVE, branding → PUBLISHED, cache purge, welcome notification |
-| T15 | `IN_PROGRESS` / `CORRECTION_REQUIRED` | `EXPIRE` | `EXPIRED` | `last_applicant_activity_at + window < now()` | Release the sub-domain reservation. Notify. Start the retention timer. |
+| T15 | `IN_PROGRESS` / `CORRECTION_REQUIRED` | `EXPIRE` | `EXPIRED` | `IN_PROGRESS`: `last_applicant_activity_at + window < now()`; `CORRECTION_REQUIRED`: `correction_due_at < now()` (the idle window does not apply, `expires_at` shows the due date) | Release the sub-domain reservation. Notify. Start the retention timer. |
 | T16 | `IN_PROGRESS` / `SUBMITTED` / `CORRECTION_REQUIRED` | `WITHDRAW` | `WITHDRAWN` | Applicant session, and the case is not yet claimed (if `SUBMITTED`) | Same as T15 |
 
 Any pair not listed is rejected with `409 INVALID_STATE_TRANSITION`. The response includes the current status and version, so the frontend can re-sync.

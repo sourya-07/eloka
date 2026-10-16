@@ -9,6 +9,7 @@ import in.eko.eloka.onboarding.StepKey;
 import in.eko.eloka.onboarding.StepStatus;
 import in.eko.eloka.shared.error.ApiProblem;
 import org.springframework.http.HttpStatus;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * One write to an application, under its row lock. Gives step code what it needs and keeps the
@@ -16,20 +17,29 @@ import org.springframework.http.HttpStatus;
  */
 final class StepContext {
 
+	/** Reopen reason of a locked step whose input changed during a correction (not a reviewer's choice). */
+	static final String DEPENDENCY_CHANGED = "DEPENDENCY_CHANGED";
+
+	/** Always redone after a corrected step: they cover data the step summaries do not show in full. */
+	private static final java.util.Set<StepKey> REDONE_AFTER_CORRECTION = java.util.EnumSet.of(StepKey.DECLARATION,
+			StepKey.AGREEMENT_ESIGN);
+
 	private final OnboardingApplication application;
 	private final Map<StepKey, OnboardingStep> steps = new EnumMap<>(StepKey.class);
 	private final BusinessProfileRepository profiles;
 	private final TimelineEntryRepository timeline;
+	private final JsonMapper json;
 	private final Instant now;
 	private final UUID sessionId;
 	private BusinessProfile profile;
 
 	StepContext(OnboardingApplication application, List<OnboardingStep> stepRows, BusinessProfileRepository profiles,
-			TimelineEntryRepository timeline, Instant now, UUID sessionId) {
+			TimelineEntryRepository timeline, JsonMapper json, Instant now, UUID sessionId) {
 		this.application = application;
 		stepRows.forEach(step -> steps.put(step.getStepKey(), step));
 		this.profiles = profiles;
 		this.timeline = timeline;
+		this.json = json;
 		this.now = now;
 		this.sessionId = sessionId;
 	}
@@ -77,21 +87,38 @@ final class StepContext {
 	}
 
 	/**
-	 * Marks the step done and resets steps that were completed on the old data (§4.3). Completing
-	 * again with an identical result changes nothing downstream.
+	 * Marks the step done and resets steps that were completed on the old data (§4.3), treating
+	 * the result as new data.
 	 */
 	void complete(StepKey key, String summaryJson) {
+		complete(key, summaryJson, false);
+	}
+
+	/**
+	 * As {@link #complete(StepKey, String)}. {@code sameInput}: the caller checked the step was
+	 * done again on exactly its earlier data (compare the real input, not the masked summary: two
+	 * PANs can share one mask). Then nothing downstream changes, except that during a correction
+	 * the declaration and the agreement are redone (T6); an unchanged agreement completes again
+	 * without a new signature.
+	 */
+	void complete(StepKey key, String summaryJson, boolean sameInput) {
 		OnboardingStep step = steps.get(key);
-		boolean sameAsBefore = step.getStatus() == StepStatus.COMPLETED && summaryJson.equals(step.getSummary());
+		boolean wasCompleted = step.getStatus() == StepStatus.COMPLETED;
 		step.complete(summaryJson, now);
-		if (sameAsBefore) {
+		if (wasCompleted && sameInput) {
 			return;
 		}
-		invalidateDependents(key, java.util.EnumSet.noneOf(StepKey.class));
+		invalidateDependents(key, java.util.EnumSet.noneOf(StepKey.class), sameInput);
 		record("STEP_COMPLETED", key);
 	}
 
-	private void invalidateDependents(StepKey changed, java.util.Set<StepKey> visited) {
+	/** The step's stored summary equals {@code summaryJson} (compared as JSON: MySQL normalises it). */
+	boolean sameSummary(StepKey key, String summaryJson) {
+		String stored = steps.get(key).getSummary();
+		return stored != null && json.readTree(stored).equals(json.readTree(summaryJson));
+	}
+
+	private void invalidateDependents(StepKey changed, java.util.Set<StepKey> visited, boolean sameInput) {
 		for (StepKey dependent : changed.invalidates()) {
 			if (!visited.add(dependent)) {
 				continue;
@@ -100,14 +127,15 @@ final class StepContext {
 			if (downstream.getStatus() == StepStatus.COMPLETED || downstream.getStatus() == StepStatus.PENDING_EXTERNAL) {
 				downstream.invalidate();
 				record("STEP_INVALIDATED", dependent);
-				invalidateDependents(dependent, visited);
+				invalidateDependents(dependent, visited, false);
 			}
 			else if (downstream.getStatus() == StepStatus.LOCKED
-					&& application.getStatus() == in.eko.eloka.onboarding.ApplicationStatus.CORRECTION_REQUIRED) {
+					&& application.getStatus() == in.eko.eloka.onboarding.ApplicationStatus.CORRECTION_REQUIRED
+					&& (!sameInput || REDONE_AFTER_CORRECTION.contains(dependent))) {
 				// T6: a corrected step changes what was declared and signed, so those are redone too
-				downstream.reopen("DEPENDENCY_CHANGED", null);
+				downstream.reopen(DEPENDENCY_CHANGED, null);
 				record("STEP_REOPENED", dependent);
-				invalidateDependents(dependent, visited);
+				invalidateDependents(dependent, visited, sameInput);
 			}
 		}
 	}

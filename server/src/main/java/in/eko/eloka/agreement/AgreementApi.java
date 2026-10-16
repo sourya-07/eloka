@@ -9,8 +9,11 @@ public interface AgreementApi {
 	/**
 	 * A27: the agreement for this content. Unchanged content returns the current agreement;
 	 * changed content creates a new version and supersedes the old one (even a signed one).
+	 *
+	 * @param newSignature a reviewer asked for the agreement to be signed again: a signed current
+	 *     version is superseded by a new unsigned one even when the content is unchanged
 	 */
-	AgreementView prepare(UUID applicationId, UUID ownerId, AgreementContent content);
+	AgreementView prepare(UUID applicationId, UUID ownerId, AgreementContent content, boolean newSignature);
 
 	/** A28: opens (or reuses) an e-sign session for an agreement that is not signed yet. */
 	EsignStart startEsign(UUID applicationId, String agreementId, UUID signerId);

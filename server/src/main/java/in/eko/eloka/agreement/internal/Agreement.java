@@ -81,6 +81,10 @@ class Agreement extends BaseEntity {
 		return !SUPERSEDED.equals(status);
 	}
 
+	boolean isSigned() {
+		return SIGNED.equals(status);
+	}
+
 	String getPublicId() {
 		return publicId;
 	}

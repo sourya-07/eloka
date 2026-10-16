@@ -38,6 +38,9 @@ class ReviewService {
 
 	static final Duration DEFAULT_CORRECTION_WINDOW = Duration.ofDays(15);
 
+	/** correction_request.message and onboarding_step.reviewer_message (V27). */
+	static final int MAX_MESSAGE = 1000;
+
 	private final OnboardingApplicationRepository applications;
 	private final OnboardingStepRepository steps;
 	private final ApplicationDocumentRepository documents;
@@ -133,6 +136,9 @@ class ReviewService {
 		if (reasonCode == null || reasonCode.isBlank() || message == null || message.isBlank()) {
 			throw ValidationException.field("message", "Tell the applicant what to fix");
 		}
+		if (message.length() > MAX_MESSAGE) {
+			throw ValidationException.field("message", "Keep the message under " + MAX_MESSAGE + " characters");
+		}
 		List<StepKey> keys = new ArrayList<>();
 		for (String value : stepKeys) {
 			StepKey key;
@@ -145,7 +151,9 @@ class ReviewService {
 			if (key == StepKey.MOBILE_VERIFICATION) {
 				throw ValidationException.field("step_keys", "The verified mobile cannot be reopened");
 			}
-			keys.add(key);
+			if (!keys.contains(key)) {
+				keys.add(key);
+			}
 		}
 		Instant now = Instant.now(clock);
 		Instant due = now.plus(dueInDays == null ? DEFAULT_CORRECTION_WINDOW : Duration.ofDays(Math.max(1, dueInDays)));
@@ -156,9 +164,10 @@ class ReviewService {
 		}
 		stateMachine.apply(application, LifecycleEvent.REQUEST_CORRECTION, "STAFF", staff.userId().toString());
 		application.correctionDue(due);
-		corrections.save(new CorrectionRequest(application.getId(), staff.userId(),
-				json.writeValueAsString(keys.stream().map(Enum::name).toList()), reasonCode, message, due));
-		record(application, staff, ReviewAction.CORRECTION, null, reasonCode, message, String.join(",", stepKeys));
+		List<String> keyNames = keys.stream().map(Enum::name).toList();
+		corrections.save(new CorrectionRequest(application.getId(), staff.userId(), json.writeValueAsString(keyNames),
+				reasonCode, message, due));
+		record(application, staff, ReviewAction.CORRECTION, null, reasonCode, message, String.join(",", keyNames));
 	}
 
 	/** S9: the maker's recommendation. */

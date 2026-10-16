@@ -105,6 +105,7 @@ class VerificationSteps {
 			body.put("pan_masked", result.panMasked());
 			switch (result.status()) {
 				case SUCCEEDED, MANUAL_REVIEW -> {
+					boolean samePan = context.application().isBoundTo(panHash);
 					context.profile().pan(cipher.encrypt(pan), panHash, result.panMasked(), result.holderType(),
 							result.nameAsPerPan());
 					context.application().bindPan(panHash);
@@ -112,7 +113,9 @@ class VerificationSteps {
 					summary.put("pan_masked", result.panMasked());
 					summary.put("name_as_per_pan", result.nameAsPerPan());
 					summary.put("holder_type", result.holderType());
-					context.complete(StepKey.BUSINESS_PAN, json.writeValueAsString(summary));
+					String summaryJson = json.writeValueAsString(summary);
+					context.complete(StepKey.BUSINESS_PAN, summaryJson,
+							samePan && context.sameSummary(StepKey.BUSINESS_PAN, summaryJson));
 					body.put("name_as_per_pan", result.nameAsPerPan());
 					body.put("holder_type", result.holderType());
 				}
@@ -277,9 +280,13 @@ class VerificationSteps {
 				.filter(part -> part != null && !part.isBlank())
 				.toList());
 			var entityType = context.application().getEntityType();
+			// A reviewer who reopened the agreement itself wants a new signature; a reopen caused by
+			// another step's change needs one only if the content changed (T6)
+			String reopenReason = context.step(StepKey.AGREEMENT_ESIGN).getReopenReasonCode();
+			boolean newSignature = reopenReason != null && !StepContext.DEPENDENCY_CHANGED.equals(reopenReason);
 			AgreementApi.AgreementView view = agreements.prepare(context.applicationId(), applicantId,
 					new AgreementContent(p.getLegalName(), entityType == null ? null : entityType.name(), p.getPanMasked(),
-							p.getSignatoryName(), address, p.getEmailMasked()));
+							p.getSignatoryName(), address, p.getEmailMasked()), newSignature);
 			if (view.isSigned()) {
 				// Same content as the signed version (e.g. a correction that did not touch the agreement):
 				// no new signature needed (T6)

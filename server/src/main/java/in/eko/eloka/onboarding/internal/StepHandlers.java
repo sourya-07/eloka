@@ -119,7 +119,9 @@ final class StepHandlers {
 			summary.put("applicant_category", category);
 			summary.put("product_type", product);
 			summary.put("entity_type", entityType.code());
-			context.complete(key(), json.writeValueAsString(summary));
+			String summaryJson = json.writeValueAsString(summary);
+			// The summary holds the exact choice, so an equal summary is the same program
+			context.complete(key(), summaryJson, context.sameSummary(key(), summaryJson));
 		}
 	}
 

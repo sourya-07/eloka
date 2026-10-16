@@ -42,7 +42,7 @@ class ReviewAction extends BaseEntity {
 	@Column(length = 1000)
 	private String note;
 
-	@Column(name = "target_ref", length = 40)
+	@Column(name = "target_ref", length = 255)
 	private String targetRef;
 
 	@Column(name = "occurred_at", nullable = false)

@@ -57,12 +57,13 @@ class AgreementService implements AgreementApi {
 
 	@Override
 	@Transactional
-	public AgreementView prepare(UUID applicationId, UUID ownerId, AgreementContent content) {
+	public AgreementView prepare(UUID applicationId, UUID ownerId, AgreementContent content, boolean newSignature) {
 		String text = renderer.text(content);
 		byte[] sha = sha256(text);
 		List<Agreement> versions = agreements.findByApplicationIdOrderByVersionNoDesc(applicationId);
 		Optional<Agreement> live = versions.stream().filter(Agreement::isLive).findFirst();
-		if (live.isPresent() && MessageDigest.isEqual(live.get().getContentSha256(), sha)) {
+		if (live.isPresent() && MessageDigest.isEqual(live.get().getContentSha256(), sha)
+				&& !(newSignature && live.get().isSigned())) {
 			return view(live.get());
 		}
 		live.ifPresent(Agreement::supersede);

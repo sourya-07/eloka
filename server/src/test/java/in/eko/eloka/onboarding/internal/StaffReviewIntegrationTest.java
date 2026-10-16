@@ -177,6 +177,69 @@ class StaffReviewIntegrationTest extends OnboardingTestSupport {
 	}
 
 	@Test
+	void aCorrectionRunsUntilItsDueDateNotTheIdleWindow() throws Exception {
+		Session applicant = submittedApplication("9811120810", "ABCCM2345N", "staff-due");
+		Staff reviewer = staff("9700000001");
+		reviewer.call(HttpMethod.POST, "/applications/" + applicant.id + "/claim", null, 200);
+		reviewer.call(HttpMethod.POST, "/applications/" + applicant.id + "/corrections", Map.of("step_keys",
+				List.of("BUSINESS_DETAILS", "SIGNATORY_KYC", "BANK_ACCOUNT"), "reason_code", "ADDRESS_MISMATCH", "message",
+				"x".repeat(1001)), 422);
+		// Several steps and a long message fit (review_action.target_ref, onboarding_step.reviewer_message)
+		reviewer.call(HttpMethod.POST, "/applications/" + applicant.id + "/corrections", Map.of("step_keys",
+				List.of("BUSINESS_DETAILS", "SIGNATORY_KYC", "BANK_ACCOUNT"), "reason_code", "ADDRESS_MISMATCH", "message",
+				"x".repeat(1000)), 200);
+		JsonNode snapshot = applicant.snapshot();
+		assertThat(snapshot.get("expires_at")).isEqualTo(snapshot.at("/correction/due_at"));
+		assertThat(reviewer.caseOf(applicant.id).get("review_history").findValuesAsString("target"))
+			.contains("BUSINESS_DETAILS,SIGNATORY_KYC,BANK_ACCOUNT");
+
+		// Review took longer than the idle window: the applicant still has until the due date
+		jdbc.update("UPDATE onboarding_application SET last_applicant_activity_at = NOW(6) - INTERVAL 31 DAY WHERE public_id = ?",
+				applicant.id);
+		expiryJob.run();
+		assertThat(applicant.snapshot().get("status").asString()).isEqualTo("CORRECTION_REQUIRED");
+
+		jdbc.update("UPDATE onboarding_application SET correction_due_at = NOW(6) - INTERVAL 1 MINUTE WHERE public_id = ?",
+				applicant.id);
+		expiryJob.run();
+		assertThat(applicant.snapshot().get("status").asString()).isEqualTo("EXPIRED");
+	}
+
+	@Test
+	void aReviewerCanAskForTheAgreementToBeSignedAgain() throws Exception {
+		Session applicant = submittedApplication("9811120811", "ABCCN2345P", "staff-resign");
+		Staff reviewer = staff("9700000001");
+		reviewer.call(HttpMethod.POST, "/applications/" + applicant.id + "/claim", null, 200);
+		reviewer.call(HttpMethod.POST, "/applications/" + applicant.id + "/corrections", Map.of("step_keys",
+				List.of("AGREEMENT_ESIGN"), "reason_code", "ESIGN_UNCLEAR", "message", "Please sign the agreement again"), 200);
+		applicant.refresh(); // staff changed the application
+
+		JsonNode signed = signAgreement(applicant);
+		assertThat(signed.get("version").asInt()).isEqualTo(2);
+		assertThat(signed.at("/application/status").asString()).isEqualTo("SUBMITTED");
+	}
+
+	@Test
+	void anUnchangedCorrectionKeepsTheChecksThatDependOnIt() throws Exception {
+		Session applicant = submittedApplication("9811120812", "ABCCP2345Q", "staff-same");
+		Staff reviewer = staff("9700000001");
+		reviewer.call(HttpMethod.POST, "/applications/" + applicant.id + "/claim", null, 200);
+		reviewer.call(HttpMethod.POST, "/applications/" + applicant.id + "/corrections", Map.of("step_keys",
+				List.of("BUSINESS_PAN"), "reason_code", "PAN_CARD_UNCLEAR", "message", "Confirm your PAN"), 200);
+		applicant.refresh(); // staff changed the application
+
+		applicant.send(HttpMethod.POST, "/pan-verifications", Map.of("pan", "ABCCP2345Q"), 200);
+		// Same PAN result: the bank and business checks stand; the declaration is confirmed again
+		assertThat(applicant.stepStatus("BUSINESS_DETAILS")).isEqualTo("LOCKED");
+		assertThat(applicant.stepStatus("BANK_ACCOUNT")).isEqualTo("LOCKED");
+		assertThat(applicant.stepStatus("DECLARATION")).isEqualTo("REOPENED");
+		applicant.submitStep("DECLARATION", Map.of("declaration_version", "2026-10-01", "accepted", true));
+		JsonNode signed = signAgreement(applicant);
+		assertThat(signed.get("version").asInt()).isEqualTo(1); // unchanged agreement, no new signature
+		assertThat(signed.at("/application/status").asString()).isEqualTo("SUBMITTED");
+	}
+
+	@Test
 	void casesBelongToTheReviewerWhoClaimedThem() throws Exception {
 		Session applicant = submittedApplication("9811120805", "ABCCJ2345K", "staff-mine");
 		Staff rita = staff("9700000001");
