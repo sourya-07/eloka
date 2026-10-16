@@ -9,7 +9,7 @@
 
 | | Decision |
 |---|---|
-| Production login | **Google sign-in** (Workspace accounts, ADR-0005 / BACKEND_PLAN): the browser gets a Google ID token; `POST /v1/admin/auth/google` verifies it (signature via Google's JWKS, issuer, audience = `ELOKA_STAFF_GOOGLE_CLIENT_ID`, `email_verified`, hosted domain = `ELOKA_STAFF_GOOGLE_DOMAIN`) and opens a `STAFF` session. Without a client id the endpoint answers `409 PROVIDER_NOT_CONFIGURED` |
+| Production login | **Google sign-in** (Workspace accounts, ADR-0005 / BACKEND_PLAN): the browser gets a Google ID token; `POST /v1/admin/auth/google` verifies it (signature via Google's JWKS, issuer, audience = `ELOKA_STAFF_GOOGLE_CLIENT_ID`, `email_verified`, hosted domain = `ELOKA_STAFF_GOOGLE_DOMAIN`) and opens a `STAFF` session. Without a client id the endpoint answers `409 PROVIDER_NOT_CONFIGURED`; with an empty domain it refuses everyone (and production will not start). Every refused sign-in is audited `STAFF_LOGIN_REFUSED` with a reason code (`TOKEN_OR_DOMAIN`, `UNKNOWN_ACCOUNT`, `ACCOUNT_DISABLED`), never the email |
 | MFA | Enforced by Google Workspace 2-step verification (ID tokens carry no `amr`). **ASSUMPTION** recorded as OQ-S6 |
 | Local / test login | `POST /v1/admin/auth/otp` + `/otp/verify` with OTP `123456` for seeded staff mobiles (`9000000006` reviewer, `9000000007` approver, `9000000008` admin). The OTP route exists only in `local`/`test` (`UnsafeInProduction`) |
 | Accounts | `staff_user` (email unique, optional mobile for local OTP, ACTIVE/DISABLED) + `staff_role_grant`. Production accounts are created with a one-shot `prod,staff-bootstrap` command (like the first tenant). Unknown or disabled emails cannot log in |
@@ -22,20 +22,20 @@ Roles → permissions (code, `StaffRole`):
 | `REVIEWER` | `onboarding.read`, `onboarding.review`, `onboarding.hold` |
 | `APPROVER` | `onboarding.read`, `onboarding.approve`, `onboarding.reject`, `onboarding.hold`, `pii.reveal` |
 | `AUDITOR` | `onboarding.read`, `audit.read` |
-| `ADMIN` | all of the above |
+| `ADMIN` | all of the above, plus `onboarding.reassign` (take a claimed case back from its reviewer) |
 
 ## 2. Endpoints
 
-S1 list (filters `status`, `assigned_to=me`, `q` = company name / `onb_` id / exact PAN via blind index; cursor paging) · S2 case (snapshot, masked business profile, verifications, documents, review history, flags) · S3 claim (T4) · S4 release · S5/S6 verify / reject a document · S7 decide a `MANUAL_REVIEW` verification · S8 corrections (T5) · S9 recommendation (maker) · S10 approve (T7, checker ≠ maker) · S11 reject (T8) · S12 hold / release hold (T9) · S13 PII reveal (one value, one response, audited `PII_REVEALED` with purpose) · S21 audit trail of an application. Plus `GET …/documents/{doc}/download` for reviewers (audited). All side-effect POSTs take `Idempotency-Key`; writes to a case lock the application row.
+S1 list (filters `status`, `assigned_to=me`, `q` = company name / `onb_` id / exact PAN via blind index; cursor paging) · S2 case (snapshot, masked business profile, verifications, documents, review history, flags) · S3 claim (T4) · S4 release · S5/S6 verify / reject a document · S7 decide a `MANUAL_REVIEW` verification · S8 corrections (T5) · S9 recommendation (maker) · S10 approve (T7, checker ≠ maker) · S11 reject (T8) · S12 hold / release hold (T9) · S13 PII reveal (one value, one response, audited `PII_REVEALED` with purpose) · S21 audit trail of an application. Plus `GET …/documents/{doc}/download` for reviewers and approvers (audited; auditors cannot open raw KYC files, which show the full PAN and account number). Each refresh endpoint rotates only its own session kind (`/v1/admin/auth/refresh` staff, `/v1/onboarding/session/refresh` applicants, the EPS app users). All side-effect POSTs take `Idempotency-Key`; writes to a case lock the application row.
 
 ## 3. Rules
 
-- **Who may act:** review actions (S5–S9, S4) need the case claimed **by the caller**; approve/reject need the approver permission and work on a claimed case; nobody may approve a case they recommended (`403 MAKER_CHECKER_VIOLATION`, E30) or a case they claimed themselves.
+- **Who may act:** review actions (S5–S9, S4) need the case claimed **by the caller**; an admin (`onboarding.reassign`) may release anyone's claimed case with a reason, e.g. when the reviewer left. Approve/reject need the approver permission and work on a claimed case; nobody may approve a case they claimed or recommended at any point, even after handing it over (`403 MAKER_CHECKER_VIOLATION`, E30).
 - **Approve guard (T7):** a recommendation to approve exists (by someone else); every current document is `VERIFIED`; no verification of a current step is left in `MANUAL_REVIEW`. Otherwise `409 APPROVAL_BLOCKED` with the list of reasons.
 - **Corrections (T5/T6):** the flagged steps go `LOCKED → REOPENED` with the reason code and message the applicant sees; the application becomes `CORRECTION_REQUIRED` with a due date (default 15 days, OQ-B9). When a reopened step is completed with changed data, the locked steps that depend on it reopen too, so a changed agreement is signed again. Completed again on the same data (same PAN hash, same program), only the declaration and the agreement reopen; paid checks such as the bank account stay locked. A reviewer who reopens `AGREEMENT_ESIGN` itself gets a new signature even if the content is unchanged. The applicant resubmits with A10 (or automatically after re-signing). The message is at most 1000 characters. A correction expires on its due date only (not the 30-day idle window, however long the review took); the applicant's `expires_at` shows that date.
 - **Withdraw after claim** stays refused (E28): staff reject with reason `WITHDRAWN_BY_APPLICANT`.
 - **Reject (T8)** releases the sub-domain (same path as withdraw/expiry).
-- **Audit:** every staff call records actor = staff id, action, target = application; PII reveals record the field and purpose, never the value.
+- **Audit:** every staff call records actor = staff id, action, target = application; PII reveals record the field and the id of the review-history entry that holds the free-text purpose (the audit log keeps ids and codes only), never the value.
 
 ## 4. Data
 
@@ -58,6 +58,7 @@ Strong: follows the approved state machine and permission table, maker-checker e
 - A rejected document no longer counts as uploaded for the documents step.
 - Overdue corrections expire through the same hourly job as idle applications.
 - Review fixes (2026-10-16, V27): corrections no longer expire on the idle window; `review_action.target_ref` (255) and `onboarding_step.reviewer_message` (1000) fit a several-step correction and its full message; a reviewer-reopened agreement is signed again; an unchanged corrected step keeps the paid checks built on it. Step summaries are masked, so "unchanged" is decided by the real input (PAN hash), never by comparing summaries.
+- Review fixes (2026-10-16, items 6–12): admin force-release (`onboarding.reassign`); maker-checker covers anyone who ever claimed or recommended the case; downloads need review or approve; staff OTP gives unknown numbers a silent challenge (same rate limit and answers); refresh tokens work only on their own endpoint; the PII purpose left the audit log; refused Google sign-ins are audited and an empty Google domain refuses everyone.
 - Staff sessions store the staff id (not the email) in the session row; the email comes from the account on each request.
 - Staff accounts in production: `prod,staff-bootstrap` profile (`ELOKA_STAFF_EMAIL`, `ELOKA_STAFF_NAME`, `ELOKA_STAFF_ROLES`, `ELOKA_STAFF_ACTIVE`), see the runbook.
 

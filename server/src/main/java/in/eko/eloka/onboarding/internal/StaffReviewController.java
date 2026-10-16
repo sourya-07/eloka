@@ -109,11 +109,16 @@ class StaffReviewController {
 				text(body, "reason_code", true), text(body, "message", false)));
 	}
 
-	/** Reviewers open the file (audited). */
+	/**
+	 * Reviewers and approvers open the file (audited). A raw KYC file shows the full PAN and
+	 * account number, so read-only staff (auditors) cannot open it.
+	 */
 	@GetMapping("/{id}/documents/{documentId}/download")
 	ResponseEntity<byte[]> download(@PathVariable String id, @PathVariable String documentId) {
 		Caller staff = WebSupport.staff();
-		ReviewService.require(staff, StaffPermission.ONBOARDING_READ);
+		if (!staff.hasPermission(StaffPermission.ONBOARDING_APPROVE)) {
+			ReviewService.require(staff, StaffPermission.ONBOARDING_REVIEW);
+		}
 		UUID applicationId = applications.findByPublicId(id)
 			.orElseThrow(() -> new NotFoundException("ONBOARDING_NOT_FOUND", "Application not found"))
 			.getId();

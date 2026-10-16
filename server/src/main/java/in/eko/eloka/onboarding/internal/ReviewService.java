@@ -85,13 +85,30 @@ class ReviewService {
 		record(application, staff, ReviewAction.CLAIM, null, null, null, null);
 	}
 
-	/** S4: give the case back to the queue. */
+	/**
+	 * S4: give the case back to the queue. The reviewer releases their own case; someone with
+	 * {@code onboarding.reassign} may release anyone's (a reviewer who left), with a reason.
+	 */
 	@Transactional
 	void release(Caller staff, String publicId, String reason) {
-		OnboardingApplication application = assignedCase(staff, publicId);
+		require(staff, StaffPermission.ONBOARDING_READ);
+		OnboardingApplication application = lock(publicId);
+		requireUnderReview(application);
+		UUID reviewer = application.getAssignedStaffId();
+		boolean own = application.isAssignedTo(staff.userId());
+		if (own) {
+			require(staff, StaffPermission.ONBOARDING_REVIEW);
+		}
+		else {
+			require(staff, StaffPermission.ONBOARDING_REASSIGN);
+			if (reason == null || reason.isBlank()) {
+				throw ValidationException.field("reason", "Say why you take the case from its reviewer");
+			}
+		}
 		stateMachine.apply(application, LifecycleEvent.RELEASE, "STAFF", staff.userId().toString());
 		application.assignTo(null);
-		record(application, staff, ReviewAction.RELEASE, null, null, reason, null);
+		record(application, staff, ReviewAction.RELEASE, own ? null : "FORCED", null, reason,
+				own || reviewer == null ? null : reviewer.toString());
 	}
 
 	/** S5 / S6 */
@@ -187,8 +204,11 @@ class ReviewService {
 		OnboardingApplication application = lock(publicId);
 		List<ReviewAction> history = reviewActions.findByApplicationIdOrderByOccurredAtAsc(application.getId());
 		Optional<ReviewAction> recommendation = latestRecommendation(history);
-		if (application.isAssignedTo(staff.userId())
-				|| recommendation.map(r -> r.getStaffId().equals(staff.userId())).orElse(false)) {
+		// Nobody approves a case they claimed or recommended at any point, even after handing it over
+		boolean reviewedIt = history.stream()
+			.anyMatch(a -> a.getStaffId().equals(staff.userId()) && (ReviewAction.CLAIM.equals(a.getAction())
+					|| ReviewAction.RECOMMENDATION.equals(a.getAction())));
+		if (application.isAssignedTo(staff.userId()) || reviewedIt) {
 			throw new ApiProblem(HttpStatus.FORBIDDEN, "MAKER_CHECKER_VIOLATION",
 					"A different staff member must approve a case you reviewed or recommended");
 		}
@@ -248,10 +268,12 @@ class ReviewService {
 		if (value == null) {
 			throw new NotFoundException("VALUE_NOT_AVAILABLE", "The applicant has not provided this yet");
 		}
+		// The purpose is free text (it may hold personal data), so it stays in the review history;
+		// the audit log keeps ids and codes only and points at that history entry
+		ReviewAction reveal = reviewActions.save(new ReviewAction(application.getId(), staff.userId(),
+				ReviewAction.PII_REVEAL, field, null, truncate(purpose, 1000), null, Instant.now(clock)));
 		audit.record(new AuditEntry("PII_REVEALED", "STAFF", staff.userId().toString(), IdentityApi.PLATFORM_ORG_ID,
-				"ONBOARDING_APPLICATION", publicId, Map.of("field", field, "purpose", truncate(purpose, 200))));
-		reviewActions.save(new ReviewAction(application.getId(), staff.userId(), ReviewAction.PII_REVEAL, field, null,
-				truncate(purpose, 1000), null, Instant.now(clock)));
+				"ONBOARDING_APPLICATION", publicId, Map.of("field", field, "review_action", reveal.getId().toString())));
 		return value;
 	}
 
@@ -308,15 +330,19 @@ class ReviewService {
 	private OnboardingApplication assignedCase(Caller staff, String publicId) {
 		require(staff, StaffPermission.ONBOARDING_REVIEW);
 		OnboardingApplication application = lock(publicId);
+		requireUnderReview(application);
+		if (!application.isAssignedTo(staff.userId())) {
+			throw new ApiProblem(HttpStatus.FORBIDDEN, "NOT_ASSIGNED", "This case is assigned to another reviewer");
+		}
+		return application;
+	}
+
+	private static void requireUnderReview(OnboardingApplication application) {
 		if (application.getStatus() != ApplicationStatus.UNDER_REVIEW) {
 			throw new ApiProblem(HttpStatus.CONFLICT, "INVALID_STATE_TRANSITION",
 					"Claim the case first; it is " + application.getStatus().name().toLowerCase().replace('_', ' '),
 					Map.of("current_status", application.getStatus().name()));
 		}
-		if (!application.isAssignedTo(staff.userId())) {
-			throw new ApiProblem(HttpStatus.FORBIDDEN, "NOT_ASSIGNED", "This case is assigned to another reviewer");
-		}
-		return application;
 	}
 
 	private OnboardingApplication lock(String publicId) {

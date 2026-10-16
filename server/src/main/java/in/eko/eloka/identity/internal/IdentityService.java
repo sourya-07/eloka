@@ -105,8 +105,8 @@ class IdentityService implements IdentityApi {
 	}
 
 	@Override
-	public Optional<TokenPair> refresh(String refreshToken) {
-		return sessions.refresh(refreshToken);
+	public Optional<TokenPair> refresh(String refreshToken, java.util.Set<SessionKind> kinds) {
+		return sessions.refresh(refreshToken, kinds);
 	}
 
 	@Override

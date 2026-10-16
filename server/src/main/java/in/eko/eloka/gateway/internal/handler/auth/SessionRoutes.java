@@ -1,5 +1,6 @@
 package in.eko.eloka.gateway.internal.handler.auth;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -100,7 +101,10 @@ final class SessionRoutes {
 
 		@Override
 		public EpsResponse handle(EpsCall call) {
-			Optional<TokenPair> tokens = call.params().string("refresh_token").flatMap(identity::refresh);
+			// The EPS app serves registered users and people still self-onboarding, never staff or applicants
+			Optional<TokenPair> tokens = call.params()
+				.string("refresh_token")
+				.flatMap(token -> identity.refresh(token, EnumSet.of(SessionKind.USER, SessionKind.PRE_REGISTRATION)));
 			Optional<Caller> caller = tokens.flatMap(pair -> callers.resolve(pair.accessToken()));
 			if (tokens.isEmpty() || caller.isEmpty()) {
 				return EpsEnvelope.fail("Session expired. Please log in again.").build();

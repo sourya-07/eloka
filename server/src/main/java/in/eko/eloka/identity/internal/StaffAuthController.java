@@ -60,7 +60,7 @@ class StaffAuthController {
 
 	@PostMapping("/auth/refresh")
 	Map<String, Object> refresh(@RequestBody JsonNode body) {
-		return identity.refresh(text(body, "refresh_token"))
+		return identity.refresh(text(body, "refresh_token"), java.util.EnumSet.of(SessionKind.STAFF))
 			.map(StaffAuthController::tokens)
 			.orElseThrow(() -> new ApiProblem(HttpStatus.UNAUTHORIZED, "SESSION_EXPIRED",
 					"Your session has expired. Please sign in again."));

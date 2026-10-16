@@ -67,7 +67,7 @@ class SessionService implements CallerResolver {
 	}
 
 	@Transactional
-	Optional<TokenPair> refresh(String refreshToken) {
+	Optional<TokenPair> refresh(String refreshToken, java.util.Set<SessionKind> kinds) {
 		if (refreshToken == null || !refreshToken.startsWith(REFRESH_PREFIX)) {
 			return Optional.empty();
 		}
@@ -80,7 +80,7 @@ class SessionService implements CallerResolver {
 			return Optional.empty();
 		}
 		AuthSession session = current.get();
-		if (!session.isActive(now)) {
+		if (!session.isActive(now) || !kinds.contains(session.getKind())) {
 			return Optional.empty();
 		}
 		return Optional.of(rotate(session, now));

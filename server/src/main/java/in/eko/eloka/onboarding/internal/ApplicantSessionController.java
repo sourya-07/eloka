@@ -18,6 +18,7 @@ import in.eko.eloka.shared.crypto.Mobiles;
 import in.eko.eloka.shared.error.ApiProblem;
 import in.eko.eloka.shared.error.ValidationException;
 import in.eko.eloka.shared.security.Caller;
+import in.eko.eloka.shared.security.SessionKind;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -109,7 +110,7 @@ class ApplicantSessionController {
 	/** A3: rotate the tokens with the refresh token (works after the access token expired). */
 	@PostMapping("/session/refresh")
 	Map<String, Object> refresh(@RequestBody JsonNode body) {
-		return identity.refresh(text(body, "refresh_token"))
+		return identity.refresh(text(body, "refresh_token"), java.util.EnumSet.of(SessionKind.LA_APPLICANT))
 			.map(ApplicantSessionController::tokenBody)
 			.orElseThrow(() -> new ApiProblem(HttpStatus.UNAUTHORIZED, "SESSION_EXPIRED",
 					"Your session has expired. Please log in again."));

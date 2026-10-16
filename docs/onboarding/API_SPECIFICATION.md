@@ -173,7 +173,7 @@ All staff APIs require OIDC auth + MFA claim (`amr` contains `mfa`). Permission 
 | S1 | `GET /v1/admin/applications?status=&assigned_to=&q=&cursor=` | `onboarding.read` | filters (`q` searches company name, masked mobile, `onboarding_id`; PAN search by exact value → hash lookup) | page of summaries | — | safe |
 | S2 | `GET /v1/admin/applications/{id}` | `onboarding.read` | — | full case: steps, verifications (masked), documents, review history, duplicates / risk flags | — | safe |
 | S3 | `POST /v1/admin/applications/{id}/claim` 🔁 | `onboarding.review` | `{}` | case | T4 | key |
-| S4 | `POST /v1/admin/applications/{id}/release` 🔁 | `onboarding.review` | `{ reason }` | case | `UNDER_REVIEW → SUBMITTED` | key |
+| S4 | `POST /v1/admin/applications/{id}/release` 🔁 | `onboarding.review` (own case) or `onboarding.reassign` (anyone's, `reason` required) | `{ reason }` | case | `UNDER_REVIEW → SUBMITTED` | key |
 | S5 | `POST /v1/admin/applications/{id}/documents/{doc}/verify` 🔁 | `onboarding.review` | `{ note? }` | document | doc `PENDING_REVIEW → VERIFIED` | key |
 | S6 | `POST /v1/admin/applications/{id}/documents/{doc}/reject` 🔁 | `onboarding.review` | `{ reason_code, message }` | document | `→ REJECTED` | key |
 | S7 | `POST /v1/admin/applications/{id}/verifications/{ver}/decide` 🔁 | `onboarding.review` | `{ decision: ACCEPT \| REJECT, reason_code }` | verification | `MANUAL_REVIEW → SUCCEEDED / FAILED` | key |

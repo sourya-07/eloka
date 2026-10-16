@@ -57,12 +57,12 @@ class StaffService implements SafetyCheck {
 	OtpDispatch sendOtp(String mobile, String clientIp) {
 		requireOtpLogin();
 		String normalized = Mobiles.normalize(mobile);
-		// Same answer for unknown numbers: no list of staff mobiles can be probed.
-		String code = staff.findByMobileHash(index.hash("staff_mobile", normalized)).isPresent()
-				? otps.issueStaff(IdentityApi.PLATFORM_ORG_ID, normalized, clientIp)
-				: null;
+		// Unknown numbers get a silent challenge: the same rate limit and the same verify answers,
+		// so no list of staff mobiles can be probed.
+		boolean known = staff.findByMobileHash(index.hash("staff_mobile", normalized)).isPresent();
+		String code = otps.issueStaff(IdentityApi.PLATFORM_ORG_ID, normalized, clientIp, known);
 		return new OtpDispatch(normalized, identityProperties.otpLength(),
-				identityProperties.exposeOtpInResponse() ? code : null);
+				identityProperties.exposeOtpInResponse() && known ? code : null);
 	}
 
 	@Transactional(noRollbackFor = RuntimeException.class)
@@ -86,16 +86,19 @@ class StaffService implements SafetyCheck {
 	StaffLoginResult googleLogin(String idToken) {
 		Optional<GoogleIdentityVerifier.GoogleIdentity> identity = google.verify(idToken);
 		String domain = properties.googleDomain();
-		if (identity.isEmpty() || !identity.get().emailVerified() || identity.get().email() == null
-				|| (domain != null && !domain.isBlank() && !domain.equalsIgnoreCase(identity.get().hostedDomain()))) {
-			audit.record(new AuditEntry("STAFF_LOGIN_REFUSED", "ANONYMOUS", null, IdentityApi.PLATFORM_ORG_ID, "STAFF",
-					null, Map.of("method", "GOOGLE")));
-			return new StaffLoginResult.NotAllowed();
+		// No domain configured = nobody: a personal Google account must never pass as staff
+		if (identity.isEmpty() || !identity.get().emailVerified() || identity.get().email() == null || domain == null
+				|| domain.isBlank() || !domain.equalsIgnoreCase(identity.get().hostedDomain())) {
+			return refused(null, "TOKEN_OR_DOMAIN");
 		}
-		return staff.findByEmail(identity.get().email().toLowerCase(Locale.ROOT))
-			.filter(StaffUser::isActive)
-			.<StaffLoginResult>map(user -> open(user, "GOOGLE"))
-			.orElseGet(StaffLoginResult.NotAllowed::new);
+		Optional<StaffUser> user = staff.findByEmail(identity.get().email().toLowerCase(Locale.ROOT));
+		if (user.isEmpty()) {
+			return refused(null, "UNKNOWN_ACCOUNT");
+		}
+		if (!user.get().isActive()) {
+			return refused(user.get().getId().toString(), "ACCOUNT_DISABLED");
+		}
+		return open(user.get(), "GOOGLE");
 	}
 
 	/** Creates or updates a staff account (bootstrap command and local seed). */
@@ -136,6 +139,13 @@ class StaffService implements SafetyCheck {
 		return new StaffLoginResult.Success(tokens, user.view());
 	}
 
+	/** Every refused Google sign-in is audited (a disabled account trying again shows up). Never the email. */
+	private StaffLoginResult refused(String staffId, String reason) {
+		audit.record(new AuditEntry("STAFF_LOGIN_REFUSED", "ANONYMOUS", null, IdentityApi.PLATFORM_ORG_ID, "STAFF",
+				staffId, Map.of("method", "GOOGLE", "reason", reason)));
+		return new StaffLoginResult.NotAllowed();
+	}
+
 	private void requireOtpLogin() {
 		if (!properties.otpLoginEnabled()) {
 			throw new NotFoundException("NOT_FOUND", "Not found");
@@ -144,7 +154,14 @@ class StaffService implements SafetyCheck {
 
 	@Override
 	public List<String> productionViolations() {
-		return properties.otpLoginEnabled() ? List.of("eloka.staff.otp-login-enabled=true lets staff log in without Google")
-				: List.of();
+		List<String> violations = new java.util.ArrayList<>();
+		if (properties.otpLoginEnabled()) {
+			violations.add("eloka.staff.otp-login-enabled=true lets staff log in without Google");
+		}
+		if (properties.googleClientId() != null && !properties.googleClientId().isBlank()
+				&& (properties.googleDomain() == null || properties.googleDomain().isBlank())) {
+			violations.add("eloka.staff.google-domain is empty: staff Google sign-in would refuse everyone");
+		}
+		return violations;
 	}
 }

@@ -2,6 +2,7 @@ package in.eko.eloka.identity;
 
 import java.util.Optional;
 import java.util.UUID;
+import in.eko.eloka.shared.security.SessionKind;
 
 /** Public API of the identity module: OTP login and session lifecycle. */
 public interface IdentityApi {
@@ -21,8 +22,12 @@ public interface IdentityApi {
 
 	LoginResult verifyLoginOtp(long orgId, String mobile, String code);
 
-	/** Rotates both tokens. Empty when the refresh token is unknown, expired or reused. */
-	Optional<TokenPair> refresh(String refreshToken);
+	/**
+	 * Rotates both tokens. Empty when the refresh token is unknown, expired, reused or belongs to
+	 * a kind of session the calling endpoint does not serve (a staff endpoint never refreshes an
+	 * applicant's tokens).
+	 */
+	Optional<TokenPair> refresh(String refreshToken, java.util.Set<SessionKind> kinds);
 
 	/** Issues new tokens for a live session (used by refresh-profile). */
 	TokenPair rotate(UUID sessionId);

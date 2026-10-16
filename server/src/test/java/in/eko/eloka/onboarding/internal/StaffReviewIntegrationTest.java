@@ -32,6 +32,8 @@ class StaffReviewIntegrationTest extends OnboardingTestSupport {
 		identity.saveStaff("anil.approver@eko.co.in", "Anil Approver", "9700000002", EnumSet.of(StaffRole.APPROVER), true);
 		identity.saveStaff("ravi.reviewer@eko.co.in", "Ravi Reviewer", "9700000003", EnumSet.of(StaffRole.REVIEWER), true);
 		identity.saveStaff("ada.admin@eko.co.in", "Ada Admin", "9700000004", EnumSet.of(StaffRole.ADMIN), true);
+		identity.saveStaff("asha.auditor@eko.co.in", "Asha Auditor", "9700000005", EnumSet.of(StaffRole.AUDITOR), true);
+		identity.saveStaff("gone.reviewer@eko.co.in", "Gone Reviewer", null, EnumSet.of(StaffRole.REVIEWER), false);
 		seeded = true;
 	}
 
@@ -72,12 +74,21 @@ class StaffReviewIntegrationTest extends OnboardingTestSupport {
 	}
 
 	private Staff staff(String mobile) throws Exception {
+		return new Staff(staffLogin(mobile).get("access_token").asString());
+	}
+
+	/** Staff OTP login; returns the token body. */
+	private JsonNode staffLogin(String mobile) throws Exception {
 		mvc.post().uri("/v1/admin/auth/otp").contentType(MediaType.APPLICATION_JSON)
 			.content("{\"mobile\":\"" + mobile + "\"}").exchange();
-		MvcTestResult verified = mvc.post().uri("/v1/admin/auth/otp/verify").contentType(MediaType.APPLICATION_JSON)
-			.content("{\"mobile\":\"" + mobile + "\",\"otp\":\"123456\"}").exchange();
+		MvcTestResult verified = staffOtpVerify(mobile, "123456");
 		assertThat(verified.getResponse().getStatus()).as(verified.getResponse().getContentAsString()).isEqualTo(200);
-		return new Staff(json.readTree(verified.getResponse().getContentAsString()).get("access_token").asString());
+		return json.readTree(verified.getResponse().getContentAsString());
+	}
+
+	private MvcTestResult staffOtpVerify(String mobile, String otp) {
+		return mvc.post().uri("/v1/admin/auth/otp/verify").contentType(MediaType.APPLICATION_JSON)
+			.content("{\"mobile\":\"" + mobile + "\",\"otp\":\"" + otp + "\"}").exchange();
 	}
 
 	@Test
@@ -282,7 +293,9 @@ class StaffReviewIntegrationTest extends OnboardingTestSupport {
 		assertThat(revealed.get("value").asString()).isEqualTo("ABCCL2345M");
 		JsonNode audit = admin.call(HttpMethod.GET, "/applications/" + applicant.id + "/audit", null, 200);
 		assertThat(audit.get("items").findValuesAsString("action")).contains("PII_REVEALED", "ONBOARDING_SUBMIT");
-		assertThat(audit.toString()).doesNotContain("ABCCL2345M");
+		// Neither the value nor the free-text purpose reaches the audit log; the purpose stays in the review history
+		assertThat(audit.toString()).doesNotContain("ABCCL2345M").doesNotContain("PAN card image");
+		assertThat(admin.caseOf(applicant.id).get("review_history").toString()).contains("PAN card image");
 		reviewer.call(HttpMethod.GET, "/applications/" + applicant.id + "/audit", null, 403);
 	}
 
@@ -299,6 +312,92 @@ class StaffReviewIntegrationTest extends OnboardingTestSupport {
 		assertThat(google("test-google:anil.approver@eko.co.in:eko.co.in")).isEqualTo(200);
 		assertThat(google("test-google:anil.approver@eko.co.in:gmail.com")).isEqualTo(403);
 		assertThat(google("test-google:stranger@eko.co.in:eko.co.in")).isEqualTo(403);
+	}
+
+	@Test
+	void anAdminTakesBackACaseFromAnAbsentReviewer() throws Exception {
+		Session applicant = submittedApplication("9811120813", "ABCCQ2345R", "staff-away");
+		Staff rita = staff("9700000001");
+		Staff ravi = staff("9700000003");
+		Staff ada = staff("9700000004");
+		rita.call(HttpMethod.POST, "/applications/" + applicant.id + "/claim", null, 200);
+		// Another reviewer cannot; an admin must say why
+		assertThat(ravi.call(HttpMethod.POST, "/applications/" + applicant.id + "/release", Map.of("reason", "mine now"), 403)
+			.get("missing_permission").asString()).isEqualTo("onboarding.reassign");
+		ada.call(HttpMethod.POST, "/applications/" + applicant.id + "/release", Map.of(), 422);
+		ada.call(HttpMethod.POST, "/applications/" + applicant.id + "/release", Map.of("reason", "Rita is on leave"), 200);
+		ravi.call(HttpMethod.POST, "/applications/" + applicant.id + "/claim", null, 200);
+	}
+
+	@Test
+	void whoeverClaimedACaseCannotApproveItLater() throws Exception {
+		Session applicant = submittedApplication("9811120814", "ABCCR2345S", "staff-handover");
+		Staff ada = staff("9700000004");
+		Staff rita = staff("9700000001");
+		Staff anil = staff("9700000002");
+		ada.call(HttpMethod.POST, "/applications/" + applicant.id + "/claim", null, 200);
+		ada.verifyAllDocuments(applicant.id);
+		ada.call(HttpMethod.POST, "/applications/" + applicant.id + "/release", Map.of(), 200);
+		rita.call(HttpMethod.POST, "/applications/" + applicant.id + "/claim", null, 200);
+		rita.call(HttpMethod.POST, "/applications/" + applicant.id + "/recommendations", Map.of("recommendation", "APPROVE"),
+				200);
+		assertThat(ada.call(HttpMethod.POST, "/applications/" + applicant.id + "/approve", null, 403).get("code").asString())
+			.isEqualTo("MAKER_CHECKER_VIOLATION");
+		anil.call(HttpMethod.POST, "/applications/" + applicant.id + "/approve", null, 200);
+	}
+
+	@Test
+	void auditorsCannotOpenRawKycFiles() throws Exception {
+		Session applicant = submittedApplication("9811120815", "ABCCS2345T", "staff-files");
+		Staff asha = staff("9700000005");
+		Staff rita = staff("9700000001");
+		String document = asha.caseOf(applicant.id).get("documents").get(0).get("document_id").asString();
+		String path = "/applications/" + applicant.id + "/documents/" + document + "/download";
+		asha.call(HttpMethod.GET, path, null, 403);
+		assertThat(mvc.get().uri("/v1/admin" + path).header("Authorization", "Bearer " + rita.token).exchange()
+			.getResponse().getStatus()).isEqualTo(200);
+	}
+
+	@Test
+	void staffOtpAnswersTheSameForUnknownNumbers() throws Exception {
+		for (String mobile : List.of("9700000003", "9711111111")) {
+			assertThat(mvc.post().uri("/v1/admin/auth/otp").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"mobile\":\"" + mobile + "\"}").exchange().getResponse().getStatus()).isEqualTo(202);
+		}
+		MvcTestResult staffWrong = staffOtpVerify("9700000003", "000000");
+		MvcTestResult unknownWrong = staffOtpVerify("9711111111", "000000");
+		assertThat(unknownWrong.getResponse().getStatus()).isEqualTo(staffWrong.getResponse().getStatus());
+		assertThat(read(unknownWrong).get("code")).isEqualTo(read(staffWrong).get("code"));
+		assertThat(read(unknownWrong).get("attempts_left")).isEqualTo(read(staffWrong).get("attempts_left"));
+	}
+
+	@Test
+	void refreshTokensOnlyWorkOnTheirOwnEndpoint() throws Exception {
+		String staffRefresh = staffLogin("9700000001").get("refresh_token").asString();
+		JsonNode sent = postPublic("/v1/onboarding/otp", Map.of("mobile", "9811120816"), UUID.randomUUID().toString());
+		JsonNode applicantTokens = read(mvc.post().uri("/v1/onboarding/otp/verify").contentType(MediaType.APPLICATION_JSON)
+			.content(json.writeValueAsString(Map.of("otp_ref", sent.get("otp_ref").asString(), "otp", "123456"))).exchange());
+		String applicantRefresh = applicantTokens.get("refresh_token").asString();
+
+		assertThat(refresh("/v1/admin/auth/refresh", applicantRefresh)).isEqualTo(401);
+		assertThat(refresh("/v1/onboarding/session/refresh", staffRefresh)).isEqualTo(401);
+		assertThat(refresh("/v1/admin/auth/refresh", staffRefresh)).isEqualTo(200);
+	}
+
+	@Test
+	void refusedGoogleSignInsAreAudited() throws Exception {
+		assertThat(google("test-google:gone.reviewer@eko.co.in:eko.co.in")).isEqualTo(403);
+		String staffId = jdbc.queryForObject("SELECT LOWER(BIN_TO_UUID(id)) FROM staff_user WHERE email = ?", String.class,
+				"gone.reviewer@eko.co.in");
+		assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE action = 'STAFF_LOGIN_REFUSED' AND target_id = ?"
+				+ " AND details LIKE '%ACCOUNT_DISABLED%'", Integer.class, staffId)).isEqualTo(1);
+		assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE details LIKE '%gone.reviewer%'", Integer.class))
+			.isZero();
+	}
+
+	private int refresh(String uri, String refreshToken) throws Exception {
+		return mvc.post().uri(uri).contentType(MediaType.APPLICATION_JSON)
+			.content(json.writeValueAsString(Map.of("refresh_token", refreshToken))).exchange().getResponse().getStatus();
 	}
 
 	private int google(String idToken) throws Exception {

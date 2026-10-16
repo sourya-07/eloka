@@ -10,7 +10,7 @@ public enum StaffRole {
 	AUDITOR(Set.of(StaffPermission.ONBOARDING_READ, StaffPermission.AUDIT_READ)),
 	ADMIN(Set.of(StaffPermission.ONBOARDING_READ, StaffPermission.ONBOARDING_REVIEW, StaffPermission.ONBOARDING_HOLD,
 			StaffPermission.ONBOARDING_APPROVE, StaffPermission.ONBOARDING_REJECT, StaffPermission.PII_REVEAL,
-			StaffPermission.AUDIT_READ));
+			StaffPermission.AUDIT_READ, StaffPermission.ONBOARDING_REASSIGN));
 
 	private final Set<String> permissions;
 
