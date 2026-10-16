@@ -37,7 +37,7 @@
 		"storybook": "storybook dev -p 6006",
 		"build:storybook": "storybook build",
 		"test": "jest",
-		"test:mock": "node --test \"mock-eps/test/*.test.js\"",
+		"test:mock": "node --test mock-eps/test/*.test.js",
 		"test:quick": "jest --coverage=false --passWithNoTests",
 		"test:failed": "jest --coverage=false --onlyFailures",
 		"test:file": "jest --coverage=false --verbose",
@@ -64,9 +64,11 @@
 		"eslint-config-next": {
 			"eslint": "^9.4.0"
 		},
+		"browserslist": "^4.28.7",
 		"lodash": "^4.18.0",
 		"nanoid@3": "^3.3.18",
 		"postcss": "$postcss",
+		"serialize-javascript": "^7.0.3",
 		"source-map-js": "^1.2.2"
 	},
 	"dependencies": {

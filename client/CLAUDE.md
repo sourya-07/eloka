@@ -25,7 +25,7 @@ npm run test:mock     # Contract tests for the mock EPS server (node:test)
 
 **Production image:** `docker build --build-arg NEXT_PUBLIC_API_BASE_URL=https://api.<root> -t eloka-client .` (standalone output, non-root, `/api/health`). `NEXT_PUBLIC_*` values are baked in at build time; server-side settings are runtime env. Runs behind the Caddy edge in `../deploy/` ([runbook](../docs/deploy/RUNBOOK.md)).
 
-**Security pins:** `package.json` `overrides` force patched versions of `lodash`, `nanoid@3`, `postcss` and `source-map-js` (flagged by Trivy in the production image, 2026-10-16). Remove an entry once the packages that pull it in ship the fix themselves. Install with Node 20's npm (`.nvmrc`); `.npmrc` sets `legacy-peer-deps`.
+**Security pins:** `package.json` `overrides` force patched versions of `browserslist`, `lodash`, `nanoid@3`, `postcss`, `serialize-javascript` and `source-map-js` (flagged by Trivy in the production image, 2026-10-16). Remove an entry once the packages that pull it in ship the fix themselves. Install with Node 20's npm (`.nvmrc`); `.npmrc` sets `legacy-peer-deps`. CI runs Node 20, so check scripts there too (`npx -y node@20 ...`): for example `node --test "dir/*.js"` with a quoted glob only works on Node 21+.
 
 **Git hooks:** husky lives in `client/.husky` but runs from the repo root (`npm run prepare` sets `core.hooksPath`). On commit: lint-staged (prettier + eslint on staged client files) and commitlint. Before a PR: `npm run lint:error && npm run test:mock && npm test`.
 
