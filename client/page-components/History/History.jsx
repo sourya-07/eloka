@@ -351,10 +351,21 @@ const History = ({ forNetwork = false }) => {
 				console.log("[History] fetch result...", key, tx_list);
 			})
 			.catch((err) => {
+				// A newer request replaced this one (page/filter change, or React re-running the
+				// effect in dev): the abort is expected, not an error.
+				if (
+					err?.name === "AbortError" ||
+					abortController.signal.aborted
+				) {
+					return;
+				}
 				console.error("[History] error: ", err);
 			})
 			.finally(() => {
-				setLoading(false);
+				// Only the latest request controls the spinner
+				if (!abortController.signal.aborted) {
+					setLoading(false);
+				}
 			});
 	};
 
