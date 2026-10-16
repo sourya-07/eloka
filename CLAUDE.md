@@ -36,6 +36,7 @@ eloka/
 | Website + real backend | `cd server && ./gradlew bootRun`, then `cd client && npm run dev:server` |
 | Website against real EPS | `cd client && npm run dev` (settings in `client/.env.local`) |
 | Client checks | `cd client && npm run lint:error && npm run test:mock && npm test` |
+| Client CI job locally (Node 20, like GitHub) | `make ci-client` (run before pushing client changes) |
 | Backend | `cd server && ./gradlew bootRun` (Docker must be running) |
 | Backend checks | `cd server && ./gradlew test` |
 | Load test (server running) | `make load-test` |
