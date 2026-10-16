@@ -3,7 +3,7 @@
 The ELOKA backend: **Java 25, Spring Boot 4.1, Spring Modulith 2.1, MySQL 8.4, Flyway, Gradle (Kotlin DSL)**.
 Read the root [`CLAUDE.md`](../CLAUDE.md) first. Decisions: ADR-0004 (system of record, EPS wire format), ADR-0005 (opaque tokens), ADR-0006 (logging, secrets). Plan and phases: [`docs/BACKEND_PLAN.md`](../docs/BACKEND_PLAN.md).
 
-> Status: **P1–P6 done** (Release 1: EPS-compatible screens, hardening). **P7 done**: Local Admin applicant API (`/v1/onboarding`, A1–A30, [design note](../docs/onboarding/P7_APPLICANT_API.md)). Next: P8 staff review. Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
+> Status: **P1–P6 done** (Release 1: EPS-compatible screens, hardening). **P7 done**: Local Admin applicant API (`/v1/onboarding`, A1–A30, [design note](../docs/onboarding/P7_APPLICANT_API.md)). **P8 done**: staff review API (`/v1/admin`, S1–S13, S21, [design note](../docs/onboarding/P8_STAFF_REVIEW.md)). Next: P9 provisioning. Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
 
 ## Commands
 
@@ -29,13 +29,15 @@ src/main/java/in/eko/eloka/
 │                  BaseEntity (UUIDv7 id, version, timestamps), clock
 ├── gateway/       EPS wire format → domain calls. internal/{envelope, dispatch, web, report (XLSX/PDF/CSV), handler/<area>}
 ├── identity/      login, email, agent-consent, applicant and re-auth OTPs (OtpService), sessions (SessionService =
-│                  CallerResolver; kinds USER, PRE_REGISTRATION, LA_APPLICANT), re-auth tokens, PinTwin + PIN, IdentityApi
+│                  CallerResolver; kinds USER, PRE_REGISTRATION, LA_APPLICANT, STAFF), re-auth tokens, PinTwin + PIN,
+│                  staff accounts + roles (StaffService, StaffRole), staff sign-in (Google / local OTP), IdentityApi
 ├── agentonboarding/ KYC steps per role (KycStep, plans), progress + encrypted KYC data, funnel stages (AgentOnboardingApi)
 ├── integration/   ports for outside providers (DigiLockerProvider, EsignProvider, PanVerificationProvider,
-│                  BankAccountVerifier); fakes in local/test, "not configured" elsewhere
+│                  BankAccountVerifier, GoogleIdentityVerifier); fakes in local/test, "not configured" elsewhere
 ├── onboarding/    Local Admin applications (P7): applicant, application + step state machines (StepKey, StepContext,
 │                  ApplicationStateMachine), step policy (OnboardingProperties), /v1/onboarding controllers, Idempotency,
-│                  ETag/If-Match (WebSupport), application documents, expiry job
+│                  ETag/If-Match (WebSupport), application documents, expiry job; staff review (ReviewService,
+│                  ReviewQueries, StaffReviewController: claim, corrections, maker-checker approve/reject, PII reveal)
 ├── verification/  PAN, DigiLocker KYC and bank attempts (VerificationApi), NameMatch
 ├── whitelabel/    sub-domain availability + atomic reservation, branding drafts (WhiteLabelApi)
 ├── agreement/     agreement versions rendered to PDF, e-sign sessions; SIGNED only after the provider confirms (AgreementApi)
@@ -51,7 +53,7 @@ src/main/java/in/eko/eloka/
 ├── audit/         AuditLog: hash-chained audit_event, mirrored to eloka-audit.log
 ├── devdata/       local profile only: LocalSeedRunner (devdata/local-seed.json)
 ├── system/        /v1/system/info, migrate profile runner, first-tenant bootstrap (profile `bootstrap`, TenantBootstrap)
-└── review/ provisioning/ lead/  (Release 2: P8/P9, empty)
+└── provisioning/ lead/  (Release 2: P9, empty)
 src/main/resources/
 ├── application.yaml / application-local.yaml / application-prod.yaml
 ├── logback-spring.xml          three rolling files; text locally, JSON (ECS) in prod
@@ -78,7 +80,8 @@ src/main/resources/
 - **Org scoping:** every repository lookup takes `orgId` (e.g. `findByIdAndOrgId`). Out-of-scope = "not found".
 - **Personal data:** mobile/email/PAN/account stored as `*_enc` (FieldCipher) + `*_hash` (BlindIndex) + masked copy. Never log them; `PiiMasker` is only the safety net.
 - **Errors:** throw `DomainException` subclasses (`NotFoundException`, `ConflictException`, `ValidationException`, `ForbiddenException`, `RateLimitedException`, `UnauthenticatedException`). The gateway maps them to HTTP 200 + fail envelope (401 for unauthenticated).
-- **Audit:** state changes call `AuditLog.record(...)` inside the same transaction, with ids/codes only.
+- **Audit:** state changes call `AuditLog.record(...)` inside the same transaction, with ids/codes only. Read one target's trail with `AuditTrail.forTarget(...)`.
+- **Staff (`/v1/admin`):** check a permission (`ReviewService.require(caller, StaffPermission.X)`) in every action; permissions are reloaded per request. Maker-checker lives in `ReviewService.approve`.
 - **Time:** inject `Clock`.
 - **`/v1` REST (Release 2):** problem+json errors (`ApiProblem` for extra members such as `current`); snake_case fields; side-effect POSTs go through `Idempotency.run(...)`; writes to an application go through `ApplicationService.write(...)` (row lock + `If-Match` + editable check). Never mark a verification or signature done from what the browser sends: ask the provider port.
 - **Hot rows:** a browser sends several calls at once on one session. Do not update a shared row (session, wallet) through a versioned entity on every read; use a guarded `@Modifying` update (see `AuthSessionRepository.touch`). `server/load/home.js` (k6) catches this.
@@ -94,5 +97,6 @@ src/main/resources/
 | `prod` | staging + production | `ELOKA_DB_*` | everything from env vars; `ELOKA_ENVIRONMENT=production` by default; JSON logs |
 | `prod,migrate` | one-shot migration job | same | runs Flyway, validates, exits 0 |
 | `prod,bootstrap` | one-shot first tenant | same | creates org + Local Admin from `ELOKA_BOOTSTRAP_*`, exits (idempotent) |
+| `prod,staff-bootstrap` | one-shot staff account | same | creates/updates an Eko staff account from `ELOKA_STAFF_*`, exits |
 
 Deployment: `deploy/docker-compose.yml` + `docs/deploy/RUNBOOK.md`.

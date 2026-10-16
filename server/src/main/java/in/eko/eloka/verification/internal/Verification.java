@@ -38,6 +38,9 @@ class Verification extends BaseEntity {
 	@Column(name = "failure_code", length = 40)
 	private String failureCode;
 
+	@Column(name = "decided_by", columnDefinition = "BINARY(16)")
+	private UUID decidedBy;
+
 	protected Verification() {
 	}
 
@@ -59,6 +62,19 @@ class Verification extends BaseEntity {
 	void fail(String code) {
 		this.status = "FAILED";
 		this.failureCode = code;
+	}
+
+	/** A reviewer's decision on a MANUAL_REVIEW result. */
+	void decide(boolean accept, UUID staffId) {
+		this.status = accept ? "SUCCEEDED" : "FAILED";
+		if (!accept) {
+			this.failureCode = "REJECTED_BY_REVIEWER";
+		}
+		this.decidedBy = staffId;
+	}
+
+	boolean isAwaitingReview() {
+		return "MANUAL_REVIEW".equals(status);
 	}
 
 	boolean isAwaiting() {

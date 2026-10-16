@@ -28,6 +28,10 @@ class Applicant extends BaseEntity {
 		this.mobileMasked = mobileMasked;
 	}
 
+	byte[] getMobileEnc() {
+		return mobileEnc;
+	}
+
 	String getMobileMasked() {
 		return mobileMasked;
 	}

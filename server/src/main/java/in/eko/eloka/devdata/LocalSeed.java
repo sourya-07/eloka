@@ -5,7 +5,11 @@ import java.util.Map;
 import tools.jackson.databind.JsonNode;
 
 /** Shape of {@code devdata/local-seed.json}. */
-record LocalSeed(List<SeedOrg> orgs) {
+record LocalSeed(List<SeedOrg> orgs, List<SeedStaff> staff) {
+
+	/** Eko staff for the review console (P8); they log in with OTP 123456 to {@code mobile}. */
+	record SeedStaff(String email, String name, String mobile, List<String> roles) {
+	}
 
 	record SeedOrg(String key, String name, String appName, String logoUrl, List<String> subdomains,
 			List<String> extraHostnames, Map<String, JsonNode> metadata, List<SeedUser> users,

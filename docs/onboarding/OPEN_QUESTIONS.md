@@ -79,10 +79,11 @@
 | ID | Question | Why it matters | Working assumption | Blocks |
 |---|---|---|---|---|
 | OQ-S1 | Must the staff console be reachable only from the corporate network / VPN? | Admin surface | Yes (plus SSO) | Phase 8 |
-| OQ-S2 | Who may reveal unmasked PAN / account numbers, and must every reveal state a purpose? | PII access | Compliance role only; purpose required | Phase 8 |
+| OQ-S2 | Who may reveal unmasked PAN / account numbers, and must every reveal state a purpose? | PII access | Compliance role only; purpose required. **P8 built:** purpose required and audited; the `APPROVER` role reveals until a compliance role is defined | Phase 8 |
 | OQ-S3 | Session lifetimes for applicants (idle / absolute) and the OTP length for applicant login | Auth | 30 min / 12 h; 6 digits | Phase 2 |
 | OQ-S4 | Is a CAPTCHA acceptable on OTP send after abuse thresholds (Android WebView compatibility)? | OTP-pumping defence | Yes, adaptive | Phase 2 |
 | OQ-S5 | Is a third-party penetration test required before launch, and is there a standard (e.g. CERT-In empanelled auditor)? | Launch gate | Yes | Phase 12 |
+| OQ-S6 | Is Google Workspace 2-step verification (enforced by the Workspace admin) enough as staff MFA, or must the server enforce a second factor itself? | Staff console access | Workspace 2SV is enforced for every staff account | P8 (built on this assumption) |
 
 ## Compliance
 

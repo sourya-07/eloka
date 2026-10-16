@@ -22,6 +22,8 @@ interface OnboardingApplicationRepository extends JpaRepository<OnboardingApplic
 
 	Optional<OnboardingApplication> findByPublicIdAndApplicantId(String publicId, UUID applicantId);
 
+	Optional<OnboardingApplication> findByPublicId(String publicId);
+
 	List<OnboardingApplication> findByApplicantIdAndStatusNotIn(UUID applicantId, Collection<ApplicationStatus> excluded);
 
 	boolean existsByApplicantIdAndStatus(UUID applicantId, ApplicationStatus status);
@@ -31,6 +33,9 @@ interface OnboardingApplicationRepository extends JpaRepository<OnboardingApplic
 	@Query("select a from OnboardingApplication a where a.publicId = :publicId and a.applicantId = :applicantId")
 	Optional<OnboardingApplication> lockByPublicIdAndApplicantId(@Param("publicId") String publicId,
 			@Param("applicantId") UUID applicantId);
+
+	@Query("select a.id from OnboardingApplication a where a.status = in.eko.eloka.onboarding.ApplicationStatus.CORRECTION_REQUIRED and a.correctionDueAt < :now")
+	List<UUID> findOverdueCorrections(@Param("now") Instant now);
 
 	@Query("select a.id from OnboardingApplication a where a.status in :statuses and a.lastApplicantActivityAt < :cutoff")
 	List<UUID> findIdleIds(@Param("statuses") Collection<ApplicationStatus> statuses, @Param("cutoff") Instant cutoff);
@@ -71,3 +76,14 @@ interface ApplicationDocumentRepository extends JpaRepository<ApplicationDocumen
 
 	Optional<ApplicationDocument> findByPublicIdAndApplicationId(String publicId, UUID applicationId);
 }
+
+interface ReviewActionRepository extends JpaRepository<ReviewAction, UUID> {
+
+	List<ReviewAction> findByApplicationIdOrderByOccurredAtAsc(UUID applicationId);
+}
+
+interface CorrectionRequestRepository extends JpaRepository<CorrectionRequest, UUID> {
+
+	List<CorrectionRequest> findByApplicationIdOrderByCreatedAtDesc(UUID applicationId);
+}
+

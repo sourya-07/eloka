@@ -102,6 +102,13 @@ final class StepContext {
 				record("STEP_INVALIDATED", dependent);
 				invalidateDependents(dependent, visited);
 			}
+			else if (downstream.getStatus() == StepStatus.LOCKED
+					&& application.getStatus() == in.eko.eloka.onboarding.ApplicationStatus.CORRECTION_REQUIRED) {
+				// T6: a corrected step changes what was declared and signed, so those are redone too
+				downstream.reopen("DEPENDENCY_CHANGED", null);
+				record("STEP_REOPENED", dependent);
+				invalidateDependents(dependent, visited);
+			}
 		}
 	}
 

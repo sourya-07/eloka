@@ -1,6 +1,6 @@
 # ELOKA Local Admin Onboarding — API Specification
 
-> Status: applicant APIs **A1–A30 implemented in P7** (16 October 2026); deviations are listed in [P7_APPLICANT_API.md](./P7_APPLICANT_API.md) §2 and §9. Staff (S1–S22), tenant (T1–T4) and webhook (W1–W5) APIs are not built yet (P8/P9). Revised 14 October 2026: Java 25 + Spring Boot 4, MySQL 8.4.
+> Status: applicant APIs **A1–A30 implemented in P7** (16 October 2026); deviations are listed in [P7_APPLICANT_API.md](./P7_APPLICANT_API.md) §2 and §9. Staff **S1–S13 and S21 implemented in P8** ([P8_STAFF_REVIEW.md](./P8_STAFF_REVIEW.md); staff sign in with Google, not OIDC+MFA claims). S14–S20, S22, tenant (T1–T4) and webhook (W1–W5) APIs are not built yet (P9). Revised 14 October 2026: Java 25 + Spring Boot 4, MySQL 8.4.
 > All endpoints are **PROPOSED / RECOMMENDED** unless marked otherwise. Existing EPS interactions they wrap are listed in [INTEGRATIONS.md](./INTEGRATIONS.md).
 
 ---

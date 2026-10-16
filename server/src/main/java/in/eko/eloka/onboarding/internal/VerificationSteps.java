@@ -280,7 +280,12 @@ class VerificationSteps {
 			AgreementApi.AgreementView view = agreements.prepare(context.applicationId(), applicantId,
 					new AgreementContent(p.getLegalName(), entityType == null ? null : entityType.name(), p.getPanMasked(),
 							p.getSignatoryName(), address, p.getEmailMasked()));
-			if (context.step(StepKey.AGREEMENT_ESIGN).getStatus() == StepStatus.NOT_STARTED) {
+			if (view.isSigned()) {
+				// Same content as the signed version (e.g. a correction that did not touch the agreement):
+				// no new signature needed (T6)
+				completeAgreement(context, view);
+			}
+			else if (context.step(StepKey.AGREEMENT_ESIGN).getStatus() == StepStatus.NOT_STARTED) {
 				context.step(StepKey.AGREEMENT_ESIGN).saveDraft("{}");
 			}
 			return view;
@@ -311,15 +316,19 @@ class VerificationSteps {
 		return applications.write(applicantId, publicId, null, null, context -> {
 			AgreementApi.AgreementView view = agreements.status(context.applicationId(), agreementId);
 			if (view.isSigned()) {
-				Map<String, Object> summary = new LinkedHashMap<>();
-				summary.put("agreement_id", view.agreementId());
-				summary.put("version", view.versionNo());
-				summary.put("content_sha256", view.contentSha256());
-				context.complete(StepKey.AGREEMENT_ESIGN, json.writeValueAsString(summary));
-				applications.submitIfComplete(context, false);
+				completeAgreement(context, view);
 			}
 			return view;
 		});
+	}
+
+	private void completeAgreement(StepContext context, AgreementApi.AgreementView view) {
+		Map<String, Object> summary = new LinkedHashMap<>();
+		summary.put("agreement_id", view.agreementId());
+		summary.put("version", view.versionNo());
+		summary.put("content_sha256", view.contentSha256());
+		context.complete(StepKey.AGREEMENT_ESIGN, json.writeValueAsString(summary));
+		applications.submitIfComplete(context, false);
 	}
 
 	private static void requireAttemptsLeft(StepContext context, StepKey key) {

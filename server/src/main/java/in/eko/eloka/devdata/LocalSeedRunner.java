@@ -52,12 +52,14 @@ class LocalSeedRunner implements ApplicationRunner, UnsafeInProduction {
 	private final HistoryApi history;
 	private final NotificationApi notifications;
 	private final AgentOnboardingApi onboarding;
+	private final in.eko.eloka.identity.IdentityApi identity;
 	private final JsonMapper json;
 	private final java.time.Clock clock;
 
 	LocalSeedRunner(OrgApi orgs, UserDirectory userDirectory, UserCommands userCommands, WalletApi wallets,
-			HistoryApi history, NotificationApi notifications, AgentOnboardingApi onboarding, JsonMapper json,
-			java.time.Clock clock) {
+			HistoryApi history, NotificationApi notifications, AgentOnboardingApi onboarding,
+			in.eko.eloka.identity.IdentityApi identity, JsonMapper json, java.time.Clock clock) {
+		this.identity = identity;
 		this.orgs = orgs;
 		this.userDirectory = userDirectory;
 		this.userCommands = userCommands;
@@ -86,6 +88,13 @@ class LocalSeedRunner implements ApplicationRunner, UnsafeInProduction {
 			seed = json.readValue(in, LocalSeed.class);
 		}
 		int created = 0;
+		if (seed.staff() != null) {
+			for (LocalSeed.SeedStaff member : seed.staff()) {
+				java.util.Set<in.eko.eloka.identity.StaffRole> roles = java.util.EnumSet.noneOf(in.eko.eloka.identity.StaffRole.class);
+				member.roles().forEach(role -> roles.add(in.eko.eloka.identity.StaffRole.valueOf(role)));
+				identity.saveStaff(member.email(), member.name(), member.mobile(), roles, true);
+			}
+		}
 		for (LocalSeed.SeedOrg seedOrg : seed.orgs()) {
 			boolean newOrg = orgs.findByHostname(orgs.hostnameForSubdomain(seedOrg.subdomains().getFirst())).isEmpty();
 			OrgView org = newOrg ? orgs.createOrg(toNewOrg(seedOrg))

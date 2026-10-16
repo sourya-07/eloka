@@ -65,6 +65,10 @@ class BankAccount extends BaseEntity {
 		this.beneficiaryName = name;
 	}
 
+	byte[] getAccountEnc() {
+		return accountEnc;
+	}
+
 	String getPublicId() {
 		return publicId;
 	}

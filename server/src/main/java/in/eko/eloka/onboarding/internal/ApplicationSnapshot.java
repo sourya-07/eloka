@@ -13,7 +13,12 @@ import tools.jackson.databind.JsonNode;
 record ApplicationSnapshot(@JsonProperty("onboarding_id") String onboardingId, String status, long version,
 		Program program, @JsonProperty("next_recommended_step") String nextRecommendedStep,
 		@JsonProperty("expires_at") Instant expiresAt, @JsonProperty("submitted_at") Instant submittedAt, List<Step> steps,
-		@JsonProperty("available_actions") List<String> availableActions) {
+		@JsonProperty("available_actions") List<String> availableActions, Correction correction) {
+
+	/** What the reviewer asked to fix (only while {@code CORRECTION_REQUIRED}). */
+	record Correction(@JsonProperty("reason_code") String reasonCode, String message, @JsonProperty("due_at") Instant dueAt,
+			@JsonProperty("step_keys") JsonNode stepKeys) {
+	}
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	record Program(@JsonProperty("applicant_category") String applicantCategory,

@@ -89,6 +89,8 @@ class OnboardingStep extends BaseEntity {
 		this.lastErrorCode = null;
 		this.completedAt = now;
 		this.draftData = null;
+		this.reopenReasonCode = null;
+		this.reviewerMessage = null;
 	}
 
 	/** Waiting for a provider (redirect, async check). */
@@ -125,6 +127,15 @@ class OnboardingStep extends BaseEntity {
 	void lock() {
 		if (status == StepStatus.COMPLETED || status == StepStatus.SKIPPED) {
 			status = StepStatus.LOCKED;
+		}
+	}
+
+	/** A reviewer asks for this step again (T5); the applicant sees the reason and message. */
+	void reopen(String reasonCode, String message) {
+		if (status == StepStatus.LOCKED || status == StepStatus.COMPLETED || status == StepStatus.SKIPPED) {
+			this.status = StepStatus.REOPENED;
+			this.reopenReasonCode = reasonCode;
+			this.reviewerMessage = message;
 		}
 	}
 

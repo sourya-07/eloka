@@ -128,6 +128,16 @@ class OtpService implements SafetyCheck {
 		return check(orgId, OtpChallenge.PURPOSE_REAUTH, reauthTarget(sessionId), code);
 	}
 
+	String issueStaff(long platformOrgId, String mobile, String clientIp) {
+		return issue(platformOrgId, OtpChallenge.PURPOSE_STAFF, index.hash("mobile", mobile), clientIp,
+				code -> sms.send(new SmsMessage(mobile, "STAFF_LOGIN_OTP",
+						Map.of("otp", code, "minutes", Long.toString(properties.otpTtl().toMinutes())), "otp")));
+	}
+
+	Check checkStaff(long platformOrgId, String mobile, String code) {
+		return check(platformOrgId, OtpChallenge.PURPOSE_STAFF, index.hash("mobile", mobile), code);
+	}
+
 	private byte[] reauthTarget(java.util.UUID sessionId) {
 		return index.hash("reauth", sessionId.toString());
 	}

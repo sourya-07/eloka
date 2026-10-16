@@ -115,6 +115,7 @@ class ApplicationDocuments {
 		return rows.findByApplicationIdOrderByCreatedAtAsc(applicationId)
 			.stream()
 			.filter(ApplicationDocument::isCurrent)
+			.filter(document -> !"REJECTED".equals(document.getStatus())) // a rejected file must be replaced
 			.map(ApplicationDocument::getDocType)
 			.collect(Collectors.toSet());
 	}

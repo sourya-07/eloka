@@ -55,6 +55,9 @@ eloka:
     session-idle-timeout: 2h
     session-absolute-ttl: 12h
     access-token-ttl: 30m
+  # Eko staff sign-in (P8). Google in every environment; OTP only where enabled (local/test).
+  staff:
+    otp-login-enabled: false
   tenant:
     org-token-ttl: 30d
   # Local Admin onboarding step policy. Open business questions (docs/onboarding/OPEN_QUESTIONS.md)

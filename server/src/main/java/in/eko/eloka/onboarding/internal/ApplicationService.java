@@ -54,6 +54,7 @@ class ApplicationService {
 	private final OnboardingStepRepository steps;
 	private final BusinessProfileRepository profiles;
 	private final TimelineEntryRepository timeline;
+	private final CorrectionRequestRepository corrections;
 	private final ApplicationStateMachine stateMachine;
 	private final Map<StepKey, StepHandler> handlers = new EnumMap<>(StepKey.class);
 	private final OnboardingProperties properties;
@@ -65,13 +66,14 @@ class ApplicationService {
 
 	ApplicationService(ApplicantRepository applicants, OnboardingApplicationRepository applications,
 			OnboardingStepRepository steps, BusinessProfileRepository profiles, TimelineEntryRepository timeline,
-			ApplicationStateMachine stateMachine, List<StepHandler> stepHandlers, OnboardingProperties properties,
+			CorrectionRequestRepository corrections, ApplicationStateMachine stateMachine, List<StepHandler> stepHandlers, OnboardingProperties properties,
 			FieldCipher cipher, BlindIndex index, AuditLog audit, JsonMapper json, Clock clock) {
 		this.applicants = applicants;
 		this.applications = applications;
 		this.steps = steps;
 		this.profiles = profiles;
 		this.timeline = timeline;
+		this.corrections = corrections;
 		this.stateMachine = stateMachine;
 		stepHandlers.forEach(handler -> handlers.put(handler.key(), handler));
 		this.properties = properties;
@@ -255,6 +257,10 @@ class ApplicationService {
 		}
 		context.steps().values().forEach(OnboardingStep::lock);
 		stateMachine.apply(context.application(), LifecycleEvent.SUBMIT, "APPLICANT");
+		// T6: a resubmission closes the open correction request
+		corrections.findByApplicationIdOrderByCreatedAtDesc(context.applicationId())
+			.forEach(request -> request.resolve(context.now()));
+		context.application().correctionDue(null);
 	}
 
 	/** A11 / T16: withdraws (the web layer checks the step-up token first). */
@@ -278,8 +284,11 @@ class ApplicationService {
 	@Transactional
 	boolean expireIfIdle(UUID applicationId) {
 		OnboardingApplication application = applications.lockById(applicationId).orElse(null);
-		Instant cutoff = Instant.now(clock).minus(properties.idleExpiry());
-		if (application == null || !application.isIdleSince(cutoff)
+		Instant now = Instant.now(clock);
+		Instant cutoff = now.minus(properties.idleExpiry());
+		boolean correctionOverdue = application != null && application.getStatus() == ApplicationStatus.CORRECTION_REQUIRED
+				&& application.getCorrectionDueAt() != null && application.getCorrectionDueAt().isBefore(now);
+		if (application == null || !(application.isIdleSince(cutoff) || correctionOverdue)
 				|| !stateMachine.allows(application, LifecycleEvent.EXPIRE)) {
 			return false;
 		}
@@ -288,8 +297,11 @@ class ApplicationService {
 	}
 
 	List<UUID> idleApplicationIds() {
-		return applications.findIdleIds(EnumSet.of(ApplicationStatus.IN_PROGRESS, ApplicationStatus.CORRECTION_REQUIRED),
-				Instant.now(clock).minus(properties.idleExpiry()));
+		Instant now = Instant.now(clock);
+		List<UUID> ids = new ArrayList<>(applications.findIdleIds(
+				EnumSet.of(ApplicationStatus.IN_PROGRESS, ApplicationStatus.CORRECTION_REQUIRED), now.minus(properties.idleExpiry())));
+		applications.findOverdueCorrections(now).stream().filter(id -> !ids.contains(id)).forEach(ids::add);
+		return ids;
 	}
 
 	Set<String> draftFields(StepKey key) {
@@ -334,11 +346,21 @@ class ApplicationService {
 			actions.add("WITHDRAW");
 		}
 		var entityType = application.getEntityType();
+		ApplicationSnapshot.Correction correction = null;
+		if (application.getStatus() == ApplicationStatus.CORRECTION_REQUIRED) {
+			correction = corrections.findByApplicationIdOrderByCreatedAtDesc(application.getId())
+				.stream()
+				.filter(CorrectionRequest::isOpen)
+				.findFirst()
+				.map(request -> new ApplicationSnapshot.Correction(request.getReasonCode(), request.getMessage(),
+						request.getDueAt(), readJson(request.getStepKeys())))
+				.orElse(null);
+		}
 		return new ApplicationSnapshot(application.getPublicId(), application.getStatus().name(), application.getVersion(),
 				new ApplicationSnapshot.Program(application.getApplicantCategory(), application.getProductType(),
 						entityType == null ? null : entityType.code()),
 				next, application.getExpiresAt(), application.getSubmittedAt(),
-				rows.stream().map(this::stepView).toList(), actions);
+				rows.stream().map(this::stepView).toList(), actions, correction);
 	}
 
 	private ApplicationSnapshot.Step stepView(OnboardingStep step) {

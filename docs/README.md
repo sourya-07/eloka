@@ -12,6 +12,7 @@
 | [adr/](./adr) | You need to know why a big decision was made, or are making one (0007: TLS edge) |
 | [onboarding/](./onboarding/ARCHITECTURE.md) | You work on Local Admin onboarding (journey, state machine, DB, API, security, plan, open questions) |
 | [onboarding/P7_APPLICANT_API.md](./onboarding/P7_APPLICANT_API.md) | You change the applicant API (`/v1/onboarding`): what was built, deviations, fakes |
+| [onboarding/P8_STAFF_REVIEW.md](./onboarding/P8_STAFF_REVIEW.md) | You change the staff review API (`/v1/admin`): sign-in, roles, maker-checker, corrections |
 
 Frontend-only docs (animations, feature notes, Docker for the web app) stay in [`client/docs/`](../client/docs).
 

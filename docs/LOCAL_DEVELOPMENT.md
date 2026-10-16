@@ -25,6 +25,7 @@ Open <http://localhost:3002> and log in with one of the numbers below. **The OTP
 | `9000000003` | Arjun Admin (org admin) | Admin portal: dashboard, network, onboard agents, pricing pages |
 | `9000000004` | New user (not registered) | Full self-onboarding: role selection → KYC steps → home |
 | `9000000005` | Meena Midway (retailer, half onboarded) | Resume onboarding at Selfie KYC |
+| `9000000006` / `07` / `08` | Eko staff (server only): reviewer / approver / admin | Review console API `/v1/admin` (P8) |
 | any other 10 digits | New user | Same as `9000000004` |
 
 Onboarding steps in the mock:
@@ -89,6 +90,19 @@ curl -s -D - $API/otp/verify -H 'Content-Type: application/json' -d "{\"otp_ref\
 ```
 
 Every write sends `Authorization: Bearer <access_token>`, `If-Match: <ETag>` and a new `Idempotency-Key`; bank, e-sign and withdraw also need `X-Reauth-Token` from `POST $API/reauth` + `POST $API/reauth/verify {"otp":"123456"}`. The full journey in order, with request bodies, is the test `server/src/test/java/in/eko/eloka/onboarding/internal/OnboardingApplicantIntegrationTest.java`. Fake providers: PAN digits `0000` fail and `9999` are pending once; a PAN like `ABCCD1234E` is a company PAN; bank accounts ending `0000` fail. Details: [`onboarding/P7_APPLICANT_API.md`](./onboarding/P7_APPLICANT_API.md).
+
+### Try the staff review API (P8)
+
+Seeded staff (OTP `123456`): `9000000006` reviewer, `9000000007` approver, `9000000008` admin.
+
+```bash
+ADMIN=http://localhost:8090/v1/admin
+curl -s $ADMIN/auth/otp -H 'Content-Type: application/json' -d '{"mobile":"9000000006"}'
+curl -s $ADMIN/auth/otp/verify -H 'Content-Type: application/json' -d '{"mobile":"9000000006","otp":"123456"}'   # → access_token
+curl -s "$ADMIN/applications?status=SUBMITTED" -H "Authorization: Bearer $TOKEN"
+```
+
+Order of a review: claim → verify documents → decide flagged checks → recommend (reviewer) → approve (a different staff member with the approver role). Corrections reopen steps for the applicant. Every action needs a new `Idempotency-Key`. The full flow is `server/src/test/java/in/eko/eloka/onboarding/internal/StaffReviewIntegrationTest.java`.
 
 ## Run the website against real EPS (UAT)
 

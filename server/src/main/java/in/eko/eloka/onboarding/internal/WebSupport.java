@@ -26,6 +26,15 @@ final class WebSupport {
 		return caller;
 	}
 
+	/** The Eko staff member behind this request (security already requires a staff session). */
+	static Caller staff() {
+		Caller caller = CallerContext.require();
+		if (caller.kind() != SessionKind.STAFF || caller.userId() == null) {
+			throw new ApiProblem(HttpStatus.FORBIDDEN, "FORBIDDEN", "You are not allowed to do this.");
+		}
+		return caller;
+	}
+
 	static UUID applicantId() {
 		return applicant().userId();
 	}

@@ -38,7 +38,13 @@ In the commands below, `DC` means `docker compose -f deploy/docker-compose.yml -
      bootstrap
    ```
    Optional: `ELOKA_BOOTSTRAP_APP_NAME`, `ELOKA_BOOTSTRAP_ADMIN_EMAIL`, `ELOKA_BOOTSTRAP_EXTRA_HOSTNAMES` (comma-separated custom domains), `ELOKA_BOOTSTRAP_SUPPORT_EMAIL`, `ELOKA_BOOTSTRAP_SUPPORT_PHONE`. It is safe to re-run: an existing sub-domain is left as it is. The Local Admin then logs in at `https://shlok.<root>` with an OTP.
-6. Smoke test: open `https://<label>.<root>`, log in, check `$DC logs server | grep -i error` is quiet.
+6. Create Eko staff accounts for the review console (they sign in with Google, so set `ELOKA_STAFF_GOOGLE_CLIENT_ID` and `ELOKA_STAFF_GOOGLE_DOMAIN` first):
+   ```bash
+   $DC --profile tools run --rm -e SPRING_PROFILES_ACTIVE=prod,staff-bootstrap \
+     -e ELOKA_STAFF_EMAIL=reviewer@eko.co.in -e ELOKA_STAFF_NAME="Riya" -e ELOKA_STAFF_ROLES=REVIEWER bootstrap
+   ```
+   Roles: `REVIEWER`, `APPROVER`, `AUDITOR`, `ADMIN` (comma-separated). Re-running updates the account; `ELOKA_STAFF_ACTIVE=false` disables it at once (open sessions stop working on the next request).
+7. Smoke test: open `https://<label>.<root>`, log in, check `$DC logs server | grep -i error` is quiet.
 
 ## Production vs staging
 
@@ -106,7 +112,7 @@ Rotation: daily or 100 MB, gzip; kept 30 (app), 90 (access), 365 (audit) days. P
 
 ## Environment variables
 
-See `deploy/.env.example` for the full list with notes. Required: `ELOKA_DB_*`, `MYSQL_ROOT_PASSWORD`, `ELOKA_CRYPTO_FIELD_KEY`, `ELOKA_CRYPTO_INDEX_KEY`, `ELOKA_ORG_TOKEN_KEY`, `ELOKA_ORG_META_SECRET`, `ELOKA_OTP_PEPPER`, `ELOKA_PLATFORM_ROOT_DOMAIN`, `ELOKA_CORS_ALLOWED_ORIGIN_PATTERNS`, `ELOKA_ACME_EMAIL`. Optional: `ELOKA_ENVIRONMENT`, `ELOKA_SMS_PROVIDER`, `ELOKA_SMS_REVEAL_SECRETS`, `ELOKA_EMAIL_PROVIDER`, `ELOKA_STORAGE_PATH` (default `/app/data/files`, on the `server-files` volume), `ELOKA_SESSION_IDLE_TIMEOUT` (2h), `ELOKA_SESSION_ABSOLUTE_TTL` (12h), `ELOKA_ACCESS_TOKEN_TTL` (30m; the client rotates the token with the refresh token before it expires), `ELOKA_TRUSTED_PROXIES` (default: private networks, which covers the edge and the client container), `MANAGEMENT_SERVER_PORT`, `ELOKA_ORG_CACHE_EXPIRY_SEC`, `ELOKA_CADDY_GLOBAL`.
+See `deploy/.env.example` for the full list with notes. Required: `ELOKA_DB_*`, `MYSQL_ROOT_PASSWORD`, `ELOKA_CRYPTO_FIELD_KEY`, `ELOKA_CRYPTO_INDEX_KEY`, `ELOKA_ORG_TOKEN_KEY`, `ELOKA_ORG_META_SECRET`, `ELOKA_OTP_PEPPER`, `ELOKA_PLATFORM_ROOT_DOMAIN`, `ELOKA_CORS_ALLOWED_ORIGIN_PATTERNS`, `ELOKA_ACME_EMAIL`. Optional: `ELOKA_ENVIRONMENT`, `ELOKA_SMS_PROVIDER`, `ELOKA_SMS_REVEAL_SECRETS`, `ELOKA_EMAIL_PROVIDER`, `ELOKA_STORAGE_PATH` (default `/app/data/files`, on the `server-files` volume), `ELOKA_SESSION_IDLE_TIMEOUT` (2h), `ELOKA_SESSION_ABSOLUTE_TTL` (12h), `ELOKA_ACCESS_TOKEN_TTL` (30m; the client rotates the token with the refresh token before it expires), `ELOKA_TRUSTED_PROXIES` (default: private networks, which covers the edge and the client container), `MANAGEMENT_SERVER_PORT`, `ELOKA_ORG_CACHE_EXPIRY_SEC`, `ELOKA_CADDY_GLOBAL`, `ELOKA_STAFF_GOOGLE_CLIENT_ID` (staff console OAuth client; without it staff cannot sign in), `ELOKA_STAFF_GOOGLE_DOMAIN` (default `eko.co.in`).
 
 The compose file wires the client for you: `ORG_META_SERVICE_SECRET` = `ELOKA_ORG_META_SECRET`, `API_INTERNAL_BASE_URL` and `ORG_META_SERVICE` = the internal server URL, `NEXT_PUBLIC_API_BASE_URL` = `https://api.<root>`, `NEXT_PUBLIC_DISABLE_TRANSACTIONS=true`.
 

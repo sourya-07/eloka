@@ -52,7 +52,10 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/v1/onboarding/otp", "/v1/onboarding/otp/verify",
 								"/v1/onboarding/session/refresh").permitAll()
 						.requestMatchers("/v1/onboarding/**").hasAuthority("KIND_" + SessionKind.LA_APPLICANT.name())
-						.requestMatchers("/v1/admin/**").authenticated()
+						// Eko staff: sign-in is public; everything else needs a staff session (permissions checked per action)
+						.requestMatchers(HttpMethod.POST, "/v1/admin/auth/google", "/v1/admin/auth/otp", "/v1/admin/auth/otp/verify",
+								"/v1/admin/auth/refresh").permitAll()
+						.requestMatchers("/v1/admin/**").hasAuthority("KIND_" + SessionKind.STAFF.name())
 						.anyRequest().denyAll())
 				.exceptionHandling(ex -> ex
 						.authenticationEntryPoint((request, response, e) -> writeJson(response,

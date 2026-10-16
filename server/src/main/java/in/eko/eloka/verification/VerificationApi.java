@@ -21,6 +21,30 @@ public interface VerificationApi {
 
 	Optional<BankResult> bankAccount(UUID applicationId, String bankAccountId);
 
+	/** Every attempt of an application, newest first (staff review). Masked values only. */
+	java.util.List<AttemptView> attempts(UUID applicationId);
+
+	/**
+	 * S7: a reviewer accepts or rejects a {@code MANUAL_REVIEW} result (e.g. a name mismatch).
+	 *
+	 * @throws in.eko.eloka.shared.error.ConflictException when the attempt is not waiting for review
+	 */
+	AttemptView decide(UUID applicationId, UUID verificationId, boolean accept, UUID staffId);
+
+	/** S13: the full account number of a submitted bank account (the caller audits the reveal). */
+	String revealAccountNumber(UUID applicationId, String bankAccountId);
+
+	/** How many other applications submitted the same bank account (OQ-B6: flagged, not blocked). */
+	long bankAccountReuseCount(UUID applicationId);
+
+	/**
+	 * @param kind PAN, KYC or BANK
+	 * @param status AWAITING_PROVIDER, SUCCEEDED, FAILED, MANUAL_REVIEW
+	 */
+	record AttemptView(UUID verificationId, String kind, String status, Integer nameMatchScore, String failureCode,
+			String resultJson, java.time.Instant createdAt) {
+	}
+
 	enum Status {
 		SUCCEEDED,
 		FAILED,

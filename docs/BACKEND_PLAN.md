@@ -116,7 +116,7 @@ Provisioning creates an org + Local Admin in our own DB, in **one transaction** 
 
 ## Phases (SDLC: each phase = design note → build → tests → review → demo)
 
-> Status (2026-10-16): **P0–P7 done** (P6 open items: staging host, tag). Next: P8. Per-call progress: [`eps-compat/CONTRACT.md`](./eps-compat/CONTRACT.md).
+> Status (2026-10-16): **P0–P8 done** (P6 open items: staging host, tag). Next: P9. Per-call progress: [`eps-compat/CONTRACT.md`](./eps-compat/CONTRACT.md).
 
 **Release 1: our server replaces EPS for the existing screens**
 
@@ -135,7 +135,7 @@ Provisioning creates an org + Local Admin in our own DB, in **one transaction** 
 | Phase | Deliverables | Done when |
 |---|---|---|
 | P7 Applicant API | A1–A30 with fakes for PAN, DigiLocker, bank, e-sign; state machine + ETag/If-Match + Idempotency-Key | Applicant goes from OTP to SUBMITTED. **Done 2026-10-16** ([design note](./onboarding/P7_APPLICANT_API.md), 11 integration scenarios) |
-| P8 Staff review API | S1–S13, S21, maker-checker | Reviewer approves/rejects/corrects; same person cannot recommend and approve |
+| P8 Staff review API | S1–S13, S21, maker-checker | Reviewer approves/rejects/corrects; same person cannot recommend and approve. **Done 2026-10-16** ([design note](./onboarding/P8_STAFF_REVIEW.md), 8 integration scenarios) |
 | P9 Provisioning + go-live | Listener on `ApplicationApproved` → org + domain + metadata + Local Admin + default products; S14–S18 activation | Approved applicant logs in at `{label}.{root}` as Local Admin |
 | FE-R2 (parallel to P7–P9) | `client/features/la-onboarding/` (routes `pages/partner/onboarding/*` on `partners.<root>`), reusing `features/onboarding` step components, `components/Dropzone` and the `VerifyOtp` UI; `client/features/staff-console/` (`pages/staff/*` on `staff.<root>`); typed client generated from springdoc OpenAPI | Full journey clickable locally with fixed creds |
 

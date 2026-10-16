@@ -112,4 +112,28 @@ final class FakeProviders {
 			return "FakeEsign marks every agreement as signed";
 		}
 	}
+
+	/**
+	 * Tests only: accepts {@code test-google:<email>:<hosted domain>} instead of a signed Google token,
+	 * so staff sign-in can be tested without Google. Local runs use the real verifier (or staff OTP).
+	 */
+	@Component
+	@Profile("test")
+	static class FakeGoogleIdentityVerifier implements in.eko.eloka.integration.GoogleIdentityVerifier, UnsafeInProduction {
+
+		@Override
+		public java.util.Optional<GoogleIdentity> verify(String idToken) {
+			if (idToken == null || !idToken.startsWith("test-google:")) {
+				return java.util.Optional.empty();
+			}
+			String[] parts = idToken.split(":");
+			return java.util.Optional.of(new GoogleIdentity(parts[1], true, parts.length > 2 ? parts[2] : null, "Test Staff"));
+		}
+
+		@Override
+		public String unsafeReason() {
+			return "FakeGoogleIdentityVerifier accepts unsigned test tokens";
+		}
+	}
 }
+

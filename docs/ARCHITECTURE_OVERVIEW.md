@@ -80,7 +80,7 @@ Next.js 15 (pages router), React 18, Chakra UI, TypeScript where new. Component-
 
 ## 5. Server (backend) in one paragraph
 
-Spring Boot 4 **modular monolith** (Spring Modulith). One deployable, split into modules that own their data and talk through public interfaces or events. Built (Release 1): `gateway` (EPS wire format → domain calls), `identity`, `tenant`, `network`, `agentonboarding`, `wallet`, `history`, `pricing`, `support`, `documents`, `reference`, `notification`, `integration`, `audit`, plus `shared`, `system` and the local-only `devdata`. Built in Release 2 so far (P7): `onboarding`, `verification`, `whitelabel`, `agreement` (Local Admin applicant API on `/v1/onboarding`). Planned: `review` (P8), `provisioning` (P9), `lead`. MySQL 8.4 with Flyway migrations. Layering inside a module: controller → service → domain → repository/adapter. External systems sit behind port interfaces with fake adapters for local runs and tests. Details: [`server/CLAUDE.md`](../server/CLAUDE.md).
+Spring Boot 4 **modular monolith** (Spring Modulith). One deployable, split into modules that own their data and talk through public interfaces or events. Built (Release 1): `gateway` (EPS wire format → domain calls), `identity`, `tenant`, `network`, `agentonboarding`, `wallet`, `history`, `pricing`, `support`, `documents`, `reference`, `notification`, `integration`, `audit`, plus `shared`, `system` and the local-only `devdata`. Built in Release 2 so far (P7–P8): `onboarding` (applicant API `/v1/onboarding` and staff review `/v1/admin`), `verification`, `whitelabel`, `agreement`. Planned: `provisioning` (P9), `lead`. MySQL 8.4 with Flyway migrations. Layering inside a module: controller → service → domain → repository/adapter. External systems sit behind port interfaces with fake adapters for local runs and tests. Details: [`server/CLAUDE.md`](../server/CLAUDE.md).
 
 ```mermaid
 flowchart TB
@@ -134,5 +134,5 @@ sequenceDiagram
 
 1. **Finish P6:** run the stack on a real staging host, tag `v1.0.0` ([`BACKEND_PLAN.md`](./BACKEND_PLAN.md), [`deploy/RUNBOOK.md`](./deploy/RUNBOOK.md)).
 2. **Real providers:** SMS, email, DigiLocker, e-sign (production cannot finish agent onboarding without them, see [`deploy/RUNBOOK.md`](./deploy/RUNBOOK.md)).
-3. **Release 2 (P8–P9, P7 done):** staff review, provisioning and go-live, plus the applicant UI (FE-R2). It replaces today's Eko Connect + Go-Live tool + email/CRM process ([`onboarding/ELOKA_ONBOARDING_JOURNEY.md`](./onboarding/ELOKA_ONBOARDING_JOURNEY.md) §2). Blocking questions: [`onboarding/OPEN_QUESTIONS.md`](./onboarding/OPEN_QUESTIONS.md).
+3. **Release 2 (P9; P7–P8 done):** provisioning and go-live, plus the applicant and staff screens (FE-R2). It replaces today's Eko Connect + Go-Live tool + email/CRM process ([`onboarding/ELOKA_ONBOARDING_JOURNEY.md`](./onboarding/ELOKA_ONBOARDING_JOURNEY.md) §2). Blocking questions: [`onboarding/OPEN_QUESTIONS.md`](./onboarding/OPEN_QUESTIONS.md).
 4. **CD:** a pipeline that builds and publishes images once a deploy target is chosen (CI already builds and scans both images).

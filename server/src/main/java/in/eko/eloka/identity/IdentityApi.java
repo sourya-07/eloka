@@ -75,4 +75,17 @@ public interface IdentityApi {
 
 	/** Uses a re-auth token. @return false when unknown, expired, used, or for another session */
 	boolean consumeReauthToken(UUID sessionId, String token);
+
+	/** Staff sign-in with a Google ID token (production path). */
+	StaffLoginResult staffGoogleLogin(String idToken);
+
+	/** Local/test only: OTP to a registered staff mobile; 404 elsewhere. */
+	OtpDispatch sendStaffOtp(String mobile, String clientIp);
+
+	StaffLoginResult verifyStaffOtp(String mobile, String code);
+
+	Optional<StaffView> staff(UUID staffId);
+
+	/** Creates or updates a staff account (bootstrap command, local seed). */
+	StaffView saveStaff(String email, String displayName, String mobile, java.util.Set<StaffRole> roles, boolean active);
 }

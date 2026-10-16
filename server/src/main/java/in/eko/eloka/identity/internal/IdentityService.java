@@ -29,10 +29,12 @@ class IdentityService implements IdentityApi {
 	private final IdentityProperties properties;
 	private final PinService pins;
 	private final ReauthGrantRepository reauthGrants;
+	private final StaffService staffService;
 	private final java.time.Clock clock;
 
 	IdentityService(OtpService otps, SessionService sessions, UserDirectory users, AuditLog audit,
-			IdentityProperties properties, PinService pins, ReauthGrantRepository reauthGrants, java.time.Clock clock) {
+			IdentityProperties properties, PinService pins, ReauthGrantRepository reauthGrants, StaffService staffService,
+			java.time.Clock clock) {
 		this.otps = otps;
 		this.sessions = sessions;
 		this.users = users;
@@ -40,6 +42,7 @@ class IdentityService implements IdentityApi {
 		this.properties = properties;
 		this.pins = pins;
 		this.reauthGrants = reauthGrants;
+		this.staffService = staffService;
 		this.clock = clock;
 	}
 
@@ -211,5 +214,31 @@ class IdentityService implements IdentityApi {
 		return reauthGrants.findByTokenHash(in.eko.eloka.shared.crypto.Tokens.sha256(token))
 			.map(grant -> grant.use(sessionId, java.time.Instant.now(clock)))
 			.orElse(false);
+	}
+
+	@Override
+	public in.eko.eloka.identity.StaffLoginResult staffGoogleLogin(String idToken) {
+		return staffService.googleLogin(idToken);
+	}
+
+	@Override
+	public OtpDispatch sendStaffOtp(String mobile, String clientIp) {
+		return staffService.sendOtp(mobile, clientIp);
+	}
+
+	@Override
+	public in.eko.eloka.identity.StaffLoginResult verifyStaffOtp(String mobile, String code) {
+		return staffService.verifyOtp(mobile, code);
+	}
+
+	@Override
+	public Optional<in.eko.eloka.identity.StaffView> staff(UUID staffId) {
+		return staffService.find(staffId);
+	}
+
+	@Override
+	public in.eko.eloka.identity.StaffView saveStaff(String email, String displayName, String mobile,
+			java.util.Set<in.eko.eloka.identity.StaffRole> roles, boolean active) {
+		return staffService.upsert(email, displayName, mobile, roles, active);
 	}
 }

@@ -44,6 +44,9 @@ eloka:
     session-idle-timeout: ${ELOKA_SESSION_IDLE_TIMEOUT:2h}
     session-absolute-ttl: ${ELOKA_SESSION_ABSOLUTE_TTL:12h}
     access-token-ttl: ${ELOKA_ACCESS_TOKEN_TTL:30m}
+  staff:
+    google-client-id: ${ELOKA_STAFF_GOOGLE_CLIENT_ID:}
+    google-domain: ${ELOKA_STAFF_GOOGLE_DOMAIN:eko.co.in}
   tenant:
     root-domain: ${ELOKA_PLATFORM_ROOT_DOMAIN}
     org-meta-secret: ${ELOKA_ORG_META_SECRET}

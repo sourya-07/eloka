@@ -143,6 +143,34 @@ class BusinessProfile extends BaseEntity {
 		this.photoLatlong = latlong;
 	}
 
+	byte[] getPanEnc() {
+		return panEnc;
+	}
+
+	byte[] getEmailEnc() {
+		return emailEnc;
+	}
+
+	String getContactMobileMasked() {
+		return contactMobileMasked;
+	}
+
+	String getPanHolderType() {
+		return panHolderType;
+	}
+
+	String getAadhaarMasked() {
+		return aadhaarMasked;
+	}
+
+	String getGstin() {
+		return gstin;
+	}
+
+	String getCin() {
+		return cin;
+	}
+
 	String getLegalName() {
 		return legalName;
 	}

@@ -152,6 +152,47 @@ class VerificationService implements VerificationApi {
 			.map(account -> bankView(account, verifications.findById(account.getVerificationId()).orElseThrow()));
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public java.util.List<AttemptView> attempts(UUID applicationId) {
+		return verifications.findByApplicationIdOrderByCreatedAtDesc(applicationId).stream().map(VerificationService::attempt).toList();
+	}
+
+	@Override
+	@Transactional
+	public AttemptView decide(UUID applicationId, UUID verificationId, boolean accept, UUID staffId) {
+		Verification attempt = verifications.findByIdAndApplicationId(verificationId, applicationId)
+			.orElseThrow(() -> new NotFoundException("VERIFICATION_NOT_FOUND", "Verification not found"));
+		if (!attempt.isAwaitingReview()) {
+			throw new in.eko.eloka.shared.error.ConflictException("NOT_IN_MANUAL_REVIEW",
+					"Only results waiting for a reviewer can be decided");
+		}
+		attempt.decide(accept, staffId);
+		audit.record(new AuditEntry("VERIFICATION_DECIDED", "STAFF", staffId.toString(), IdentityApi.PLATFORM_ORG_ID,
+				"ONBOARDING_APPLICATION", applicationId.toString(),
+				Map.of("kind", attempt.getKind(), "decision", accept ? "ACCEPT" : "REJECT")));
+		return attempt(attempt);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public String revealAccountNumber(UUID applicationId, String bankAccountId) {
+		BankAccount account = bankAccounts.findByPublicIdAndApplicationId(bankAccountId, applicationId)
+			.orElseThrow(() -> new NotFoundException("BANK_ACCOUNT_NOT_FOUND", "Bank account not found"));
+		return cipher.decrypt(account.getAccountEnc());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public long bankAccountReuseCount(UUID applicationId) {
+		return bankAccounts.countReuse(applicationId);
+	}
+
+	private static AttemptView attempt(Verification v) {
+		return new AttemptView(v.getId(), v.getKind(), v.getStatus(), v.getNameMatchScore(), v.getFailureCode(),
+				v.getResult(), v.getCreatedAt());
+	}
+
 	private KycResult kycView(Verification attempt) {
 		if ("FAILED".equals(attempt.getStatus())) {
 			return new KycResult(Status.FAILED, null, null, 0, attempt.getFailureCode());

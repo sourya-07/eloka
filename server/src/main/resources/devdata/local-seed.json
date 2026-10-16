@@ -216,5 +216,31 @@
       "users": [],
       "notifications": []
     }
+  ],
+  "staff": [
+    {
+      "email": "riya.reviewer@eko.example",
+      "name": "Riya Reviewer",
+      "mobile": "9000000006",
+      "roles": [
+        "REVIEWER"
+      ]
+    },
+    {
+      "email": "arun.approver@eko.example",
+      "name": "Arun Approver",
+      "mobile": "9000000007",
+      "roles": [
+        "APPROVER"
+      ]
+    },
+    {
+      "email": "sana.admin@eko.example",
+      "name": "Sana Staff Admin",
+      "mobile": "9000000008",
+      "roles": [
+        "ADMIN"
+      ]
+    }
   ]
 }

@@ -26,14 +26,22 @@ class ApplicationStateMachine {
 	private record Key(ApplicationStatus from, LifecycleEvent event) {
 	}
 
-	private static final Map<Key, ApplicationStatus> TRANSITIONS = Map.of(
-			new Key(ApplicationStatus.IN_PROGRESS, LifecycleEvent.SUBMIT), ApplicationStatus.SUBMITTED,
-			new Key(ApplicationStatus.CORRECTION_REQUIRED, LifecycleEvent.SUBMIT), ApplicationStatus.SUBMITTED,
-			new Key(ApplicationStatus.IN_PROGRESS, LifecycleEvent.WITHDRAW), ApplicationStatus.WITHDRAWN,
-			new Key(ApplicationStatus.SUBMITTED, LifecycleEvent.WITHDRAW), ApplicationStatus.WITHDRAWN,
-			new Key(ApplicationStatus.CORRECTION_REQUIRED, LifecycleEvent.WITHDRAW), ApplicationStatus.WITHDRAWN,
-			new Key(ApplicationStatus.IN_PROGRESS, LifecycleEvent.EXPIRE), ApplicationStatus.EXPIRED,
-			new Key(ApplicationStatus.CORRECTION_REQUIRED, LifecycleEvent.EXPIRE), ApplicationStatus.EXPIRED);
+	private static final Map<Key, ApplicationStatus> TRANSITIONS = Map.ofEntries(
+			Map.entry(new Key(ApplicationStatus.IN_PROGRESS, LifecycleEvent.SUBMIT), ApplicationStatus.SUBMITTED),
+			Map.entry(new Key(ApplicationStatus.CORRECTION_REQUIRED, LifecycleEvent.SUBMIT), ApplicationStatus.SUBMITTED),
+			Map.entry(new Key(ApplicationStatus.IN_PROGRESS, LifecycleEvent.WITHDRAW), ApplicationStatus.WITHDRAWN),
+			Map.entry(new Key(ApplicationStatus.SUBMITTED, LifecycleEvent.WITHDRAW), ApplicationStatus.WITHDRAWN),
+			Map.entry(new Key(ApplicationStatus.CORRECTION_REQUIRED, LifecycleEvent.WITHDRAW), ApplicationStatus.WITHDRAWN),
+			Map.entry(new Key(ApplicationStatus.IN_PROGRESS, LifecycleEvent.EXPIRE), ApplicationStatus.EXPIRED),
+			Map.entry(new Key(ApplicationStatus.CORRECTION_REQUIRED, LifecycleEvent.EXPIRE), ApplicationStatus.EXPIRED),
+			Map.entry(new Key(ApplicationStatus.SUBMITTED, LifecycleEvent.CLAIM), ApplicationStatus.UNDER_REVIEW),
+			Map.entry(new Key(ApplicationStatus.UNDER_REVIEW, LifecycleEvent.RELEASE), ApplicationStatus.SUBMITTED),
+			Map.entry(new Key(ApplicationStatus.UNDER_REVIEW, LifecycleEvent.REQUEST_CORRECTION), ApplicationStatus.CORRECTION_REQUIRED),
+			Map.entry(new Key(ApplicationStatus.UNDER_REVIEW, LifecycleEvent.APPROVE), ApplicationStatus.APPROVED),
+			Map.entry(new Key(ApplicationStatus.UNDER_REVIEW, LifecycleEvent.REJECT), ApplicationStatus.REJECTED),
+			Map.entry(new Key(ApplicationStatus.ON_HOLD, LifecycleEvent.REJECT), ApplicationStatus.REJECTED),
+			Map.entry(new Key(ApplicationStatus.UNDER_REVIEW, LifecycleEvent.HOLD), ApplicationStatus.ON_HOLD),
+			Map.entry(new Key(ApplicationStatus.ON_HOLD, LifecycleEvent.RELEASE_HOLD), ApplicationStatus.UNDER_REVIEW));
 
 	private static final Set<ApplicationStatus> CLOSED_WITHOUT_TENANT = Set.of(ApplicationStatus.WITHDRAWN,
 			ApplicationStatus.EXPIRED, ApplicationStatus.REJECTED);
@@ -59,6 +67,13 @@ class ApplicationStateMachine {
 	}
 
 	ApplicationStatus apply(OnboardingApplication application, LifecycleEvent event, String actor) {
+		return apply(application, event, actor, null);
+	}
+
+	/**
+	 * @param actorId staff id for staff actions (kept in the audit log, not in the applicant timeline)
+	 */
+	ApplicationStatus apply(OnboardingApplication application, LifecycleEvent event, String actor, String actorId) {
 		ApplicationStatus from = application.getStatus();
 		ApplicationStatus to = TRANSITIONS.get(new Key(from, event));
 		if (to == null) {
@@ -69,12 +84,16 @@ class ApplicationStateMachine {
 		Instant now = Instant.now(clock);
 		application.moveTo(to, now);
 		timeline.save(new TimelineEntry(application.getId(), "STATUS_" + to.name(), null, from, to, actor, now));
-		audit.record(new AuditEntry("ONBOARDING_" + event.name(), actor, null, IdentityApi.PLATFORM_ORG_ID,
+		audit.record(new AuditEntry("ONBOARDING_" + event.name(), actor, actorId, IdentityApi.PLATFORM_ORG_ID,
 				"ONBOARDING_APPLICATION", application.getPublicId(), Map.of("from", from.name(), "to", to.name())));
 		if (CLOSED_WITHOUT_TENANT.contains(to)) {
 			// Give back what the application holds, in the same transaction
 			whiteLabel.release(application.getId());
 			events.publishEvent(new ApplicationClosed(application.getId(), to));
+		}
+		if (to == ApplicationStatus.APPROVED) {
+			events.publishEvent(new in.eko.eloka.onboarding.ApplicationApproved(application.getId(),
+					application.getPublicId(), actorId == null ? null : java.util.UUID.fromString(actorId)));
 		}
 		return to;
 	}

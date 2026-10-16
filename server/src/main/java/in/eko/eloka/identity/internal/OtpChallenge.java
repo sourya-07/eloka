@@ -22,6 +22,8 @@ class OtpChallenge extends BaseEntity {
 	static final String PURPOSE_APPLICANT = "APPLICANT_LOGIN";
 	/** Step-up before a sensitive action, bound to one session. */
 	static final String PURPOSE_REAUTH = "REAUTH";
+	/** Eko staff sign-in by OTP (local/test only). */
+	static final String PURPOSE_STAFF = "STAFF_LOGIN";
 
 	@Column(name = "org_id", nullable = false)
 	private long orgId;

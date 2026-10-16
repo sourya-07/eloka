@@ -30,14 +30,16 @@ class SessionService implements CallerResolver {
 	private final UserDirectory users;
 	private final FieldCipher cipher;
 	private final IdentityProperties properties;
+	private final StaffUserRepository staff;
 	private final Clock clock;
 
 	SessionService(AuthSessionRepository sessions, UserDirectory users, FieldCipher cipher,
-			IdentityProperties properties, Clock clock) {
+			IdentityProperties properties, StaffUserRepository staff, Clock clock) {
 		this.sessions = sessions;
 		this.users = users;
 		this.cipher = cipher;
 		this.properties = properties;
+		this.staff = staff;
 		this.clock = clock;
 	}
 
@@ -124,6 +126,18 @@ class SessionService implements CallerResolver {
 
 	private Optional<Caller> toCaller(AuthSession session, Instant now) {
 		String mobile = cipher.decrypt(session.getMobileEnc());
+		if (session.getKind() == SessionKind.STAFF) {
+			// Permissions come from the account on every request: a removed role or a disabled
+			// account takes effect immediately. Caller.mobile carries the staff email for staff.
+			Optional<StaffUser> member = staff.findById(session.getUserId()).filter(StaffUser::isActive);
+			if (member.isEmpty()) {
+				session.revoke(now, "STAFF_NOT_ACTIVE");
+				return Optional.empty();
+			}
+			touch(session, now);
+			return Optional.of(new Caller(session.getId(), session.getKind(), session.getOrgId(), session.getUserId(), null,
+					member.get().getEmail(), Role.STAFF, member.get().permissions()));
+		}
 		if (session.getKind() == SessionKind.LA_APPLICANT) {
 			// Applicants are not users of any tenant: the session's user id is the applicant id.
 			touch(session, now);

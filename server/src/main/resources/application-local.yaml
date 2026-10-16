@@ -31,6 +31,8 @@ eloka:
     otp-max-per-hour: 1000
     otp-max-per-day: 1000
     otp-max-per-ip-per-hour: 1000
+  staff:
+    otp-login-enabled: true      # staff log in with OTP 123456 (seeded 9000000006/7/8)
   tenant:
     root-domain: eloka.localhost
     org-meta-secret: eloka-local-org-meta-secret

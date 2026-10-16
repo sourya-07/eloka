@@ -43,6 +43,13 @@ class OnboardingApplication extends BaseEntity {
 	@Column(name = "pan_hash", columnDefinition = "BINARY(32)")
 	private byte[] panHash;
 
+	/** The reviewer who claimed the case (S3), null while unassigned. */
+	@Column(name = "assigned_staff_id", columnDefinition = "BINARY(16)")
+	private UUID assignedStaffId;
+
+	@Column(name = "correction_due_at")
+	private Instant correctionDueAt;
+
 	@Column(name = "last_applicant_activity_at", nullable = false)
 	private Instant lastApplicantActivityAt;
 
@@ -96,6 +103,26 @@ class OnboardingApplication extends BaseEntity {
 	/** The verified business PAN (blind index); unique among live applications. */
 	void bindPan(byte[] hash) {
 		this.panHash = hash;
+	}
+
+	void assignTo(UUID staffId) {
+		this.assignedStaffId = staffId;
+	}
+
+	void correctionDue(Instant dueAt) {
+		this.correctionDueAt = dueAt;
+	}
+
+	boolean isAssignedTo(UUID staffId) {
+		return staffId != null && staffId.equals(assignedStaffId);
+	}
+
+	UUID getAssignedStaffId() {
+		return assignedStaffId;
+	}
+
+	Instant getCorrectionDueAt() {
+		return correctionDueAt;
 	}
 
 	boolean isIdleSince(Instant cutoff) {

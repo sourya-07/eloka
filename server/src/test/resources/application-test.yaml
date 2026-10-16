@@ -22,6 +22,9 @@ eloka:
     otp-max-per-hour: 1000
     otp-max-per-day: 1000
     otp-max-per-ip-per-hour: 1000
+  staff:
+    otp-login-enabled: true
+    google-domain: eko.co.in
   tenant:
     root-domain: eloka.test
     org-meta-secret: test-org-meta-secret

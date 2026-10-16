@@ -51,6 +51,12 @@ class ApplicationDocument extends BaseEntity {
 	@Column(name = "superseded_at")
 	private Instant supersededAt;
 
+	@Column(name = "reviewed_by", columnDefinition = "BINARY(16)")
+	private UUID reviewedBy;
+
+	@Column(name = "reviewed_at")
+	private Instant reviewedAt;
+
 	protected ApplicationDocument() {
 	}
 
@@ -66,6 +72,26 @@ class ApplicationDocument extends BaseEntity {
 		this.sizeBytes = sizeBytes;
 		// Content was type-checked and encrypted on upload: ready for the reviewer.
 		this.status = PENDING_REVIEW;
+	}
+
+	/** S5 */
+	void verify(UUID staffId, Instant now) {
+		review("VERIFIED", null, staffId, now);
+	}
+
+	/** S6: the applicant must upload a new version (through a correction request). */
+	void reject(String reasonCode, UUID staffId, Instant now) {
+		review("REJECTED", reasonCode, staffId, now);
+	}
+
+	private void review(String newStatus, String reason, UUID staffId, Instant now) {
+		if (!isCurrent()) {
+			throw new in.eko.eloka.shared.error.ConflictException("DOCUMENT_SUPERSEDED", "This document was replaced");
+		}
+		this.status = newStatus;
+		this.rejectReasonCode = reason;
+		this.reviewedBy = staffId;
+		this.reviewedAt = now;
 	}
 
 	void supersede(Instant now) {
