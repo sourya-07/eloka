@@ -146,7 +146,11 @@ const RecipientCard = ({ recipient, onSelect, onDelete, isDeleting }) => (
 				_hover={
 					isDeleting
 						? {}
-						: { bg: "red.50", color: "red.500", borderColor: "red.100" }
+						: {
+								bg: "red.50",
+								color: "red.500",
+								borderColor: "red.100",
+							}
 				}
 				_active={isDeleting ? {} : { bg: "red.100" }}
 				onClick={isDeleting ? undefined : onDelete}
@@ -168,6 +172,12 @@ const RecipientCard = ({ recipient, onSelect, onDelete, isDeleting }) => (
 /**
  * RecipientList — shows saved recipients for the selected vendor.
  * Each card navigates to SendMoney on click; trash icon opens delete confirmation.
+ * @param root0
+ * @param root0.recipients
+ * @param root0.onSelectRecipient
+ * @param root0.onAddRecipient
+ * @param root0.onDeleteRecipient
+ * @param root0.deletingRecipientId
  */
 const RecipientList = ({
 	recipients,

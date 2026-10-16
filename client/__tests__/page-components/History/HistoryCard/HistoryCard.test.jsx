@@ -1,5 +1,10 @@
+import { HistoryProvider } from "page-components/History/HistoryContext";
 import { HistoryCard } from "page-components/History/HistoryTable";
-import { pageRender } from "test-utils";
+import { pageRender, screen } from "test-utils";
+
+// HistoryCard reads the visible columns from the HistoryContext
+const renderInHistory = (ui) =>
+	pageRender(<HistoryProvider data={[]}>{ui}</HistoryProvider>);
 
 /*
 	* React Testing Library:
@@ -17,8 +22,27 @@ import { pageRender } from "test-utils";
 
 describe("HistoryCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = pageRender(<HistoryCard />);
+		const { container } = renderInHistory(<HistoryCard />);
 		expect(container).not.toBeEmptyDOMElement();
+	});
+
+	it("shows the transaction name and TID of the item", () => {
+		renderInHistory(
+			<HistoryCard
+				item={{
+					tx_name: "Money Transfer",
+					tid: "TXN123456",
+					amount: 500,
+					datetime: "2024-01-15T10:30:00Z",
+				}}
+				renderer={[]}
+				expanded={false}
+				toggleExpand={jest.fn()}
+			/>
+		);
+
+		expect(screen.getByText("Money Transfer")).toBeInTheDocument();
+		expect(screen.getByText("TXN123456")).toBeInTheDocument();
 
 		// expect(container).toHaveTextContent("Any text");
 

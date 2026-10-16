@@ -12,8 +12,7 @@ describe("Validation Patterns", () => {
 				"John Doe",
 				"Mary Jane Smith",
 				"A. B. Kumar",
-				"Jean-Pierre",
-				"O'Connor",
+				"Ram",
 			];
 
 			validNames.forEach((name) => {
@@ -28,10 +27,12 @@ describe("Validation Patterns", () => {
 		it("should reject invalid names", () => {
 			const invalidNames = [
 				"", // empty
-				"a", // too short
 				"aaa", // repeated characters
 				"111", // numbers only
 				"@john", // special characters
+				"Jean-Pierre", // only letters, spaces and dots are allowed
+				"O'Connor", // only letters, spaces and dots are allowed
+				"Ram Kumar Singh Yadav", // at most 3 words
 			];
 
 			invalidNames.forEach((name) => {
@@ -42,6 +43,12 @@ describe("Validation Patterns", () => {
 				expect(nameValidation.regex.test(name)).toBe(false);
 			});
 		});
+
+		it("leaves the length limit to minLength", () => {
+			// A single letter passes the pattern; minLength rejects it
+			expect(nameValidation.regex.test("a")).toBe(true);
+			expect("a".length).toBeLessThan(nameValidation.minLength);
+		});
 	});
 
 	describe("Shop name validation", () => {
@@ -51,7 +58,7 @@ describe("Validation Patterns", () => {
 				"Shop-123",
 				"Store, Inc.",
 				"24/7 Market",
-				"Soni's Shop",
+				"Shop No: 5",
 			];
 
 			validShopNames.forEach((shopName) => {
@@ -70,6 +77,7 @@ describe("Validation Patterns", () => {
 				"Shop@Home", // @ not allowed
 				"Store#1", // # not allowed
 				"Shop&Co", // & not allowed
+				"Soni's Shop", // ' not allowed
 			];
 
 			invalidShopNames.forEach((shopName) => {

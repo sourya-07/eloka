@@ -20,7 +20,8 @@ const AdminAepsPage = () => (
 				</Text>
 				<Text fontSize="sm" color="gray.500" lineHeight="tall">
 					Aadhaar Enabled Payment System (AEPS) is not activated for
-					your account. Please contact your administrator to get access.
+					your account. Please contact your administrator to get
+					access.
 				</Text>
 			</Box>
 		</Center>

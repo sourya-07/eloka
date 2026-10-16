@@ -24,7 +24,9 @@ describe("fileUtils", () => {
 		global.document.createElement = jest
 			.fn()
 			.mockReturnValue(mockAnchor as any);
-		(global.window as any).navigator = {};
+		// window.navigator cannot be replaced in jsdom; remove the IE10+ save
+		// API that a previous test may have added
+		delete (window.navigator as any).msSaveOrOpenBlob;
 		global.atob = jest.fn().mockImplementation((str) => str);
 		jest.clearAllMocks();
 	});

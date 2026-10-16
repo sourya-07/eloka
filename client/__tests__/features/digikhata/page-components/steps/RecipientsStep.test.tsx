@@ -1,4 +1,4 @@
-import { act, fireEvent, screen } from "@testing-library/react";
+import { act, fireEvent, screen, within } from "@testing-library/react";
 import { DigiKhataContext } from "features/digikhata/context/DigiKhataContext";
 import { RecipientsStep } from "features/digikhata/page-components/steps/RecipientsStep";
 import { pageRender } from "test-utils";
@@ -7,7 +7,8 @@ import { pageRender } from "test-utils";
 const mockGetRecipients = jest.fn();
 const mockSendAddRecipientOtp = jest.fn();
 const mockAddRecipient = jest.fn();
-const mockDeleteRecipient = jest.fn();
+const mockSendDeleteRecipientOtp = jest.fn();
+const mockVerifyDeleteRecipientOtp = jest.fn();
 
 jest.mock("features/digikhata/hooks/useDigiKhataApi", () => {
 	return {
@@ -20,8 +21,10 @@ jest.mock("features/digikhata/hooks/useDigiKhataApi", () => {
 			isSendingRecipientBankOtp: false,
 			addRecipient: mockAddRecipient,
 			isAddingRecipient: false,
-			deleteRecipient: mockDeleteRecipient,
-			isDeletingRecipient: false,
+			sendDeleteRecipientOtp: mockSendDeleteRecipientOtp,
+			isSendingDeleteRecipientOtp: false,
+			verifyDeleteRecipientOtp: mockVerifyDeleteRecipientOtp,
+			isVerifyingDeleteRecipientOtp: false,
 		}),
 	};
 });
@@ -169,8 +172,11 @@ describe("RecipientsStep", () => {
 		).toBeInTheDocument();
 	});
 
-	it("calls deleteRecipient and dispatches REMOVE_RECIPIENT on success", async () => {
-		mockDeleteRecipient.mockResolvedValue({
+	it("deletes a recipient after OTP verification and dispatches REMOVE_RECIPIENT", async () => {
+		mockSendDeleteRecipientOtp.mockResolvedValue({
+			data: { status: 0, data: { otp_ref_id: "delete-ref-1" } },
+		});
+		mockVerifyDeleteRecipientOtp.mockResolvedValue({
 			data: { status: 0, message: "Recipient deleted successfully" },
 		});
 
@@ -203,9 +209,28 @@ describe("RecipientsStep", () => {
 			fireEvent.click(deleteButton);
 		});
 
-		expect(mockDeleteRecipient).toHaveBeenCalledWith(
-			registeredRecipient.recipient_id
+		// Deletion first sends an OTP for the recipient's beneficiary
+		expect(mockSendDeleteRecipientOtp).toHaveBeenCalledWith(
+			registeredRecipient.beneficiary_id
 		);
+		expect(mockDispatch).not.toHaveBeenCalledWith(
+			expect.objectContaining({ type: "REMOVE_RECIPIENT" })
+		);
+
+		// Enter the 6-digit OTP in the modal; it submits on completion
+		const dialog = await screen.findByRole("dialog");
+		const otpFields = within(dialog).getAllByRole("textbox");
+		await act(async () => {
+			otpFields.forEach((field, i) => {
+				fireEvent.change(field, { target: { value: `${i + 1}` } });
+			});
+		});
+
+		expect(mockVerifyDeleteRecipientOtp).toHaveBeenCalledWith({
+			otp: "123456",
+			otp_ref_id: "delete-ref-1",
+			recipient_id: registeredRecipient.recipient_id,
+		});
 		expect(mockDispatch).toHaveBeenCalledWith({
 			type: "REMOVE_RECIPIENT",
 			payload: registeredRecipient.recipient_id,

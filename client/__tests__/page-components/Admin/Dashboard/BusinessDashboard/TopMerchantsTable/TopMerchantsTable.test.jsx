@@ -1,11 +1,11 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { render } from "@testing-library/react";
-import { TopMerchantsTable } from "page-components/Admin/Dashboard/BusinessDashboard/TopMerchantsTable";
+import { fireEvent, render } from "@testing-library/react";
+import { TopMerchantsTable } from "page-components/Admin/Dashboard/BusinessDashboard";
 
 // Mock the Currency and DateView components to avoid deep dependency issues
 jest.mock("components", () => ({
-	Currency: ({ value }) => <span data-testid="currency">{value}</span>,
-	DateView: ({ date }) => <span data-testid="date">{date}</span>,
+	Currency: ({ amount }) => <span data-testid="currency">{amount}</span>,
+	Icon: ({ name }) => <span data-testid="icon">{name}</span>,
 }));
 
 const mockMerchantData = [
@@ -57,7 +57,9 @@ describe("TopMerchantsTable component", () => {
 			<TopMerchantsTable data={[]} isLoading={false} />
 		);
 
-		expect(getByText("No merchants found")).toBeInTheDocument();
+		expect(
+			getByText("No data available for this period.")
+		).toBeInTheDocument();
 	});
 
 	it("displays merchant names when data is provided", () => {
@@ -67,5 +69,23 @@ describe("TopMerchantsTable component", () => {
 
 		expect(getByText("Rajesh Kumar")).toBeInTheDocument();
 		expect(getByText("Priya Sharma")).toBeInTheDocument();
+
+		// Merchant details: user code, status and mapped distributor
+		expect(getByText("# RK001")).toBeInTheDocument();
+		expect(getByText("active")).toBeInTheDocument();
+		expect(getByText("Metro Distributors")).toBeInTheDocument();
+	});
+
+	it("calls onViewProfile with the merchant's mobile when the name is clicked", () => {
+		const onViewProfile = jest.fn();
+		const { getByText } = renderWithChakra(
+			<TopMerchantsTable
+				data={[{ ...mockMerchantData[0], cellNumber: "9876543210" }]}
+				onViewProfile={onViewProfile}
+			/>
+		);
+
+		fireEvent.click(getByText("Rajesh Kumar"));
+		expect(onViewProfile).toHaveBeenCalledWith("9876543210");
 	});
 });

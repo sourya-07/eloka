@@ -1,6 +1,7 @@
+import { DashboardDataProvider } from "contexts";
 import { DashboardProvider } from "page-components/Admin/Dashboard";
 import BusinessDashboard from "page-components/Admin/Dashboard/BusinessDashboard/BusinessDashboard";
-import { pageRender } from "test-utils";
+import { adminRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -18,10 +19,13 @@ import { pageRender } from "test-utils";
 
 describe("BusinessDashboard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = pageRender(
-			<DashboardProvider>
-				<BusinessDashboard />
-			</DashboardProvider>
+		// DashboardDataProvider wraps the app in _app.tsx (it is not part of the test-utils providers)
+		const { container } = adminRender(
+			<DashboardDataProvider>
+				<DashboardProvider>
+					<BusinessDashboard />
+				</DashboardProvider>
+			</DashboardDataProvider>
 		);
 		expect(container).not.toBeEmptyDOMElement();
 

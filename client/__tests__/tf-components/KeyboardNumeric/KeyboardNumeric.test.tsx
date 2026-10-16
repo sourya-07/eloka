@@ -10,6 +10,7 @@ import KeyboardNumeric, {
 Object.defineProperty(navigator, "vibrate", {
 	value: jest.fn(),
 	writable: true,
+	configurable: true,
 });
 
 // Test wrapper with ChakraProvider
@@ -144,6 +145,7 @@ describe("KeyboardNumeric Component", () => {
 		Object.defineProperty(navigator, "vibrate", {
 			value: mockVibrate,
 			writable: true,
+			configurable: true,
 		});
 
 		render(
@@ -157,24 +159,6 @@ describe("KeyboardNumeric Component", () => {
 		fireEvent.click(key1);
 
 		expect(mockVibrate).toHaveBeenCalledWith(10);
-	});
-
-	/**
-	 * Test left-handed toggle
-	 */
-	it("toggles left-handed layout", () => {
-		render(
-			<TestWrapper>
-				<KeyboardNumeric />
-			</TestWrapper>
-		);
-
-		// Find the toggle button (it should have an icon)
-		const toggleButton = screen.getByRole("button", { name: "" }); // Icon button without text
-		fireEvent.click(toggleButton);
-
-		// Layout should change (we can't easily test the visual change, but we can verify it doesn't crash)
-		expect(screen.getByText("1")).toBeInTheDocument();
 	});
 
 	/**
@@ -233,33 +217,28 @@ describe("KeyboardNumeric Component", () => {
 
 		// Check that the keyboard is laid out in a grid
 		const buttons = screen.getAllByRole("button");
-		expect(buttons).toHaveLength(13); // 10 numbers + delete + ok + toggle
+		expect(buttons).toHaveLength(12); // 10 numbers + delete + ok
 	});
 
 	/**
-	 * Test event propagation
+	 * Test focus retention: keys prevent the default mousedown action so
+	 * that the focused input does not lose focus while typing.
 	 */
-	it("prevents event propagation on key press", () => {
+	it("prevents default mousedown so the input keeps focus", () => {
 		const mockOnKeyPress = jest.fn();
-		const mockContainerClick = jest.fn();
 
-		const { container: _container } = render(
+		render(
 			<TestWrapper>
-				<div onClick={mockContainerClick}>
-					<KeyboardNumeric onKeyPress={mockOnKeyPress} />
-				</div>
+				<KeyboardNumeric onKeyPress={mockOnKeyPress} />
 			</TestWrapper>
 		);
 
-		// Click on a number key
 		const key1 = screen.getByText("1");
+		// fireEvent returns false when preventDefault() was called
+		expect(fireEvent.mouseDown(key1)).toBe(false);
+
 		fireEvent.click(key1);
-
-		// Key press should be handled
 		expect(mockOnKeyPress).toHaveBeenCalledWith("1");
-
-		// Container click should not be triggered due to event propagation prevention
-		expect(mockContainerClick).not.toHaveBeenCalled();
 	});
 
 	/**
@@ -301,26 +280,13 @@ describe("KeyboardNumeric Component", () => {
 	});
 
 	/**
-	 * Test initial left-handed state
-	 */
-	it("respects initial leftHanded prop", () => {
-		render(
-			<TestWrapper>
-				<KeyboardNumeric leftHanded={true} />
-			</TestWrapper>
-		);
-
-		// Should render without errors
-		expect(screen.getByText("1")).toBeInTheDocument();
-	});
-
-	/**
 	 * Test no vibration support
 	 */
 	it("handles missing vibration support gracefully", () => {
 		// Remove vibrate from navigator
 		const originalVibrate = navigator.vibrate;
 		delete (navigator as any).vibrate;
+		expect("vibrate" in navigator).toBe(false);
 
 		render(
 			<TestWrapper>
@@ -336,7 +302,11 @@ describe("KeyboardNumeric Component", () => {
 		expect(screen.getByText("1")).toBeInTheDocument();
 
 		// Restore vibrate
-		(navigator as any).vibrate = originalVibrate;
+		Object.defineProperty(navigator, "vibrate", {
+			value: originalVibrate,
+			writable: true,
+			configurable: true,
+		});
 	});
 
 	/**
@@ -375,7 +345,7 @@ describe("KeyboardNumeric Component", () => {
 			</TestWrapper>
 		);
 
-		// Should render the container without errors
-		expect(screen.getByRole("button")).toBeInTheDocument(); // Toggle button should still be there
+		// Should render the container without any keys
+		expect(screen.queryAllByRole("button")).toHaveLength(0);
 	});
 });

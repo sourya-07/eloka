@@ -21,6 +21,8 @@ const INTERACTION_ADD_VENDOR = "110";
  * 1. Enter mobile → search vendor (150)
  * 2a. Found      → call onVendorReady(mobile, false)
  * 2b. Not found  → show name field → add vendor (110) → call onVendorReady(mobile, true)
+ * @param root0
+ * @param root0.onVendorReady
  */
 const AddVendor = ({ onVendorReady }) => {
 	const { userData, accessToken } = useUser();
@@ -73,7 +75,10 @@ const AddVendor = ({ onVendorReady }) => {
 				generateNewToken
 			);
 
-			if (data?.response_type_id === 309 || data?.data?.is_registered === 1) {
+			if (
+				data?.response_type_id === 309 ||
+				data?.data?.is_registered === 1
+			) {
 				onVendorReady(mobile, false);
 			} else {
 				setStep("enter-name");
@@ -129,7 +134,8 @@ const AddVendor = ({ onVendorReady }) => {
 			} else {
 				toast({
 					title:
-						data?.message || "Failed to add vendor. Please try again.",
+						data?.message ||
+						"Failed to add vendor. Please try again.",
 					status: "error",
 					duration: 5000,
 				});
@@ -235,7 +241,9 @@ const AddVendor = ({ onVendorReady }) => {
 								value={mobile}
 								onChange={(e) =>
 									setMobile(
-										e.target.value.replace(/\D/g, "").slice(0, 10)
+										e.target.value
+											.replace(/\D/g, "")
+											.slice(0, 10)
 									)
 								}
 								inputMode="numeric"
@@ -244,7 +252,8 @@ const AddVendor = ({ onVendorReady }) => {
 								borderColor="gray.200"
 								_focus={{
 									borderColor: "blue.400",
-									boxShadow: "0 0 0 3px rgba(66, 153, 225, 0.15)",
+									boxShadow:
+										"0 0 0 3px rgba(66, 153, 225, 0.15)",
 								}}
 								isDisabled={loading}
 							/>
@@ -271,9 +280,13 @@ const AddVendor = ({ onVendorReady }) => {
 								>
 									New Vendor
 								</Text>
-								<Text fontSize="sm" color="gray.600" lineHeight="base">
-									This number is not registered. Enter the vendor&apos;s
-									name to create their account.
+								<Text
+									fontSize="sm"
+									color="gray.600"
+									lineHeight="base"
+								>
+									This number is not registered. Enter the
+									vendor&apos;s name to create their account.
 								</Text>
 							</Box>
 
@@ -282,13 +295,16 @@ const AddVendor = ({ onVendorReady }) => {
 								<Input
 									placeholder="Enter full name"
 									value={vendorName}
-									onChange={(e) => setVendorName(e.target.value)}
+									onChange={(e) =>
+										setVendorName(e.target.value)
+									}
 									size="lg"
 									borderRadius="xl"
 									borderColor="gray.200"
 									_focus={{
 										borderColor: "blue.400",
-										boxShadow: "0 0 0 3px rgba(66, 153, 225, 0.15)",
+										boxShadow:
+											"0 0 0 3px rgba(66, 153, 225, 0.15)",
 									}}
 									autoFocus
 								/>

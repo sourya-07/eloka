@@ -53,7 +53,7 @@ jobs:
             - name: Build ${{ matrix.name }} image
               run: docker build -t eloka-${{ matrix.name }}:scan ${{ matrix.args }} ${{ matrix.context }}
             - name: Scan with Trivy (fail on fixable HIGH/CRITICAL)
-              uses: aquasecurity/trivy-action@0.33.1
+              uses: aquasecurity/trivy-action@v0.36.0
               with:
                   image-ref: eloka-${{ matrix.name }}:scan
                   severity: HIGH,CRITICAL

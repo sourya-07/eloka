@@ -4,6 +4,12 @@ import {
 } from "features/onboarding/components";
 import { render, screen } from "test-utils";
 
+// LocalStepForm reads pipeline results from the onboarding context
+jest.mock("features/onboarding/context/OnboardingContext", () => ({
+	...jest.requireActual("features/onboarding/context/OnboardingContext"),
+	useOnboardingContext: jest.fn(() => ({ pipelineResults: {} })),
+}));
+
 // Mock step configurations
 const mockFormStepConfig = {
 	id: 3,
@@ -147,12 +153,15 @@ describe("ContentRenderer", () => {
 			expect(screen.getByTestId("fallback")).toBeInTheDocument();
 		});
 
-		it("renders default empty state when no fallback provided", () => {
-			render(<ContentRenderer onSubmit={mockOnSubmit} />);
+		it("renders a loading skeleton when no fallback provided", () => {
+			const { container } = render(
+				<ContentRenderer onSubmit={mockOnSubmit} />
+			);
 
 			expect(
-				screen.getByText("No content available")
-			).toBeInTheDocument();
+				container.querySelectorAll(".chakra-skeleton").length
+			).toBeGreaterThan(0);
+			expect(screen.queryByRole("button")).not.toBeInTheDocument();
 		});
 	});
 

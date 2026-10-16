@@ -20,10 +20,7 @@ interface ReverseFormProps {
 	reverseType: ReverseType;
 	isSubmitting: boolean;
 	errorMessage: string | null;
-	onSubmit: (_params: {
-		amount: string;
-		reason: string;
-	}) => void;
+	onSubmit: (_params: { amount: string; reason: string }) => void;
 	onBack: () => void;
 }
 

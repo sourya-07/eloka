@@ -188,9 +188,15 @@ const BusinessDashboard = (): JSX.Element => {
 
 	useEffect(() => {
 		// Use pre-fetched data from DashboardDataProvider if available
-		if (prefetchedActiveAgents && Object.keys(prefetchedActiveAgents).length) {
+		if (
+			prefetchedActiveAgents &&
+			Object.keys(prefetchedActiveAgents).length
+		) {
 			const transformed =
-				transformActiveAgentsData(prefetchedActiveAgents, getUserTypeLabel) ?? [];
+				transformActiveAgentsData(
+					prefetchedActiveAgents,
+					getUserTypeLabel
+				) ?? [];
 			setActiveAgents(transformed);
 			return;
 		}
@@ -206,7 +212,8 @@ const BusinessDashboard = (): JSX.Element => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const _currDate = dateRange === "today" ? (cachedTodaysDateTo || currDate) : currDate;
+	const _currDate =
+		dateRange === "today" ? cachedTodaysDateTo || currDate : currDate;
 
 	/** Widget props passed to each dashboard component */
 	const widgetProps = useMemo(
@@ -219,7 +226,15 @@ const BusinessDashboard = (): JSX.Element => {
 			initiatorId,
 			orgId,
 		}),
-		[dateRange, prevDate, _currDate, productFilterList, userCode, initiatorId, orgId]
+		[
+			dateRange,
+			prevDate,
+			_currDate,
+			productFilterList,
+			userCode,
+			initiatorId,
+			orgId,
+		]
 	);
 
 	return (

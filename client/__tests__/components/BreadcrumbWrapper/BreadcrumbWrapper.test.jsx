@@ -1,5 +1,5 @@
 import { BreadcrumbWrapper } from "components/BreadcrumbWrapper";
-import { render } from "test-utils";
+import { pageRender, screen, within } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,8 +17,40 @@ import { render } from "test-utils";
 
 describe("BreadcrumbWrapper", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<BreadcrumbWrapper />);
+		// Breadcrumb reads the session (useSession), so it needs the UserProvider
+		const { container } = pageRender(<BreadcrumbWrapper />);
 		expect(container).not.toBeEmptyDOMElement();
+	});
+
+	it("renders the provided crumbs and wraps its children", () => {
+		pageRender(
+			<BreadcrumbWrapper
+				crumbs={[
+					{
+						href: "/dashboard",
+						label: "Dashboard",
+						isCurrent: false,
+					},
+					{
+						href: "/dashboard/settings",
+						label: "Settings",
+						isCurrent: true,
+					},
+				]}
+			>
+				<p>Page content</p>
+			</BreadcrumbWrapper>
+		);
+
+		// The breadcrumb bar is hidden on small screens (display: none at base),
+		// so locate it by its aria-label instead of the accessibility tree
+		const nav = within(
+			document.querySelector('nav[aria-label="breadcrumb"]')
+		);
+		expect(nav.getByText("Home")).toBeInTheDocument();
+		expect(nav.getByText("Dashboard")).toBeInTheDocument();
+		expect(nav.getByText("Settings")).toBeInTheDocument();
+		expect(screen.getByText("Page content")).toBeInTheDocument();
 
 		// expect(container).toHaveTextContent("Any text");
 

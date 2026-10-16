@@ -10,6 +10,25 @@ jest.mock("page-components/products/bbps/hooks/useBbpsNavigation", () => ({
 	useBbpsNavigation: jest.fn(),
 }));
 
+/**
+ * Build a bill in the shape produced by transformBillData
+ * @param {string} billid - Bill ID shown on the card
+ * @param {string} billNumber - Bill number
+ * @param {number} amount - Bill amount
+ * @param {object} amountRules - Amount constraints
+ * @returns {object} Bill for the preview step
+ */
+const makeBill = (billid, billNumber, amount, amountRules) => ({
+	billid,
+	label: `${billNumber} - 15/01/2024`,
+	amount,
+	amountRules,
+	billNumber,
+	billDate: "01/01/2024",
+	billDueDate: "15/01/2024",
+	customerName: `Customer ${billNumber}`,
+});
+
 describe("BBPS Preview Component", () => {
 	// Mock navigation functions
 	const mockNavigation = {
@@ -43,16 +62,11 @@ describe("BBPS Preview Component", () => {
 			billFetchResult: {
 				selectionMode: "single",
 				bills: [
-					{
-						billid: "bill-1",
-						label: "EB-123 - 15 Jan 2024",
-						amount: 1500,
-						amountRules: {
-							min: 500,
-							max: 5000,
-							multiple: 100,
-						},
-					},
+					makeBill("bill-1", "EB-123", 1500, {
+						min: 500,
+						max: 5000,
+						multiple: 100,
+					}),
 				],
 			},
 			selectedBills: [],
@@ -80,8 +94,9 @@ describe("BBPS Preview Component", () => {
 		// Check if the title is correct
 		expect(screen.getByText("Select a bill to pay")).toBeInTheDocument();
 
-		// Check if the bill is displayed (just the bill number part)
-		expect(screen.getByText("EB-123")).toBeInTheDocument();
+		// Check if the bill is displayed (bill ID and its details)
+		expect(screen.getByText("bill-1")).toBeInTheDocument();
+		expect(screen.getByText("Customer EB-123")).toBeInTheDocument();
 
 		// Check if amount rules are not displayed initially (until selected)
 		expect(screen.queryByText(/Amount range:/)).not.toBeInTheDocument();
@@ -115,25 +130,12 @@ describe("BBPS Preview Component", () => {
 				selectionMode: "multiOptional",
 				arePartialPaymentsAllowed: true,
 				bills: [
-					{
-						billid: "bill-1",
-						label: "CC-123 - 15 Jan 2024",
-						amount: 5000,
-						amountRules: {
-							min: 500,
-							max: 5000,
-						},
-					},
-					{
-						billid: "bill-2",
-						label: "CC-456 - 20 Jan 2024",
-						amount: 2500,
-						amountRules: {
-							min: 200,
-							max: 2500,
-							multiple: 50,
-						},
-					},
+					makeBill("bill-1", "CC-123", 5000, { min: 500, max: 5000 }),
+					makeBill("bill-2", "CC-456", 2500, {
+						min: 200,
+						max: 2500,
+						multiple: 50,
+					}),
 				],
 			},
 			selectedBills: [],
@@ -164,8 +166,10 @@ describe("BBPS Preview Component", () => {
 		).toBeInTheDocument();
 
 		// Check if both bills are displayed
-		expect(screen.getByText("CC-123")).toBeInTheDocument();
-		expect(screen.getByText("CC-456")).toBeInTheDocument();
+		expect(screen.getByText("bill-1")).toBeInTheDocument();
+		expect(screen.getByText("Customer CC-123")).toBeInTheDocument();
+		expect(screen.getByText("bill-2")).toBeInTheDocument();
+		expect(screen.getByText("Customer CC-456")).toBeInTheDocument();
 
 		// Check if checkboxes are present
 		const checkboxes = screen.getAllByRole("checkbox");
@@ -198,24 +202,14 @@ describe("BBPS Preview Component", () => {
 			billFetchResult: {
 				selectionMode: "multiMandatory",
 				bills: [
-					{
-						billid: "bill-1",
-						label: "LOAN-123 - 15 Jan 2024",
-						amount: 10000,
-						amountRules: {
-							min: 10000,
-							max: 10000,
-						},
-					},
-					{
-						billid: "bill-2",
-						label: "LOAN-456 - 20 Jan 2024",
-						amount: 5000,
-						amountRules: {
-							min: 5000,
-							max: 5000,
-						},
-					},
+					makeBill("bill-1", "LOAN-123", 10000, {
+						min: 10000,
+						max: 10000,
+					}),
+					makeBill("bill-2", "LOAN-456", 5000, {
+						min: 5000,
+						max: 5000,
+					}),
 				],
 			},
 			selectedBills: [],
@@ -244,8 +238,8 @@ describe("BBPS Preview Component", () => {
 		expect(screen.getByText("All bills must be paid")).toBeInTheDocument();
 
 		// Check if both bills are displayed
-		expect(screen.getByText("LOAN-123")).toBeInTheDocument();
-		expect(screen.getByText("LOAN-456")).toBeInTheDocument();
+		expect(screen.getByText("Customer LOAN-123")).toBeInTheDocument();
+		expect(screen.getByText("Customer LOAN-456")).toBeInTheDocument();
 
 		// Check if checkboxes are present and disabled
 		const checkboxes = screen.getAllByRole("checkbox");
@@ -321,29 +315,19 @@ describe("BBPS Preview Component", () => {
 				selectionMode: "single",
 				arePartialPaymentsAllowed: true,
 				bills: [
-					{
-						billid: "bill-1",
-						label: "EB-123 - 15 Jan 2024",
-						amount: 1500,
-						amountRules: {
-							min: 500,
-							max: 5000,
-							multiple: 100,
-						},
-					},
-				],
-			},
-			selectedBills: [
-				{
-					billid: "bill-1",
-					label: "EB-123 - 15 Jan 2024",
-					amount: 1500,
-					amountRules: {
+					makeBill("bill-1", "EB-123", 1500, {
 						min: 500,
 						max: 5000,
 						multiple: 100,
-					},
-				},
+					}),
+				],
+			},
+			selectedBills: [
+				makeBill("bill-1", "EB-123", 1500, {
+					min: 500,
+					max: 5000,
+					multiple: 100,
+				}),
 			],
 			totalAmount: 1500,
 			isLoading: false,
@@ -366,18 +350,40 @@ describe("BBPS Preview Component", () => {
 			</BbpsContext.Provider>
 		);
 
-		// Check if amount rules are displayed for selected bill
+		// Payment options are shown for the selected bill
+		expect(screen.getByText("Payment Options")).toBeInTheDocument();
+
+		// Amount rules appear only once a custom amount is chosen
+		expect(screen.queryByText(/Amount range:/)).not.toBeInTheDocument();
+		fireEvent.click(screen.getByText("Custom Amount"));
+
 		expect(screen.getByText(/Amount range:/)).toBeInTheDocument();
+
+		// The custom amount input is pre-filled with the bill amount
+		const amountInput = screen.getByPlaceholderText("1500");
+		expect(amountInput).toHaveValue("1500");
+
+		// Pay button is enabled since the bill is selected with a valid amount
+		const paymentButton = screen.getByRole("button", { name: /^Pay ₹/ });
+		expect(paymentButton).not.toBeDisabled();
+
+		// An amount that is not a multiple of 100 is rejected
+		fireEvent.change(amountInput, { target: { value: "1550" } });
 		expect(
 			screen.getByText(/Amount must be a multiple of/)
 		).toBeInTheDocument();
+		expect(paymentButton).toBeDisabled();
 
-		// Check if payment amount input is present
-		expect(screen.getByPlaceholderText("Enter amount")).toBeInTheDocument();
-
-		// Check if Make Payment button is enabled since bill is selected
-		const paymentButton = screen.getByText("Make Payment");
-		expect(paymentButton).toBeInTheDocument();
+		// A valid amount clears the error and updates the bill amount
+		fireEvent.change(amountInput, { target: { value: "1600" } });
+		expect(
+			screen.queryByText(/Amount must be a multiple of/)
+		).not.toBeInTheDocument();
+		expect(mockDispatch).toHaveBeenCalledWith({
+			type: "UPDATE_BILL_AMOUNT",
+			billid: "bill-1",
+			amount: 1600,
+		});
 		expect(paymentButton).not.toBeDisabled();
 	});
 });

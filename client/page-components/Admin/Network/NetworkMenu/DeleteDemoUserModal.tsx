@@ -24,22 +24,19 @@ export const DeleteDemoUserModal: React.FC<DeleteDemoUserModalProps> = ({
 	const handleDeleteDemoUserConfirm = async () => {
 		setIsLoading(true);
 		try {
-			const response = await fetcher(
-				"/api/transactionjson",
-				{
-					headers: {
-						"tf-req-uri-root-path": "/ekoicici/v1",
-						"tf-req-uri": `/network/agent`,
-						"tf-req-method": "POST",
-					},
-					body: {
-						csp_code: eko_code,
-						source: "WLC",
-						version: "v1",
-					},
-					token: accessToken,
-				}
-			);
+			const response = await fetcher("/api/transactionjson", {
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": `/network/agent`,
+					"tf-req-method": "POST",
+				},
+				body: {
+					csp_code: eko_code,
+					source: "WLC",
+					version: "v1",
+				},
+				token: accessToken,
+			});
 
 			const isSuccess = response.status === 0;
 

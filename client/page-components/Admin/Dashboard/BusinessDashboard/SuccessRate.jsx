@@ -56,44 +56,33 @@ const SuccessRate = ({
 		}));
 	};
 
-	const [fetchSuccessRateData, isLoading] = useApiFetch(
-		"/api/transaction",
-		{
-			onSuccess: (res) => {
-				const _data = res?.data?.dashboard_object?.successRate || {};
+	const [fetchSuccessRateData, isLoading] = useApiFetch("/api/transaction", {
+		onSuccess: (res) => {
+			const _data = res?.data?.dashboard_object?.successRate || {};
 
-				const successRateKeys = Object.keys(_data);
-				const formattedData = successRateKeys.map((id) => {
-					const product = masterProductList?.find(
-						(p) => p.value == id
-					);
-					const successCount = _data[id]?.successCount;
-					const totalCount = _data[id]?.totalCount;
-					const percentage =
-						totalCount > 0
-							? Number(
-									((successCount / totalCount) * 100).toFixed(
-										2
-									)
-								)
-							: 0;
-					return {
-						id: id,
-						label: product?.label,
-						successCount,
-						totalCount,
-						value: percentage,
-					};
-				});
+			const successRateKeys = Object.keys(_data);
+			const formattedData = successRateKeys.map((id) => {
+				const product = masterProductList?.find((p) => p.value == id);
+				const successCount = _data[id]?.successCount;
+				const totalCount = _data[id]?.totalCount;
+				const percentage =
+					totalCount > 0
+						? Number(((successCount / totalCount) * 100).toFixed(2))
+						: 0;
+				return {
+					id: id,
+					label: product?.label,
+					successCount,
+					totalCount,
+					value: percentage,
+				};
+			});
 
-				updateSuccessRateCache(
-					formattedData.length ? formattedData : []
-				);
+			updateSuccessRateCache(formattedData.length ? formattedData : []);
 
-				setSuccessRateData(formattedData);
-			},
-		}
-	);
+			setSuccessRateData(formattedData);
+		},
+	});
 
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
@@ -150,7 +139,16 @@ const SuccessRate = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo, cacheKey, isProductListReady, isTodayRange, userCode, initiatorId, orgId]);
+	}, [
+		dateFrom,
+		dateTo,
+		cacheKey,
+		isProductListReady,
+		isTodayRange,
+		userCode,
+		initiatorId,
+		orgId,
+	]);
 
 	// MARK: jsx
 	return (

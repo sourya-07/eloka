@@ -8,6 +8,36 @@ import {
 
 describe("bbpsReducer", () => {
 	const mockProduct = BbpsProducts[0];
+	const mockOperator = (operator_id: number, name: string) => ({
+		operator_id,
+		name,
+		billFetchResponse: 1,
+		high_commission_channel: 0,
+		kyc_required: 0,
+		operator_category: 1,
+		location_id: 0,
+	});
+
+	const mockOperators = [
+		mockOperator(1, "Operator 1"),
+		mockOperator(2, "Operator 2"),
+	];
+
+	const mockDynamicFields = [
+		{
+			param_name: "account_number",
+			param_label: "Account Number",
+			param_id: "1",
+			param_type: "Numeric",
+		},
+		{
+			param_name: "customer_name",
+			param_label: "Customer Name",
+			param_id: "2",
+			param_type: "AlphaNumeric",
+		},
+	];
+
 	const mockBill = {
 		billid: "bill-1",
 		label: "Test Bill",
@@ -490,24 +520,6 @@ describe("bbpsReducer", () => {
 	});
 
 	describe("Dynamic Fields Actions", () => {
-		const mockOperators = [
-			{ operator_id: 1, name: "Operator 1" },
-			{ operator_id: 2, name: "Operator 2" },
-		];
-
-		const mockDynamicFields = [
-			{
-				name: "account_number",
-				label: "Account Number",
-				parameter_type_id: 1,
-			},
-			{
-				name: "customer_name",
-				label: "Customer Name",
-				parameter_type_id: 2,
-			},
-		];
-
 		describe("SET_OPERATORS", () => {
 			it("sets operators list", () => {
 				const action: Action = {
@@ -523,7 +535,7 @@ describe("bbpsReducer", () => {
 			it("replaces existing operators", () => {
 				const currentState: BbpsState = {
 					...initialState,
-					operators: [{ operator_id: 3, name: "Old Operator" }],
+					operators: [mockOperator(3, "Old Operator")],
 				};
 
 				const action: Action = {
@@ -584,9 +596,10 @@ describe("bbpsReducer", () => {
 					...initialState,
 					dynamicFields: [
 						{
-							name: "old_field",
-							label: "Old Field",
-							parameter_type_id: 1,
+							param_name: "old_field",
+							param_label: "Old Field",
+							param_id: "3",
+							param_type: "Numeric",
 						},
 					],
 				};
@@ -640,6 +653,11 @@ describe("bbpsReducer", () => {
 					operators: mockOperators,
 					selectedOperator: mockOperators[0],
 					dynamicFields: mockDynamicFields,
+					searchFormData: {
+						mobile: "9876543210",
+						account_number: "12345",
+						customer_name: "Test Customer",
+					},
 					isLoadingDynamicData: true,
 				};
 
@@ -652,7 +670,14 @@ describe("bbpsReducer", () => {
 				// Should reset dynamic form fields
 				expect(newState.selectedOperator).toBeNull();
 				expect(newState.dynamicFields).toEqual([]);
-				expect(newState.isLoadingDynamicData).toBe(false);
+
+				// Should clear only the dynamic field values from the search data
+				expect(newState.searchFormData).toEqual({
+					mobile: "9876543210",
+				});
+
+				// The loading flag is managed separately via SET_LOADING_DYNAMIC_DATA
+				expect(newState.isLoadingDynamicData).toBe(true);
 
 				// Should preserve other state
 				expect(newState.selectedProduct).toBe(mockProduct);
@@ -663,7 +688,7 @@ describe("bbpsReducer", () => {
 	});
 
 	describe("RESET_STATE", () => {
-		it("resets state to initial values", () => {
+		it("resets state to initial values but preserves the current step", () => {
 			const currentState: BbpsState = {
 				...initialState,
 				selectedProduct: mockProduct,
@@ -695,7 +720,10 @@ describe("bbpsReducer", () => {
 
 			const newState = bbpsReducer(currentState, action);
 
-			expect(newState).toEqual(initialState);
+			expect(newState).toEqual({
+				...initialState,
+				currentStep: "payment",
+			});
 		});
 	});
 

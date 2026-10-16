@@ -268,9 +268,8 @@ const EkoConnectWidget = ({ start_id, paths, language = "en", ...rest }) => {
 					{failedResource === "widget" ? "widget" : "dependencies"}.
 				</Text>
 				<Text mb={4} color="gray.500" fontSize="sm">
-					Transaction ID: {start_id} — check that the widget server
-					is reachable at{" "}
-					{process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL}.
+					Transaction ID: {start_id} — check that the widget server is
+					reachable at {process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL}.
 				</Text>
 				<Button
 					onClick={() => {

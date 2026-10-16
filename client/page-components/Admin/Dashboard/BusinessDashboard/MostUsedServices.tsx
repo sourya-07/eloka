@@ -196,23 +196,19 @@ const MostUsedServices = ({
 	};
 
 	// MARK: API Handler
-	const [fetchMostUsedServices, isLoading] = useApiFetch(
-		"/api/transaction",
-		{
-			onSuccess: (res: {
-				data?: {
-					dashboard_object?: {
-						mostUsedServices?: MostUsedServicesData;
-					};
+	const [fetchMostUsedServices, isLoading] = useApiFetch("/api/transaction", {
+		onSuccess: (res: {
+			data?: {
+				dashboard_object?: {
+					mostUsedServices?: MostUsedServicesData;
 				};
-			}) => {
-				const _data =
-					res?.data?.dashboard_object?.mostUsedServices ?? {};
-				setMostUsedServicesData(_data);
-				updateMostUsedServicesCache(_data);
-			},
-		}
-	);
+			};
+		}) => {
+			const _data = res?.data?.dashboard_object?.mostUsedServices ?? {};
+			setMostUsedServicesData(_data);
+			updateMostUsedServicesCache(_data);
+		},
+	});
 
 	// MARK: Fetch Data
 	useEffect(() => {
@@ -268,7 +264,16 @@ const MostUsedServices = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter, cacheKey, isTodayRange, userCode, initiatorId, orgId]);
+	}, [
+		dateFrom,
+		dateTo,
+		productFilter,
+		cacheKey,
+		isTodayRange,
+		userCode,
+		initiatorId,
+		orgId,
+	]);
 
 	// Transform API data to display format with labels from productFilterList
 	const servicesDisplayData = useMemo((): ServiceDisplayItem[] => {

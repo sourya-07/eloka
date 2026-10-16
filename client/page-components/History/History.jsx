@@ -1,11 +1,6 @@
 import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon, PageTitle, PillTab, PrintReceipt } from "components";
-import {
-	Endpoints,
-	ParamType,
-	tableRowLimit,
-	TransactionTypes,
-} from "constants";
+import { ParamType, tableRowLimit, TransactionTypes } from "constants";
 import {
 	useAppSource,
 	useGlobalSearch,
@@ -99,7 +94,14 @@ const History = ({ forNetwork = false }) => {
 	const [history_interaction_list, setHistoryInteractionList] = useState([]);
 
 	// Multi-wallet support: Show additional wallets or TSP Bank Accounts in history
-	const { accountList, bankBalances, refreshAccountBalance, balance, refreshWallet, loading: balanceLoading } = useWallet();
+	const {
+		accountList,
+		bankBalances,
+		refreshAccountBalance,
+		balance,
+		refreshWallet,
+		loading: balanceLoading,
+	} = useWallet();
 	const [isTspBankAllowed] = useFeatureFlag("TSP_BANK");
 	const [selectedAccountIndex, setSelectedAccountIndex] = useState(0); // Default to first account (E-value)
 
@@ -823,33 +825,58 @@ const History = ({ forNetwork = false }) => {
 					{forNetwork !== true ? (
 						<BankBalance
 							label={
-								isTspBankAllowed && accountList && accountList.length > 1
+								isTspBankAllowed &&
+								accountList &&
+								accountList.length > 1
 									? accountList[selectedAccountIndex]?.label
 									: "E-value"
 							}
 							balance={
-								isTspBankAllowed && accountList && accountList.length > 1
-									? bankBalances[accountList[selectedAccountIndex]?.id]?.balance
+								isTspBankAllowed &&
+								accountList &&
+								accountList.length > 1
+									? bankBalances[
+											accountList[selectedAccountIndex]
+												?.id
+										]?.balance
 									: balance
 							}
 							account_number={
-								isTspBankAllowed && accountList && accountList.length > 1
-									? accountList[selectedAccountIndex]?.account_number
+								isTspBankAllowed &&
+								accountList &&
+								accountList.length > 1
+									? accountList[selectedAccountIndex]
+											?.account_number
 									: undefined
 							}
 							loading={
-								isTspBankAllowed && accountList && accountList.length > 1
-									? bankBalances[accountList[selectedAccountIndex]?.id]?.loading
+								isTspBankAllowed &&
+								accountList &&
+								accountList.length > 1
+									? bankBalances[
+											accountList[selectedAccountIndex]
+												?.id
+										]?.loading
 									: balanceLoading
 							}
 							onRefresh={
-								isTspBankAllowed && accountList && accountList.length > 1
-									? () => refreshAccountBalance(accountList[selectedAccountIndex]?.id)
+								isTspBankAllowed &&
+								accountList &&
+								accountList.length > 1
+									? () =>
+											refreshAccountBalance(
+												accountList[
+													selectedAccountIndex
+												]?.id
+											)
 									: refreshWallet
 							}
 							ifsc={
-								isTspBankAllowed && accountList && accountList.length > 1
-									? accountList[selectedAccountIndex]?.bank_code
+								isTspBankAllowed &&
+								accountList &&
+								accountList.length > 1
+									? accountList[selectedAccountIndex]
+											?.bank_code
 									: undefined
 							}
 							mb="2"

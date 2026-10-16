@@ -13,12 +13,12 @@ import { useRestoreLastLoginOrRoute } from "./useRestoreLastLoginOrRoute";
  * @param {string} props.cmsType Type of CMS to render. (reserved for future use)
  * @param {object} props.cmsData Custom CMS data to render. (reserved for future use)
  */
-const LoginPanel = ({ cmsType, cmsData }) => {
+const LoginPanel = ({ cmsType: _cmsType, cmsData: _cmsData }) => {
 	const [number, setNumber] = useState({
 		original: "",
 		formatted: "",
 	});
-	const [showWelcomeCard, setShowWelcomeCard] = useState(false);
+	const [, setShowWelcomeCard] = useState(false);
 	const { isLoggedIn } = useSession();
 
 	// Restore last login or OTP route from localStorage

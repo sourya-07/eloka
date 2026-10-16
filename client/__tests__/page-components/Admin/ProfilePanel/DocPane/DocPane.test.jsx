@@ -1,5 +1,5 @@
 import DocPane from "page-components/Admin/ProfilePanel/DocPane/DocPane";
-import { render } from "test-utils";
+import { adminRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,8 @@ import { render } from "test-utils";
 
 describe("DocPane", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<DocPane />);
+		// DocPane uses the file viewer popup (PubSub), so it needs the app providers
+		const { container } = adminRender(<DocPane />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

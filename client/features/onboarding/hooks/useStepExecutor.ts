@@ -246,8 +246,7 @@ export const useStepExecutor = ({
 				}
 
 				const response = await fetcher(
-					process.env.NEXT_PUBLIC_API_BASE_URL +
-						Endpoints.UPLOAD,
+					process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD,
 					{
 						token: accessToken,
 						body: uploadFormData,

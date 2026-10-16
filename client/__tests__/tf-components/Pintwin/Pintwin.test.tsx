@@ -1,6 +1,11 @@
 import { fireEvent } from "@testing-library/react";
-import { render, screen } from "test-utils";
+import { PubSubProvider, usePubSub } from "contexts";
+import { act, render as baseRender, screen } from "test-utils";
 import Pintwin from "tf-components/Pintwin/Pintwin";
+
+// Pintwin subscribes to the REFRESH_PINTWIN topic, so it needs the PubSubProvider
+const render = (ui: React.ReactElement) =>
+	baseRender(<PubSubProvider>{ui}</PubSubProvider>);
 
 // Mock the usePinTwin hook
 const mockUsePinTwin = jest.fn();
@@ -75,6 +80,8 @@ jest.mock("components/InputLabel", () => ({
 describe("Pintwin Component", () => {
 	const defaultMockHookReturn = {
 		pinTwinKeyLoadStatus: "loaded",
+		setPin: jest.fn(),
+		clearPin: jest.fn(),
 		refreshPinTwinKey: jest.fn(),
 		encodePinTwin: jest.fn((pin: string) => `encoded_${pin}`),
 		validatePin: jest.fn(() => ({ isValid: true, error: null })),
@@ -284,5 +291,35 @@ describe("Pintwin Component", () => {
 				onClick: undefined,
 			})
 		);
+	});
+
+	it("clears the PIN and refreshes the key when REFRESH_PINTWIN is published", () => {
+		const clearPin = jest.fn();
+		const refreshPinTwinKey = jest.fn();
+		mockUsePinTwin.mockReturnValue({
+			...defaultMockHookReturn,
+			clearPin,
+			refreshPinTwinKey,
+		});
+
+		let pubsub: ReturnType<typeof usePubSub>;
+		const CapturePubSub = () => {
+			pubsub = usePubSub();
+			return null;
+		};
+
+		render(
+			<>
+				<CapturePubSub />
+				<Pintwin />
+			</>
+		);
+
+		act(() => {
+			pubsub.publish(pubsub.TOPICS.REFRESH_PINTWIN);
+		});
+
+		expect(clearPin).toHaveBeenCalled();
+		expect(refreshPinTwinKey).toHaveBeenCalled();
 	});
 });

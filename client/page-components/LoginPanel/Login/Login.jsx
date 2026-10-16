@@ -58,10 +58,6 @@ const Login = ({
 	const { metadata } = orgDetail ?? {};
 	const { login_meta } = metadata ?? {};
 	const isMobileMappedUserId = login_meta?.mobile_mapped_user_id === 1;
-	const mobileMappedUserIdLabel = login_meta?.user_id_label || "User ID";
-	const UserIdType = isMobileMappedUserId
-		? mobileMappedUserIdLabel
-		: "Mobile Number";
 
 	const [value, setValue] = useState(number.original || "");
 	const [errorMsg, setErrorMsg] = useState("");
@@ -101,15 +97,16 @@ const Login = ({
 			setLoginType("Mobile");
 			setStep("VERIFY_OTP");
 
-			const { otp_sent, verifiedMobileNumber, otpLength } = await sendOtpRequest(
-				orgDetail.org_id,
-				value,
-				toast,
-				"send",
-				isAndroid,
-				isMobileMappedUserId,
-				orgDetail.org_token
-			);
+			const { otp_sent, verifiedMobileNumber, otpLength } =
+				await sendOtpRequest(
+					orgDetail.org_id,
+					value,
+					toast,
+					"send",
+					isAndroid,
+					isMobileMappedUserId,
+					orgDetail.org_token
+				);
 
 			// Format the value for display purposes
 			const formattedValue = value.replace(

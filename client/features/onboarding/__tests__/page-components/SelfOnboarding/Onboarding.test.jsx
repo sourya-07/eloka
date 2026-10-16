@@ -1,5 +1,5 @@
 import { Onboarding } from "features/onboarding";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,8 @@ import { render } from "test-utils";
 
 describe("Onboarding", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Onboarding />);
+		// Onboarding reads the logged-in user (useUser), so it needs the app providers
+		const { container } = pageRender(<Onboarding />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

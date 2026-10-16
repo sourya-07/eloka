@@ -287,23 +287,19 @@ const UsageAnalytics = ({
 	);
 
 	// MARK: API Handler
-	const [fetchTrendsData, isLoading] = useApiFetch(
-		"/api/transaction",
-		{
-			onSuccess: (res: {
-				data?: {
-					dashboard_object?: {
-						verificationTrends?: VerificationTrendItem[];
-					};
+	const [fetchTrendsData, isLoading] = useApiFetch("/api/transaction", {
+		onSuccess: (res: {
+			data?: {
+				dashboard_object?: {
+					verificationTrends?: VerificationTrendItem[];
 				};
-			}) => {
-				const _data =
-					res?.data?.dashboard_object?.verificationTrends ?? [];
-				setTrendsData(_data);
-				updateUsageAnalyticsCache(_data);
-			},
-		}
-	);
+			};
+		}) => {
+			const _data = res?.data?.dashboard_object?.verificationTrends ?? [];
+			setTrendsData(_data);
+			updateUsageAnalyticsCache(_data);
+		},
+	});
 
 	// MARK: Fetch Data
 	useEffect(() => {
@@ -355,7 +351,15 @@ const UsageAnalytics = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo, cacheKey, isTodayRange, userCode, initiatorId, orgId]);
+	}, [
+		dateFrom,
+		dateTo,
+		cacheKey,
+		isTodayRange,
+		userCode,
+		initiatorId,
+		orgId,
+	]);
 
 	// Transform API data for chart display
 	const chartData = useMemo((): ChartDataItem[] => {

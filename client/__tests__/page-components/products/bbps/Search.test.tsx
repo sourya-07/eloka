@@ -1,32 +1,15 @@
 import "@testing-library/jest-dom";
 import { fireEvent, waitFor } from "@testing-library/react";
+import { ParamType } from "constants/trxnFramework";
 import { Search } from "page-components/products/bbps/Search";
 import { BbpsContext } from "page-components/products/bbps/context/BbpsContext";
 import { initialState } from "page-components/products/bbps/context/types";
 import { useBbpsApi } from "page-components/products/bbps/hooks/useBbpsApi";
 import {
 	mockBillFetchResponse,
-	transformBillFetchResponse,
+	transformBillData,
 } from "page-components/products/bbps/utils";
 import { pageRender } from "test-utils";
-
-// Mock Next.js router properly
-const mockPush = jest.fn();
-const mockBack = jest.fn();
-jest.mock("next/router", () => ({
-	useRouter: () => ({
-		push: mockPush,
-		back: mockBack,
-		asPath: "/products/bbps/test",
-		pathname: "/products/bbps/test",
-		query: {},
-		events: {
-			on: jest.fn(),
-			off: jest.fn(),
-			emit: jest.fn(),
-		},
-	}),
-}));
 
 // Mock the hooks
 jest.mock("page-components/products/bbps/hooks/useBbpsNavigation", () => ({
@@ -58,7 +41,7 @@ const defaultMockApi = {
 		data: mockBillFetchResponse,
 		error: null,
 	}),
-	processBillFetchResponse: transformBillFetchResponse,
+	processBillFetchResponse: transformBillData, // same transform the real hook applies
 	fetchOperators: jest.fn().mockResolvedValue({ data: [], error: null }),
 	fetchDynamicFields: jest.fn().mockResolvedValue({ data: [], error: null }),
 	isLoadingBills: false,
@@ -81,7 +64,7 @@ describe("BBPS Search Component", () => {
 			{
 				name: "customer_id",
 				label: "Customer ID",
-				parameter_type_id: 1,
+				parameter_type_id: ParamType.TEXT,
 				required: true,
 			},
 		],
@@ -92,7 +75,10 @@ describe("BBPS Search Component", () => {
 
 	const mockDispatch = jest.fn();
 
-	const renderComponent = (stateOverrides = {}) => {
+	const renderComponent = (
+		stateOverrides = {},
+		product: typeof mockProduct = mockProduct
+	) => {
 		return pageRender(
 			<BbpsContext.Provider
 				value={{
@@ -104,9 +90,21 @@ describe("BBPS Search Component", () => {
 					dispatch: mockDispatch,
 				}}
 			>
-				<Search product={mockProduct} />
+				<Search product={product} />
 			</BbpsContext.Provider>
 		);
+	};
+
+	/**
+	 * The Proceed button stays disabled until react-hook-form has validated
+	 * the default values, so wait for it before clicking.
+	 * @param {Function} getByText - Query from the render result
+	 * @returns {Promise<HTMLElement>} The enabled Proceed button
+	 */
+	const getEnabledProceedButton = async (getByText) => {
+		const button = getByText("Proceed").closest("button");
+		await waitFor(() => expect(button).toBeEnabled());
+		return button;
 	};
 
 	describe("Basic Rendering", () => {
@@ -118,7 +116,7 @@ describe("BBPS Search Component", () => {
 
 		it("renders page title", () => {
 			const { getByText } = renderComponent();
-			expect(getByText("Electricity Bill")).toBeInTheDocument();
+			expect(getByText("Fetch Bills")).toBeInTheDocument();
 		});
 
 		it("renders proceed button", () => {
@@ -149,7 +147,7 @@ describe("BBPS Search Component", () => {
 	describe("Form Submission", () => {
 		it("submits the form and processes the mock data", async () => {
 			const { getByText } = renderComponent();
-			const submitButton = getByText("Proceed");
+			const submitButton = await getEnabledProceedButton(getByText);
 
 			// Submit the form
 			fireEvent.click(submitButton);
@@ -193,12 +191,13 @@ describe("BBPS Search Component", () => {
 		it("handles form submission with custom input values", async () => {
 			const { getByLabelText, getByText } = renderComponent();
 			const customerIdInput = getByLabelText(/Customer ID/i);
-			const submitButton = getByText("Proceed");
 
 			// Change input value
 			fireEvent.change(customerIdInput, {
 				target: { value: "CUSTOM123" },
 			});
+
+			const submitButton = await getEnabledProceedButton(getByText);
 
 			// Submit the form
 			fireEvent.click(submitButton);
@@ -222,7 +221,7 @@ describe("BBPS Search Component", () => {
 			});
 
 			const { getByText } = renderComponent();
-			const submitButton = getByText("Proceed");
+			const submitButton = await getEnabledProceedButton(getByText);
 
 			fireEvent.click(submitButton);
 
@@ -232,6 +231,12 @@ describe("BBPS Search Component", () => {
 					message: errorMessage,
 				});
 			});
+			expect(mockToast).toHaveBeenCalledWith(
+				expect.objectContaining({
+					status: "error",
+					description: errorMessage,
+				})
+			);
 		});
 	});
 
@@ -262,34 +267,32 @@ describe("BBPS Search Component", () => {
 	});
 
 	describe("Operator Selection", () => {
-		const _productWithCategory = {
+		const productWithCategory = {
 			...mockProduct,
 			categoryId: "testCategory",
 			useMockData: false,
 			searchFields: [], // Ensure no static fields interfere
 		};
 
-		it("fetches and renders operators when product has categoryId", async () => {
-			const mockOperators = [
-				{ operator_id: 1, name: "Operator 1" },
-				{ operator_id: 2, name: "Operator 2" },
-			];
+		const mockOperators = [
+			{ operator_id: 1, name: "Operator 1" },
+			{ operator_id: 2, name: "Operator 2" },
+		];
 
+		it("fetches and renders operators when product has categoryId", async () => {
+			const fetchOperators = jest
+				.fn()
+				.mockResolvedValue({ data: mockOperators, error: null });
 			(useBbpsApi as jest.Mock).mockReturnValue({
 				...defaultMockApi,
-				fetchOperators: jest
-					.fn()
-					.mockResolvedValue({ data: mockOperators, error: null }),
+				fetchOperators,
 			});
 
-			const { findByLabelText } = renderComponent();
+			const { findByText } = renderComponent({}, productWithCategory);
 
-			expect(defaultMockApi.fetchOperators).toHaveBeenCalledWith(
-				"testCategory"
-			);
+			expect(fetchOperators).toHaveBeenCalledWith("testCategory");
 
-			const select = await findByLabelText(/Select Operator/i);
-			expect(select).toBeInTheDocument();
+			expect(await findByText(/Select Operator/i)).toBeInTheDocument();
 
 			await waitFor(() => {
 				expect(mockDispatch).toHaveBeenCalledWith({
@@ -300,17 +303,17 @@ describe("BBPS Search Component", () => {
 		});
 
 		it("handles operator selection change", async () => {
-			const mockOperators = [
-				{ operator_id: 1, name: "Operator 1" },
-				{ operator_id: 2, name: "Operator 2" },
-			];
+			const { container, findByText } = renderComponent(
+				{ operators: mockOperators },
+				productWithCategory
+			);
 
-			const { getByLabelText } = renderComponent({
-				operators: mockOperators,
-			});
-
-			const select = getByLabelText(/Select Operator/i);
-			fireEvent.change(select, { target: { value: "1" } });
+			// Open the operator dropdown (react-select) and pick an operator
+			const selectInput = container.querySelector(
+				"#phone_operator_code input"
+			);
+			fireEvent.keyDown(selectInput, { key: "ArrowDown" });
+			fireEvent.click(await findByText("Operator 1"));
 
 			await waitFor(() => {
 				expect(mockDispatch).toHaveBeenCalledWith({
@@ -326,18 +329,20 @@ describe("BBPS Search Component", () => {
 		it("fetches dynamic fields when operator is selected", async () => {
 			const mockDynamicFields = [
 				{
-					name: "account_number",
-					label: "Account Number",
-					parameter_type_id: 1,
+					param_name: "account_number",
+					param_label: "Account Number",
+					param_id: "1",
+					param_type: "Numeric",
 				},
 			];
 
+			const fetchDynamicFields = jest.fn().mockResolvedValue({
+				data: mockDynamicFields,
+				error: null,
+			});
 			(useBbpsApi as jest.Mock).mockReturnValue({
 				...defaultMockApi,
-				fetchDynamicFields: jest.fn().mockResolvedValue({
-					data: mockDynamicFields,
-					error: null,
-				}),
+				fetchDynamicFields,
 			});
 
 			const selectedOperator = { operator_id: 1, name: "Test Operator" };
@@ -347,7 +352,7 @@ describe("BBPS Search Component", () => {
 			});
 
 			await waitFor(() => {
-				expect(defaultMockApi.fetchDynamicFields).toHaveBeenCalledWith(
+				expect(fetchDynamicFields).toHaveBeenCalledWith(
 					selectedOperator.operator_id
 				);
 				expect(mockDispatch).toHaveBeenCalledWith({
@@ -358,20 +363,20 @@ describe("BBPS Search Component", () => {
 		});
 
 		it("handles operator fetch errors", async () => {
-			const errorMessage = "Failed to fetch operators";
 			(useBbpsApi as jest.Mock).mockReturnValue({
 				...defaultMockApi,
-				fetchOperators: jest
-					.fn()
-					.mockResolvedValue({ data: null, error: errorMessage }),
+				fetchOperators: jest.fn().mockResolvedValue({
+					data: null,
+					error: "Failed to fetch operators",
+				}),
 			});
 
-			renderComponent();
+			renderComponent({}, productWithCategory);
 
 			await waitFor(() => {
 				expect(mockToast).toHaveBeenCalledWith({
 					title: "Error",
-					description: errorMessage,
+					description: "Failed to load operators. Please try again.",
 					status: "error",
 					duration: 5000,
 					isClosable: true,
@@ -388,18 +393,21 @@ describe("BBPS Search Component", () => {
 			});
 
 			const { getByText } = renderComponent();
-			const submitButton = getByText("Proceed");
+			const submitButton = getByText("Proceed").closest("button");
 
 			expect(submitButton).toBeDisabled();
+			expect(submitButton).toHaveAttribute("data-loading");
 		});
 
 		it("shows loading state when fetching dynamic data", () => {
-			const { container } = renderComponent({
+			const { getByText } = renderComponent({
 				isLoadingDynamicData: true,
 			});
 
-			// Should show loading indicator
-			expect(container).toMatchSnapshot();
+			// The Proceed button should show its loading indicator
+			const submitButton = getByText("Proceed").closest("button");
+			expect(submitButton).toBeDisabled();
+			expect(submitButton).toHaveAttribute("data-loading");
 		});
 	});
 
@@ -407,10 +415,13 @@ describe("BBPS Search Component", () => {
 		it("validates required fields", async () => {
 			const { getByLabelText, getByText } = renderComponent();
 			const customerIdInput = getByLabelText(/Customer ID/i);
-			const submitButton = getByText("Proceed");
+			const submitButton = getByText("Proceed").closest("button");
 
 			// Clear required field
 			fireEvent.change(customerIdInput, { target: { value: "" } });
+
+			// An invalid form keeps the Proceed button disabled
+			await waitFor(() => expect(submitButton).toBeDisabled());
 			fireEvent.click(submitButton);
 
 			// Should show validation error
@@ -425,12 +436,12 @@ describe("BBPS Search Component", () => {
 
 	describe("Error Handling", () => {
 		it("handles dynamic fields fetch errors", async () => {
-			const errorMessage = "Failed to fetch dynamic fields";
 			(useBbpsApi as jest.Mock).mockReturnValue({
 				...defaultMockApi,
-				fetchDynamicFields: jest
-					.fn()
-					.mockResolvedValue({ data: null, error: errorMessage }),
+				fetchDynamicFields: jest.fn().mockResolvedValue({
+					data: null,
+					error: "Failed to fetch dynamic fields",
+				}),
 			});
 
 			const selectedOperator = { operator_id: 1, name: "Test Operator" };
@@ -442,7 +453,8 @@ describe("BBPS Search Component", () => {
 			await waitFor(() => {
 				expect(mockToast).toHaveBeenCalledWith({
 					title: "Error",
-					description: errorMessage,
+					description:
+						"Failed to load dynamic fields. Please try again.",
 					status: "error",
 					duration: 5000,
 					isClosable: true,

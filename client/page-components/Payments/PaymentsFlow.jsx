@@ -41,16 +41,16 @@ const StepBar = ({ current }) => (
 							i < current
 								? "green.500"
 								: i === current
-								? "blue.600"
-								: "gray.100"
+									? "blue.600"
+									: "gray.100"
 						}
 						border={i === current ? "2px solid" : "2px solid"}
 						borderColor={
 							i < current
 								? "green.500"
 								: i === current
-								? "blue.600"
-								: "gray.200"
+									? "blue.600"
+									: "gray.200"
 						}
 						transition="all 0.25s"
 					>
@@ -70,8 +70,8 @@ const StepBar = ({ current }) => (
 							i < current
 								? "green.600"
 								: i === current
-								? "blue.600"
-								: "gray.400"
+									? "blue.600"
+									: "gray.400"
 						}
 					>
 						{label}
@@ -217,19 +217,28 @@ const PaymentsFlow = () => {
 		try {
 			const checkData = await fetcher(
 				"/api/transaction",
-				{ token: accessToken, body: buildServicePayload(), timeout: 30000 },
+				{
+					token: accessToken,
+					body: buildServicePayload(),
+					timeout: 30000,
+				},
 				generateNewToken
 			);
 
 			const isActivated =
-				checkData?.response_type_id === RESPONSE_TYPE_ALREADY_ACTIVATED ||
+				checkData?.response_type_id ===
+					RESPONSE_TYPE_ALREADY_ACTIVATED ||
 				checkData?.data?.service_status === "1";
 
 			if (!isActivated) {
 				setLoadingLabel("Activating service...");
 				const activateData = await fetcher(
 					"/api/transaction",
-					{ token: accessToken, body: buildServicePayload(), timeout: 30000 },
+					{
+						token: accessToken,
+						body: buildServicePayload(),
+						timeout: 30000,
+					},
 					generateNewToken
 				);
 				const activated =
@@ -239,7 +248,8 @@ const PaymentsFlow = () => {
 				if (!activated) {
 					toast({
 						title:
-							activateData?.message || "Service activation failed.",
+							activateData?.message ||
+							"Service activation failed.",
 						status: "error",
 						duration: 5000,
 					});
@@ -274,10 +284,16 @@ const PaymentsFlow = () => {
 				if (skipRecipients) {
 					const bankData = await fetcher(
 						"/api/transaction",
-						{ token: accessToken, body: buildBankPayload(), timeout: 30000 },
+						{
+							token: accessToken,
+							body: buildBankPayload(),
+							timeout: 30000,
+						},
 						generateNewToken
 					);
-					setBankList(bankData?.param_attributes?.list_elements || []);
+					setBankList(
+						bankData?.param_attributes?.list_elements || []
+					);
 					setView("add-recipient");
 				} else {
 					const [recipientData, bankData] = await Promise.all([
@@ -301,10 +317,15 @@ const PaymentsFlow = () => {
 						),
 					]);
 
-					const fundList = recipientData?.data?.fund_transfer_list || [];
+					const fundList =
+						recipientData?.data?.fund_transfer_list || [];
 					setRecipients(fundList);
-					setBankList(bankData?.param_attributes?.list_elements || []);
-					setView(fundList.length > 0 ? "recipient-list" : "add-recipient");
+					setBankList(
+						bankData?.param_attributes?.list_elements || []
+					);
+					setView(
+						fundList.length > 0 ? "recipient-list" : "add-recipient"
+					);
 				}
 			} catch (err) {
 				console.error("[PaymentsFlow] load error:", err);
@@ -380,12 +401,7 @@ const PaymentsFlow = () => {
 				setDeletingRecipientId(null);
 			}
 		},
-		[
-			accessToken,
-			buildDeleteRecipientPayload,
-			generateNewToken,
-			toast,
-		]
+		[accessToken, buildDeleteRecipientPayload, generateNewToken, toast]
 	);
 
 	// ── Loading ──────────────────────────────────────────────────────────────────
@@ -401,7 +417,12 @@ const PaymentsFlow = () => {
 						speed="0.75s"
 						emptyColor="blue.50"
 					/>
-					<Text fontSize="sm" color="gray.400" fontWeight="medium" letterSpacing="wide">
+					<Text
+						fontSize="sm"
+						color="gray.400"
+						fontWeight="medium"
+						letterSpacing="wide"
+					>
 						{loadingLabel}
 					</Text>
 				</Flex>
@@ -455,9 +476,14 @@ const PaymentsFlow = () => {
 					>
 						Activation Failed
 					</Text>
-					<Text fontSize="sm" color="gray.500" mb={7} lineHeight="tall">
-						Could not activate the Money Transfer service. Please check your
-						connection and try again.
+					<Text
+						fontSize="sm"
+						color="gray.500"
+						mb={7}
+						lineHeight="tall"
+					>
+						Could not activate the Money Transfer service. Please
+						check your connection and try again.
 					</Text>
 					<Button
 						colorScheme="blue"

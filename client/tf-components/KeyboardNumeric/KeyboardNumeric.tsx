@@ -234,6 +234,13 @@ const KeyboardNumeric: React.FC<KeyboardNumericProps> = ({
 					disabled={disabled}
 					onMouseDown={(e) => e.preventDefault()}
 					onClick={() => handleKeyPress(keyConfig)}
+					aria-label={
+						keyConfig.key === "delete"
+							? "Delete"
+							: keyConfig.key === "ok"
+								? "OK"
+								: undefined
+					}
 					w="64px"
 					h="64px"
 					borderRadius="full"

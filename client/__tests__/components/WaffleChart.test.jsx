@@ -1,5 +1,19 @@
 import { WaffleChart } from "components/WaffleChart";
-import { render, screen } from "test-utils";
+import { act, fireEvent, render, screen } from "test-utils";
+
+/**
+ * Collect the CSS rules (as text) that apply to an element's emotion class.
+ * Needed for properties jsdom does not compute, such as `grid-gap`.
+ * @param {Element} element - Element styled by Chakra/emotion
+ * @returns {string[]} cssText of the matching rules
+ */
+const getCssRulesFor = (element) => {
+	const className = element.className.split(" ").pop();
+	return Array.from(document.styleSheets)
+		.flatMap((sheet) => Array.from(sheet.cssRules))
+		.map((rule) => rule.cssText)
+		.filter((text) => text.startsWith(`.${className} {`));
+};
 
 describe("WaffleChart component", () => {
 	const mockData = [
@@ -20,11 +34,9 @@ describe("WaffleChart component", () => {
 			<WaffleChart data={mockData} rows={rows} cols={cols} />
 		);
 
-		// Should render rows * cols total squares (squares are the Box elements with borderRadius)
-		const squares = container.querySelectorAll(
-			"[style*='border-radius: 50%']"
-		);
-		expect(squares).toHaveLength(rows * cols);
+		// Should render rows * cols total squares (the children of the grid)
+		const gridElement = container.firstChild;
+		expect(gridElement.children).toHaveLength(rows * cols);
 	});
 
 	it("applies custom colors when provided", () => {
@@ -36,8 +48,9 @@ describe("WaffleChart component", () => {
 	});
 
 	it("handles empty data gracefully", () => {
+		// Nothing to chart: the component renders no grid
 		const { container } = render(<WaffleChart data={[]} />);
-		expect(container).not.toBeEmptyDOMElement();
+		expect(container.querySelector("div")).toBeNull();
 	});
 
 	it("handles zero values in data", () => {
@@ -53,8 +66,8 @@ describe("WaffleChart component", () => {
 	it("applies default props when not specified", () => {
 		const { container } = render(<WaffleChart data={mockData} />);
 
-		// Default should be 10x10 grid (first child is tooltip, second is grid)
-		const gridElement = container.firstChild.firstChild;
+		// Default should be 10x10 grid (the Tooltip renders the grid as its trigger)
+		const gridElement = container.firstChild;
 		expect(gridElement).toHaveStyle({
 			gridTemplateRows: "repeat(10, 8px)",
 			gridTemplateColumns: "repeat(10, 8px)",
@@ -77,25 +90,33 @@ describe("WaffleChart component", () => {
 			/>
 		);
 
-		const gridElement = container.firstChild.firstChild; // First child is tooltip, second is grid
+		const gridElement = container.firstChild; // The Tooltip renders the grid as its trigger
 		expect(gridElement).toHaveStyle({
 			gridTemplateRows: `repeat(${rows}, ${customSize})`,
 			gridTemplateColumns: `repeat(${cols}, ${customSize})`,
-			gap: customGap,
 		});
+		// jsdom does not compute grid gaps, so check the generated CSS rule
+		expect(getCssRulesFor(gridElement).join(" ")).toContain(
+			`grid-gap: ${customGap};`
+		);
 	});
 
-	it("displays tooltip with percentages", () => {
-		render(<WaffleChart data={mockData} />);
+	it("displays tooltip with percentages", async () => {
+		const { container } = render(<WaffleChart data={mockData} />);
 
-		// The tooltip should be present with the chart
-		const chartContainer = screen.getByRole("tooltip", { hidden: true });
-		expect(chartContainer).toBeInTheDocument();
+		// No tooltip until the chart is hovered
+		expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
 
-		// Check if the grid has cursor help style
-		const gridElement = chartContainer.querySelector(
-			"[style*='cursor: help']"
-		);
-		expect(gridElement).toBeInTheDocument();
+		// Hover the chart to open the tooltip
+		act(() => {
+			fireEvent.pointerEnter(container.firstChild);
+			jest.runOnlyPendingTimers();
+		});
+
+		const tooltip = await screen.findByRole("tooltip");
+		expect(tooltip).toHaveTextContent("Category A:");
+		expect(tooltip).toHaveTextContent("30 (30%)");
+		expect(tooltip).toHaveTextContent("20 (20%)");
+		expect(tooltip).toHaveTextContent("50 (50%)");
 	});
 });

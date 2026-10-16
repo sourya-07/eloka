@@ -16,6 +16,7 @@ const DashboardDataContext = createContext();
  * Builds the Active Agents API payload (interaction_type_id: 818).
  * Returns null if required user fields are missing, preventing premature calls.
  * Mirrors buildBalancePayload() in WalletContext.
+ * @param userDetails
  */
 const buildActiveAgentsPayload = (userDetails) => {
 	const code = userDetails?.code;
@@ -35,6 +36,7 @@ const buildActiveAgentsPayload = (userDetails) => {
 /**
  * Builds the Product Filter List API payload (interaction_type_id: 1044).
  * Returns null if required user fields are missing.
+ * @param userDetails
  */
 const buildProductFilterPayload = (userDetails) => {
 	const code = userDetails?.code;
@@ -62,6 +64,8 @@ const buildProductFilterPayload = (userDetails) => {
  *
  * Both requests include user_code, initiator_id, org_id sourced from the same
  * user session as the Balance API (userData.userDetails).
+ * @param root0
+ * @param root0.children
  */
 const DashboardDataProvider = ({ children }) => {
 	const { userData, isLoggedIn, userId, accessTokenLite } = useUser();
@@ -100,15 +104,11 @@ const DashboardDataProvider = ({ children }) => {
 		)
 			.then((data) => {
 				console.log("[DASHBOARD] response (Active Agents)", data);
-				const raw =
-					data?.data?.dashboard_object?.totalActiveData || {};
+				const raw = data?.data?.dashboard_object?.totalActiveData || {};
 				setPrefetchedActiveAgents(raw);
 			})
 			.catch((err) => {
-				console.error(
-					"[DASHBOARD] Active Agents prefetch error:",
-					err
-				);
+				console.error("[DASHBOARD] Active Agents prefetch error:", err);
 			});
 
 		// Pre-fetch Product Filter List (1044)

@@ -225,6 +225,15 @@ describe("useGeolocation", () => {
 
 		mockPermissions.query.mockResolvedValue(mockStatus);
 
+		// When permission becomes "granted" the hook auto-requests the location;
+		// make that request succeed (an earlier test leaves a "denied" error mock)
+		mockGeolocation.getCurrentPosition.mockImplementation((success) => {
+			success({
+				coords: { latitude: 12.5, longitude: 77.5, accuracy: 3 },
+				timestamp: 1234567890,
+			});
+		});
+
 		const { result } = renderHook(() => useGeolocation());
 
 		await waitFor(() => {
@@ -242,5 +251,9 @@ describe("useGeolocation", () => {
 		await waitFor(() => {
 			expect(result.current.permissionState).toBe("granted");
 		});
+
+		// The location is fetched once permission is granted
+		expect(mockGeolocation.getCurrentPosition).toHaveBeenCalled();
+		expect(result.current.latitude).toBe(12.5);
 	});
 });

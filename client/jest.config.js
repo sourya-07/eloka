@@ -45,6 +45,10 @@ const customJestConfig = {
 		"^jose/(.*)$": "<rootDir>/__tests__/test-utils/esmStub.js",
 		"^@copilotkit/(.*)$": "<rootDir>/__tests__/test-utils/esmStub.js",
 		"^@segment/(.*)$": "<rootDir>/__tests__/test-utils/esmStub.js",
+		// jsdom resolves the "browser" export of @preact/signals-core (used by @dnd-kit via
+		// @measured/puck), which is ESM-only; point it to the package's own CommonJS build
+		"^@preact/signals-core$":
+			"<rootDir>/node_modules/@preact/signals-core/dist/signals-core.js",
 	},
 	testEnvironment: "jsdom",
 	fakeTimers: { enableGlobally: true },

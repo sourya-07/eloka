@@ -23,23 +23,23 @@ describe("JsonViewer", () => {
 		});
 	});
 
-	describe("showBrackets prop", () => {
-		it("shows brackets by default", () => {
+	describe("variant prop", () => {
+		it("hides brackets and quotes in the default plain variant", () => {
 			render(<JsonViewer data={{ name: "John" }} />);
-			expect(screen.getByText("{")).toBeInTheDocument();
-			expect(screen.getByText("}")).toBeInTheDocument();
-		});
-
-		it("hides brackets when showBrackets is false", () => {
-			render(<JsonViewer data={{ name: "John" }} showBrackets={false} />);
 			expect(screen.queryByText("{")).not.toBeInTheDocument();
 			expect(screen.queryByText("}")).not.toBeInTheDocument();
+			expect(screen.getByText("John")).toBeInTheDocument();
 		});
 
-		it("hides array brackets when showBrackets is false", () => {
-			render(
-				<JsonViewer data={["item1", "item2"]} showBrackets={false} />
-			);
+		it("shows brackets and quoted strings in the json variant", () => {
+			render(<JsonViewer data={{ name: "John" }} variant="json" />);
+			expect(screen.getByText("{")).toBeInTheDocument();
+			expect(screen.getByText("}")).toBeInTheDocument();
+			expect(screen.getByText('"John"')).toBeInTheDocument();
+		});
+
+		it("hides array brackets in the plain variant", () => {
+			render(<JsonViewer data={["item1", "item2"]} variant="plain" />);
 			expect(screen.queryByText("[")).not.toBeInTheDocument();
 			expect(screen.queryByText("]")).not.toBeInTheDocument();
 		});
@@ -94,8 +94,8 @@ describe("JsonViewer", () => {
 					collapseAfterLevel={Infinity}
 				/>
 			);
-			expect(screen.getByText(/"Yes"/)).toBeInTheDocument();
-			expect(screen.getByText(/"No"/)).toBeInTheDocument();
+			expect(screen.getByText("Yes")).toBeInTheDocument();
+			expect(screen.getByText("No")).toBeInTheDocument();
 		});
 
 		it("leaves values unchanged when no matching transform", () => {
@@ -106,7 +106,7 @@ describe("JsonViewer", () => {
 					collapseAfterLevel={Infinity}
 				/>
 			);
-			expect(screen.getByText(/"active"/)).toBeInTheDocument();
+			expect(screen.getByText("active")).toBeInTheDocument();
 		});
 	});
 
@@ -131,10 +131,8 @@ describe("JsonViewer", () => {
 					collapseAfterLevel={Infinity}
 				/>
 			);
-			expect(
-				screen.getByText(/"Delhi \(Permanent\)"/)
-			).toBeInTheDocument();
-			expect(screen.getByText(/"Delhi \(Current\)"/)).toBeInTheDocument();
+			expect(screen.getByText("Delhi (Permanent)")).toBeInTheDocument();
+			expect(screen.getByText("Delhi (Current)")).toBeInTheDocument();
 		});
 
 		it("byPath takes precedence over byKey", () => {
@@ -152,11 +150,9 @@ describe("JsonViewer", () => {
 					collapseAfterLevel={Infinity}
 				/>
 			);
+			expect(screen.getByText("Mumbai (Specific)")).toBeInTheDocument();
 			expect(
-				screen.getByText(/"Mumbai \(Specific\)"/)
-			).toBeInTheDocument();
-			expect(
-				screen.queryByText(/"Mumbai \(Default\)"/)
+				screen.queryByText("Mumbai (Default)")
 			).not.toBeInTheDocument();
 		});
 	});
@@ -170,7 +166,7 @@ describe("JsonViewer", () => {
 						aadhaar_seeding_status: "Y",
 						name_match: "Y",
 					}}
-					showBrackets={false}
+					variant="plain"
 					keyOverrides={{ pan_number: "PAN Number" }}
 					valueTransforms={{ byKey: { Y: "Yes", N: "No" } }}
 					collapseAfterLevel={Infinity}
@@ -184,9 +180,7 @@ describe("JsonViewer", () => {
 			).toBeInTheDocument();
 			expect(screen.getByText("Name Match")).toBeInTheDocument();
 			// Value transform applied
-			expect(screen.getAllByText(/"Yes"/).length).toBeGreaterThanOrEqual(
-				2
-			);
+			expect(screen.getAllByText("Yes").length).toBeGreaterThanOrEqual(2);
 			// No brackets
 			expect(screen.queryByText("{")).not.toBeInTheDocument();
 		});

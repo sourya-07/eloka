@@ -348,7 +348,9 @@ const TransactionResult = () => {
 					borderRadius="full"
 					fontWeight="semibold"
 					fontSize="md"
-					onClick={() => clearAndNavigate(`${prefix}/transaction/996`)}
+					onClick={() =>
+						clearAndNavigate(`${prefix}/transaction/996`)
+					}
 				>
 					New Transfer
 				</Button>

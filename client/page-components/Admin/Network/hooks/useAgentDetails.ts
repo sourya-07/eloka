@@ -153,22 +153,19 @@ const useAgentDetails = (mobile: string | undefined): UseAgentDetailsReturn => {
 			setAgent(null); // Clear previous agent data to prevent showing stale data
 
 			try {
-				const response = await fetcher(
-					"/api/transaction",
-					{
-						headers: {
-							"tf-req-uri-root-path": "/ekoicici/v1",
-							"tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
-							"tf-req-method": "GET",
-						},
-						body: {
-							user_code: userDetails?.code,
-							initiator_id: userDetails?.mobile,
-							org_id: userDetails?.org_id,
-						},
-						token: accessToken,
-					}
-				);
+				const response = await fetcher("/api/transaction", {
+					headers: {
+						"tf-req-uri-root-path": "/ekoicici/v1",
+						"tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
+						"tf-req-method": "GET",
+					},
+					body: {
+						user_code: userDetails?.code,
+						initiator_id: userDetails?.mobile,
+						org_id: userDetails?.org_id,
+					},
+					token: accessToken,
+				});
 
 				// Check for successful response (response_type_id: 1827)
 				if (

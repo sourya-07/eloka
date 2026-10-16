@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { useSession, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
-import { useAiChat } from "hooks/useAiChat";
+import useAiChat from "hooks/useAiChat";
 
 // Mock the dependencies
 jest.mock("contexts", () => ({
@@ -13,6 +13,12 @@ jest.mock("helpers/apiHelper", () => ({
 	fetcher: jest.fn(),
 }));
 
+// useRefreshToken needs the UserProvider; it is not under test here
+jest.mock("hooks/useRefreshToken", () => ({
+	__esModule: true,
+	default: () => ({ generateNewToken: jest.fn() }),
+}));
+
 describe("useAiChat hook", () => {
 	const mockAccessToken = "mock-access-token";
 	const mockFetcher = fetcher;
@@ -21,6 +27,8 @@ describe("useAiChat hook", () => {
 
 	beforeEach(() => {
 		jest.clearAllMocks();
+		// By default the AI reply stays pending, so tests can inspect the busy state
+		mockFetcher.mockReturnValue(new Promise(() => {}));
 		mockUseSession.mockReturnValue({
 			accessToken: mockAccessToken,
 		});
@@ -39,13 +47,26 @@ describe("useAiChat hook", () => {
 		expect(result.current.hasReachedLimit).toBe(false);
 		expect(result.current.isEmpty).toBe(true);
 		expect(result.current.chatState).toBe("ready");
-		expect(result.current.maxChatLines).toBe(10);
+		expect(result.current.lastRating).toBeNull();
+	});
+
+	it("should pick 3 sample prompts", () => {
+		const { result } = renderHook(() => useAiChat());
+
+		expect(result.current.samplePrompts).toHaveLength(3);
+		expect(new Set(result.current.samplePrompts).size).toBe(3);
 	});
 
 	it("should initialize with custom maxChatLines", () => {
-		const { result } = renderHook(() => useAiChat({ maxChatLines: 5 }));
+		const { result } = renderHook(() => useAiChat({ maxChatLines: 1 }));
 
-		expect(result.current.maxChatLines).toBe(5);
+		// The custom limit is reached after a single message (default is 10)
+		act(() => {
+			result.current.sendChatInput("Only message");
+		});
+
+		expect(result.current.hasReachedLimit).toBe(true);
+		expect(result.current.isDisabled).toBe(true);
 	});
 
 	it("should send chat input correctly", async () => {

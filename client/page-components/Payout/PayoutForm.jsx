@@ -129,7 +129,8 @@ const PayoutForm = () => {
 			}
 		} catch (err) {
 			console.error("[PayoutForm] API error:", err);
-			const errMsg = "Network error. Please check your connection and try again.";
+			const errMsg =
+				"Network error. Please check your connection and try again.";
 			setResult({ success: false, message: errMsg });
 			toast({ title: errMsg, status: "error", duration: 5000 });
 		} finally {
@@ -213,7 +214,9 @@ const PayoutForm = () => {
 						</FormControl>
 
 						<FormControl isRequired>
-							<FormLabel fontSize="sm">Initiator ID (Mobile)</FormLabel>
+							<FormLabel fontSize="sm">
+								Initiator ID (Mobile)
+							</FormLabel>
 							<Input
 								name="initiator_id"
 								placeholder="10-digit mobile"

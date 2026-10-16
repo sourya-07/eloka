@@ -30,7 +30,8 @@ jest.mock("@chakra-ui/react", () => ({
 }));
 
 // Mock Pintwin component to allow controlled PIN simulation
-jest.mock("tf-components", () => ({
+// Form (from tf-components) renders Pintwin from this module, so mock it here
+jest.mock("tf-components/Pintwin", () => ({
 	Pintwin: ({ onPinChange, onPinComplete, label, length = 4, ...props }) => {
 		return (
 			<div data-testid="pintwin-component">

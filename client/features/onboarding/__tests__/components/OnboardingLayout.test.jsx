@@ -1,3 +1,4 @@
+import { useBreakpointValue } from "@chakra-ui/media-query";
 import { OnboardingLayout } from "features/onboarding/components";
 import { ONBOARDING_STEP_STATUS } from "features/onboarding/constants";
 import { render, screen } from "test-utils";
@@ -40,7 +41,25 @@ const mockSteps = [
 	},
 ];
 
+/**
+ * Simulate a screen size for Chakra's useBreakpointValue (mocked in jest.setup.js).
+ * The stepper is responsive: vertical with labels on desktop (md+), compact
+ * horizontal without labels on mobile (base).
+ * @param {"base"|"md"} breakpoint - Breakpoint to simulate
+ */
+const simulateBreakpoint = (breakpoint) => {
+	useBreakpointValue.mockImplementation((values) =>
+		values && typeof values === "object" && breakpoint in values
+			? values[breakpoint]
+			: values?.base
+	);
+};
+
 describe("OnboardingLayout", () => {
+	beforeEach(() => {
+		simulateBreakpoint("md");
+	});
+
 	describe("Rendering", () => {
 		it("renders without error with required props", () => {
 			const { container } = render(
@@ -154,6 +173,23 @@ describe("OnboardingLayout", () => {
 			);
 
 			expect(screen.queryByText("Hidden Step")).not.toBeInTheDocument();
+		});
+	});
+
+	describe("Mobile layout", () => {
+		it("hides step labels in the compact horizontal stepper", () => {
+			simulateBreakpoint("base");
+
+			render(
+				<OnboardingLayout steps={mockSteps} currentStepId={3}>
+					<div>Content</div>
+				</OnboardingLayout>
+			);
+
+			expect(screen.getByText("Content")).toBeInTheDocument();
+			expect(
+				screen.queryByText("Location Capturing")
+			).not.toBeInTheDocument();
 		});
 	});
 

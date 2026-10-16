@@ -1,21 +1,42 @@
 # Weekly update PRs for dependencies, base images and CI actions. They target the default branch (`main`) until a `dev` branch exists.
+# Minor and patch updates arrive grouped (one PR per ecosystem). Major versions are ignored here:
+# they are planned upgrades (code changes + testing), done by hand.
 version: 2
 updates:
     - package-ecosystem: npm
       directory: /client
       schedule:
           interval: weekly
-      open-pull-requests-limit: 5
+      open-pull-requests-limit: 3
+      groups:
+          client-minor-and-patch:
+              update-types: [minor, patch]
+      ignore:
+          - dependency-name: "*"
+            update-types: ["version-update:semver-major"]
     - package-ecosystem: gradle
       directory: /server
       schedule:
           interval: weekly
-      open-pull-requests-limit: 5
+      open-pull-requests-limit: 3
+      groups:
+          server-minor-and-patch:
+              update-types: [minor, patch]
+      ignore:
+          - dependency-name: "*"
+            update-types: ["version-update:semver-major"]
     - package-ecosystem: docker
       directories: [/server, /client]
       schedule:
           interval: weekly
+      ignore:
+          # Base image majors (e.g. Node 20 → 25, Java 25 → 26) are planned upgrades
+          - dependency-name: "*"
+            update-types: ["version-update:semver-major"]
     - package-ecosystem: github-actions
       directory: /
       schedule:
           interval: monthly
+      groups:
+          actions:
+              patterns: ["*"]

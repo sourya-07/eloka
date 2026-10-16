@@ -210,40 +210,41 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 									<MenuProvider>
 										<WalletProvider>
 											<DashboardDataProvider>
-											<RouteProtecter
-												router={router}
-												pageMeta={
-													Component?.pageMeta || {}
-												}
-											>
-												<SWRConfig
-													value={{
-														provider:
-															localStorageProvider,
-													}}
+												<RouteProtecter
+													router={router}
+													pageMeta={
+														Component?.pageMeta ||
+														{}
+													}
 												>
-													<PubSubProvider>
-														<NotificationProvider>
-															<EarningSummaryProvider>
-																<CommissionSummaryProvider>
-																	<NetworkUsersProvider>
-																		<TodoProvider>
-																			<ErrorBoundary>
-																				{getLayout(
-																					<Component
-																						{...pageProps}
-																					/>
-																				)}
-																			</ErrorBoundary>
-																		</TodoProvider>
-																	</NetworkUsersProvider>
-																</CommissionSummaryProvider>
-															</EarningSummaryProvider>
-														</NotificationProvider>
-													</PubSubProvider>
-												</SWRConfig>
-											</RouteProtecter>
-										</DashboardDataProvider>
+													<SWRConfig
+														value={{
+															provider:
+																localStorageProvider,
+														}}
+													>
+														<PubSubProvider>
+															<NotificationProvider>
+																<EarningSummaryProvider>
+																	<CommissionSummaryProvider>
+																		<NetworkUsersProvider>
+																			<TodoProvider>
+																				<ErrorBoundary>
+																					{getLayout(
+																						<Component
+																							{...pageProps}
+																						/>
+																					)}
+																				</ErrorBoundary>
+																			</TodoProvider>
+																		</NetworkUsersProvider>
+																	</CommissionSummaryProvider>
+																</EarningSummaryProvider>
+															</NotificationProvider>
+														</PubSubProvider>
+													</SWRConfig>
+												</RouteProtecter>
+											</DashboardDataProvider>
 										</WalletProvider>
 									</MenuProvider>
 								</GlobalSearchProvider>

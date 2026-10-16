@@ -46,6 +46,17 @@ jest.mock("react-markdown", () => {
 	});
 });
 
+// Mock ResizeObserver (not implemented in JSDOM; used by @dnd-kit inside @measured/puck)
+if (typeof window.ResizeObserver === "undefined") {
+	class ResizeObserverMock {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+	}
+	window.ResizeObserver = ResizeObserverMock;
+	global.ResizeObserver = ResizeObserverMock;
+}
+
 // Mock localStorage & sessionStorage
 const localStorageMock = (() => {
 	let store = {};

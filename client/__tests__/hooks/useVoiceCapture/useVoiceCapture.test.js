@@ -44,34 +44,15 @@ class MockAudioContext {
 }
 global.AudioContext = MockAudioContext;
 
-// Mock AudioWorkletNode with port for VAD simulation
-// let vadOnMessageCallback = null;
-// class MockAudioWorkletNode {
-// 	constructor() {
-// 		this.port = {
-// 			onmessage: null,
-// 			postMessage: jest.fn(),
-// 		};
-// 	}
-
-// 	connect() {
-// 		// Store the callback for simulation in tests
-// 		setTimeout(() => {
-// 			vadOnMessageCallback = this.port.onmessage;
-
-// 			// Immediately simulate speech detection
-// 			if (this.port.onmessage) {
-// 				this.port.onmessage({ data: { type: "speech", volume: 0.8 } });
-// 			}
-// 		}, 0);
-// 		return this;
-// 	}
-
-// 	disconnect() {
-// 		return this;
-// 	}
-// }
-// global.AudioWorkletNode = MockAudioWorkletNode;
+// Mock AudioWorkletNode (VAD); keep the latest node so tests can post VAD messages
+let lastVadNode = null;
+class MockAudioWorkletNode {
+	constructor() {
+		this.port = { onmessage: null, postMessage: jest.fn() };
+		lastVadNode = this;
+	}
+}
+global.AudioWorkletNode = MockAudioWorkletNode;
 
 // Mock getUserMedia
 Object.defineProperty(navigator, "mediaDevices", {
@@ -81,35 +62,34 @@ Object.defineProperty(navigator, "mediaDevices", {
 	configurable: true,
 });
 
+// URL.createObjectURL is not implemented in jsdom
+global.URL.createObjectURL = jest.fn(() => "blob:mock");
+
 // ---------------------------------------------------------------------------
-//  Mock react-media-recorder hook with controllable callbacks
+//  Mock the native MediaRecorder with controllable callbacks
 // ---------------------------------------------------------------------------
-const startRecording = jest.fn().mockResolvedValue(undefined);
+const startRecording = jest.fn();
 const stopRecording = jest.fn();
-let dataAvailableCallback = null;
-// let stopCallback = null;
-
-// jest.mock("react-media-recorder", () => ({
-// 	useReactMediaRecorder: ({ onStop, onDataAvailable }) => {
-// 		// Store callbacks for test manipulation
-// 		stopCallback = onStop;
-// 		dataAvailableCallback = onDataAvailable;
-
-// 		return {
-// 			startRecording,
-// 			stopRecording: () => {
-// 				stopRecording();
-// 				if (stopCallback) {
-// 					const mockBlobUrl = "blob:mock";
-// 					const mockBlob = new Blob([], { type: "audio/webm" });
-// 					stopCallback(mockBlobUrl, mockBlob);
-// 				}
-// 			},
-// 			status: "idle",
-// 			error: null,
-// 		};
-// 	},
-// }));
+let lastRecorder = null;
+class MockMediaRecorder {
+	constructor(stream) {
+		this.stream = stream;
+		this.state = "inactive";
+		this.ondataavailable = null;
+		this.onstop = null;
+		lastRecorder = this;
+	}
+	start() {
+		this.state = "recording";
+		startRecording();
+	}
+	stop() {
+		this.state = "inactive";
+		stopRecording();
+		this.onstop?.();
+	}
+}
+global.MediaRecorder = MockMediaRecorder;
 
 describe("useVoiceCapture hook", () => {
 	beforeAll(() => {
@@ -119,9 +99,8 @@ describe("useVoiceCapture hook", () => {
 		jest.clearAllMocks();
 		startRecording.mockClear();
 		stopRecording.mockClear();
-		// vadOnMessageCallback = null;
-		dataAvailableCallback = null;
-		stopCallback = null;
+		lastRecorder = null;
+		lastVadNode = null;
 		jest.clearAllTimers();
 	});
 	afterAll(() => {
@@ -135,7 +114,7 @@ describe("useVoiceCapture hook", () => {
 		expect(typeof result.current.stop).toBe("function");
 	});
 
-	it("auto-stops recording after maxDurationMs (25s by default)", async () => {
+	it("auto-stops recording after maxDurationMs (30s by default)", async () => {
 		const { result } = renderHook(() => useVoiceCapture());
 
 		// Start recording
@@ -148,7 +127,7 @@ describe("useVoiceCapture hook", () => {
 
 		// Fast-forward time to just before timeout
 		act(() => {
-			jest.advanceTimersByTime(24999);
+			jest.advanceTimersByTime(29999);
 		});
 		expect(stopRecording).not.toHaveBeenCalled();
 
@@ -158,6 +137,7 @@ describe("useVoiceCapture hook", () => {
 		});
 
 		expect(stopRecording).toHaveBeenCalled();
+		expect(result.current.status).toBe("idle");
 	});
 
 	it("stops when size limit is exceeded", async () => {
@@ -167,18 +147,21 @@ describe("useVoiceCapture hook", () => {
 			await result.current.start();
 		});
 
-		// Simulate a large data chunk
-		const hugeBlob = new Blob([new ArrayBuffer(26 * 1024 * 1024)], {
-			type: "audio/webm",
+		// Chunks are only collected after speech is detected by the VAD
+		act(() => {
+			lastVadNode.port.onmessage({ data: { cmd: "speech" } });
 		});
 
+		// Simulate a data chunk larger than the 25 MB default limit
+		// (a size-only stand-in avoids allocating a real 26 MB blob)
+		const hugeChunk = { size: 26 * 1024 * 1024 };
+
 		act(() => {
-			if (dataAvailableCallback) {
-				dataAvailableCallback(hugeBlob);
-			}
+			lastRecorder.ondataavailable({ data: hugeChunk });
 		});
 
 		expect(stopRecording).toHaveBeenCalled();
+		expect(result.current.error).toBeInstanceOf(Error);
 	});
 
 	/*

@@ -220,9 +220,7 @@ const RoleSelection = ({
 					sharedState: {
 						mobile: String(mobile || ""),
 						bc: String(
-							orgDetail?.bc ||
-								userData?.userDetails?.bc ||
-								"26"
+							orgDetail?.bc || userData?.userDetails?.bc || "26"
 						),
 						org_id: String(
 							userData?.userDetails?.org_id ||

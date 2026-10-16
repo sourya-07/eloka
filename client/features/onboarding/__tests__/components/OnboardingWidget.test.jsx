@@ -1,5 +1,5 @@
 import { OnboardingWidget } from "features/onboarding";
-import { pageRender } from "test-utils";
+import { pageRender, screen } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -16,12 +16,25 @@ import { pageRender } from "test-utils";
 */
 
 describe("OnboardingWidget", () => {
-	it("renders without error with no attributes", () => {
+	it("renders without error with the required props", () => {
 		const mockRefreshAgentProfile = jest.fn().mockResolvedValue({});
+		// Services injected by the host app (see features/onboarding/contracts.ts)
+		const mockServices = {
+			accessToken: "test-access-token",
+			generateNewToken: jest.fn(() => true),
+		};
 		const { container } = pageRender(
-			<OnboardingWidget refreshAgentProfile={mockRefreshAgentProfile} />
+			<OnboardingWidget
+				refreshAgentProfile={mockRefreshAgentProfile}
+				services={mockServices}
+			/>
 		);
 		expect(container).not.toBeEmptyDOMElement();
+
+		// A user without a role and onboarding steps starts at role selection
+		expect(
+			screen.getByRole("heading", { name: "Tell us who you are?" })
+		).toBeInTheDocument();
 
 		// expect(container).toHaveTextContent("Any text");
 

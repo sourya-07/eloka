@@ -98,18 +98,15 @@ const AddAgentForm = ({
 		const _cspId = data.csp_id;
 
 		try {
-			const response = await fetcher(
-				"/api/transaction",
-				{
-					body: {
-						interaction_type_id:
-							TransactionIds.ASSISTED_ONBOARDING_ADD_AGENT,
-						csp_id: _cspId,
-						merchant_type: "",
-					},
-					token: accessToken,
-				}
-			);
+			const response = await fetcher("/api/transaction", {
+				body: {
+					interaction_type_id:
+						TransactionIds.ASSISTED_ONBOARDING_ADD_AGENT,
+					csp_id: _cspId,
+					merchant_type: "",
+				},
+				token: accessToken,
+			});
 
 			if (response?.data) {
 				// Extract response_type_id from the root level of response

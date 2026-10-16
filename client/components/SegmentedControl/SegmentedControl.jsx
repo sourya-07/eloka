@@ -69,7 +69,12 @@ export default function SegmentedControl({
 
 	// Controlled vs uncontrolled
 	useEffect(() => {
-		if (value == null) return activeIndex;
+		if (value == null) {
+			// Uncontrolled: follow the locally selected index
+			// (an effect must not return a non-function value)
+			if (activeIndex !== computedIndex) setComputedIndex(activeIndex);
+			return;
+		}
 		const idx = segments.findIndex((s) => s.value === value);
 		if (idx >= 0 && idx !== computedIndex) setComputedIndex(idx);
 	}, [value, activeIndex, segments]);

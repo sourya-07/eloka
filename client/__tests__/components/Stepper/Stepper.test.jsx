@@ -4,7 +4,7 @@ import {
 	Stepper,
 	StepperItem,
 } from "components/Stepper";
-import { render, screen } from "test-utils";
+import { fireEvent, render, screen } from "test-utils";
 
 const mockSteps = [
 	{
@@ -80,7 +80,14 @@ describe("Stepper Component", () => {
 		});
 
 		it("renders all visible steps", () => {
-			render(<Stepper steps={mockSteps} currentStepId={3} />);
+			// Labels are shown in the vertical layout (horizontal shows only indicators)
+			render(
+				<Stepper
+					steps={mockSteps}
+					currentStepId={3}
+					orientation="vertical"
+				/>
+			);
 
 			expect(screen.getByText("Location Capturing")).toBeInTheDocument();
 			expect(
@@ -108,6 +115,11 @@ describe("Stepper Component", () => {
 				<Stepper steps={mockSteps} orientation="horizontal" />
 			);
 			expect(container).not.toBeEmptyDOMElement();
+
+			// The compact horizontal layout shows step indicators, not labels
+			expect(
+				screen.queryByText("Location Capturing")
+			).not.toBeInTheDocument();
 		});
 
 		it("accepts vertical orientation", () => {
@@ -140,7 +152,7 @@ describe("Stepper Component", () => {
 			expect(DEFAULT_STATUS_COLORS).toBeDefined();
 			expect(DEFAULT_STATUS_COLORS.completed).toBe("success");
 			expect(DEFAULT_STATUS_COLORS.failed).toBe("error");
-			expect(DEFAULT_STATUS_COLORS.skipped).toBe("hint");
+			expect(DEFAULT_STATUS_COLORS.skipped).toBe("shade");
 			expect(DEFAULT_STATUS_COLORS.inProgress).toBe("primary.DEFAULT");
 			expect(DEFAULT_STATUS_COLORS.notStarted).toBe("shade");
 		});
@@ -148,7 +160,9 @@ describe("Stepper Component", () => {
 
 	describe("Icons", () => {
 		it("renders steps with string icons", () => {
-			render(<Stepper steps={mockStepsWithIcons} />);
+			render(
+				<Stepper steps={mockStepsWithIcons} orientation="vertical" />
+			);
 			expect(screen.getByText("Address")).toBeInTheDocument();
 			expect(screen.getByText("Shipping")).toBeInTheDocument();
 			expect(screen.getByText("Payment")).toBeInTheDocument();
@@ -179,8 +193,15 @@ describe("Stepper Component", () => {
 				},
 			];
 
-			render(<Stepper steps={stepsWithHidden} currentStepId={3} />);
+			render(
+				<Stepper
+					steps={stepsWithHidden}
+					currentStepId={3}
+					orientation="vertical"
+				/>
+			);
 
+			expect(screen.getByText("Location Capturing")).toBeInTheDocument();
 			expect(screen.queryByText("Hidden Step")).not.toBeInTheDocument();
 		});
 
@@ -189,10 +210,12 @@ describe("Stepper Component", () => {
 				<Stepper
 					steps={mockSteps}
 					currentStepId={3}
+					orientation="vertical"
 					filterConfig={{ excludeStepIds: [4, 5] }}
 				/>
 			);
 
+			expect(screen.getByText("PAN Verification")).toBeInTheDocument();
 			expect(screen.queryByText("Selfie KYC")).not.toBeInTheDocument();
 			expect(
 				screen.queryByText("Add Bank Account")
@@ -204,12 +227,14 @@ describe("Stepper Component", () => {
 				<Stepper
 					steps={mockSteps}
 					currentStepId={3}
+					orientation="vertical"
 					filterConfig={{
 						filterFn: (step) => step.status !== STEP_STATUS.SKIPPED,
 					}}
 				/>
 			);
 
+			expect(screen.getByText("Selfie KYC")).toBeInTheDocument();
 			expect(
 				screen.queryByText("Add Bank Account")
 			).not.toBeInTheDocument();
@@ -224,13 +249,14 @@ describe("Stepper Component", () => {
 				<Stepper
 					steps={mockSteps}
 					currentStepId={3}
+					orientation="vertical"
 					allowNavigation={true}
 					onStepClick={onStepClick}
 				/>
 			);
 
 			const completedStep = screen.getByText("Location Capturing");
-			completedStep.click();
+			fireEvent.click(completedStep);
 
 			expect(onStepClick).toHaveBeenCalledWith(mockSteps[0], 0);
 		});
@@ -242,13 +268,14 @@ describe("Stepper Component", () => {
 				<Stepper
 					steps={mockSteps}
 					currentStepId={3}
+					orientation="vertical"
 					allowNavigation={false}
 					onStepClick={onStepClick}
 				/>
 			);
 
 			const completedStep = screen.getByText("Location Capturing");
-			completedStep.click();
+			fireEvent.click(completedStep);
 
 			expect(onStepClick).not.toHaveBeenCalled();
 		});

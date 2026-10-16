@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { BbpsProducts } from "page-components/products/bbps/BbpsProducts";
 import {
 	BbpsContext,
@@ -107,7 +107,7 @@ describe("BbpsContext", () => {
 
 			expect(loadingElement).toHaveTextContent("false");
 
-			dispatchButton.click();
+			fireEvent.click(dispatchButton);
 
 			expect(loadingElement).toHaveTextContent("true");
 		});
@@ -305,15 +305,15 @@ describe("BbpsContext", () => {
 			expect(screen.getByTestId("error")).toHaveTextContent("none");
 
 			// Set loading
-			screen.getByTestId("set-loading").click();
+			fireEvent.click(screen.getByTestId("set-loading"));
 			expect(screen.getByTestId("loading")).toHaveTextContent("true");
 
 			// Set error
-			screen.getByTestId("set-error").click();
+			fireEvent.click(screen.getByTestId("set-error"));
 			expect(screen.getByTestId("error")).toHaveTextContent("Test error");
 
 			// Reset state
-			screen.getByTestId("reset-state").click();
+			fireEvent.click(screen.getByTestId("reset-state"));
 			expect(screen.getByTestId("loading")).toHaveTextContent("false");
 			expect(screen.getByTestId("error")).toHaveTextContent("none");
 		});

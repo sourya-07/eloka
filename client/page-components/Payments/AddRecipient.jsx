@@ -18,6 +18,11 @@ import { useRef, useState } from "react";
 
 const INTERACTION_ADD_RECIPIENT = "789";
 
+/**
+ *
+ * @param bank
+ * @param name
+ */
 function getDepParam(bank, name) {
 	return bank?.dependent_params?.find((p) => p.name === name);
 }
@@ -38,6 +43,11 @@ const SectionLabel = ({ children }) => (
 /**
  * AddRecipient — form to add a new payment recipient.
  * Bank list is received as a prop (pre-fetched during entry flow).
+ * @param root0
+ * @param root0.customerId
+ * @param root0.bankList
+ * @param root0.onSuccess
+ * @param root0.onBack
  */
 const AddRecipient = ({ customerId, bankList = [], onSuccess, onBack }) => {
 	const { userData, accessToken } = useUser();
@@ -151,7 +161,8 @@ const AddRecipient = ({ customerId, bankList = [], onSuccess, onBack }) => {
 			} else {
 				toast({
 					title:
-						data?.message || "Failed to add recipient. Please try again.",
+						data?.message ||
+						"Failed to add recipient. Please try again.",
 					status: "error",
 					duration: 5000,
 				});
@@ -292,10 +303,13 @@ const AddRecipient = ({ customerId, bankList = [], onSuccess, onBack }) => {
 											setSelectedBank(null);
 											setShowBankDropdown(true);
 										}}
-										onFocus={() => setShowBankDropdown(true)}
+										onFocus={() =>
+											setShowBankDropdown(true)
+										}
 										onBlur={() =>
 											setTimeout(
-												() => setShowBankDropdown(false),
+												() =>
+													setShowBankDropdown(false),
 												200
 											)
 										}
@@ -340,43 +354,44 @@ const AddRecipient = ({ customerId, bankList = [], onSuccess, onBack }) => {
 									)}
 								</InputGroup>
 
-								{showBankDropdown && filteredBanks.length > 0 && (
-									<Box
-										position="absolute"
-										top="100%"
-										left={0}
-										right={0}
-										zIndex={200}
-										bg="white"
-										border="1px solid"
-										borderColor="gray.200"
-										borderRadius="xl"
-										boxShadow="lg"
-										maxH="220px"
-										overflowY="auto"
-										mt={1}
-									>
-										{filteredBanks.map((bank) => (
-											<Box
-												key={bank.value}
-												px={4}
-												py={3}
-												cursor="pointer"
-												fontSize="sm"
-												color="gray.700"
-												_hover={{
-													bg: "blue.50",
-													color: "blue.700",
-												}}
-												onMouseDown={() =>
-													handleSelectBank(bank)
-												}
-											>
-												{bank.label}
-											</Box>
-										))}
-									</Box>
-								)}
+								{showBankDropdown &&
+									filteredBanks.length > 0 && (
+										<Box
+											position="absolute"
+											top="100%"
+											left={0}
+											right={0}
+											zIndex={200}
+											bg="white"
+											border="1px solid"
+											borderColor="gray.200"
+											borderRadius="xl"
+											boxShadow="lg"
+											maxH="220px"
+											overflowY="auto"
+											mt={1}
+										>
+											{filteredBanks.map((bank) => (
+												<Box
+													key={bank.value}
+													px={4}
+													py={3}
+													cursor="pointer"
+													fontSize="sm"
+													color="gray.700"
+													_hover={{
+														bg: "blue.50",
+														color: "blue.700",
+													}}
+													onMouseDown={() =>
+														handleSelectBank(bank)
+													}
+												>
+													{bank.label}
+												</Box>
+											))}
+										</Box>
+									)}
 							</Box>
 						</FormControl>
 

@@ -124,6 +124,8 @@ const useAiChat = ({
 			console.error("[GPT] Invalid chat input: ", value);
 			return;
 		}
+		// Ignore whitespace-only messages
+		if (!value.trim()) return;
 
 		setChatInput(value);
 		setChatLines((prevLines) => [

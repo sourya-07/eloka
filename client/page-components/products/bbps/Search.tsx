@@ -23,14 +23,14 @@ const operatorRenderer = {
  * Search component for BBPS bill payment workflow
  * Handles dynamic form generation, operator selection, and bill fetching
  * @param {object} props - Component props
- * @param {BbpsProduct} props.product - BBPS product configuration containing search fields and settings
+ * @param {BbpsProduct} [props.product] - BBPS product configuration containing search fields and settings (undefined for an unknown product route)
  * @returns {JSX.Element} Search form component with dynamic fields and operator selection
  * @example
  * ```tsx
  * <Search product={BbpsProducts.find(p => p.id === 'electricity')} />
  * ```
  */
-export const Search = ({ product }: { product: BbpsProduct }) => {
+export const Search = ({ product }: { product?: BbpsProduct }) => {
 	const { state, dispatch } = useContext(BbpsContext);
 	const nav = useBbpsNavigation();
 	const toast = useToast();
@@ -52,7 +52,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 	} = state;
 
 	// Determine if we need operator selection
-	const needsOperatorSelection = !!product.categoryId;
+	const needsOperatorSelection = !!product?.categoryId;
 
 	// Set mock data flag based on product configuration
 	useEffect(() => {
@@ -72,7 +72,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		dispatch({ type: "SET_SELECTED_OPERATOR", payload: null });
 		dispatch({ type: "SET_DYNAMIC_FIELDS", payload: [] });
 		dispatch({ type: "SET_LOADING_DYNAMIC_DATA", value: false });
-	}, [product.categoryId, product.searchFields, dispatch]);
+	}, [product?.categoryId, product?.searchFields, dispatch]);
 
 	// Handle operator selection change
 	const handleOperatorChange = useCallback(
@@ -93,7 +93,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 	useEffect(() => {
 		if (
 			needsOperatorSelection &&
-			product.categoryId &&
+			product?.categoryId &&
 			operators.length === 0
 		) {
 			const loadOperators = async () => {
@@ -101,7 +101,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 
 				try {
 					const { data: operatorsData, error } = await fetchOperators(
-						product.categoryId
+						product?.categoryId
 					);
 
 					if (error) {
@@ -139,7 +139,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		}
 	}, [
 		needsOperatorSelection,
-		product.categoryId,
+		product?.categoryId,
 		operators.length,
 		fetchOperators,
 		dispatch,
@@ -205,7 +205,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 
 	// Create combined parameter list (static + operator + dynamic fields)
 	const parameterList = useMemo((): SearchFieldDef[] => {
-		const params: SearchFieldDef[] = [...product.searchFields];
+		const params: SearchFieldDef[] = [...(product?.searchFields ?? [])];
 
 		// Add operator selection field if needed
 		if (needsOperatorSelection) {
@@ -254,7 +254,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 
 		return params;
 	}, [
-		product.searchFields,
+		product?.searchFields,
 		needsOperatorSelection,
 		operators,
 		dynamicFields,
@@ -274,7 +274,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		// Merge product defaults with previously stored search data
 		// This ensures form is prefilled when returning from status screen
 		defaultValues: {
-			...product.defaultSearchValues,
+			...product?.defaultSearchValues,
 			...state.searchFormData,
 		},
 	});

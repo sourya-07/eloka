@@ -22,6 +22,7 @@ const WalletContext = createContext();
 /**
  * Builds the balance API payload. Returns null if required user fields are missing,
  * which prevents the API from being called with incomplete params.
+ * @param userDetails
  */
 const buildBalancePayload = (userDetails) => {
 	const code = userDetails?.code;
@@ -157,18 +158,14 @@ const WalletProvider = ({ children }) => {
 
 			updateFetchingBankBalance(bankId, true);
 
-			fetcher(
-				"/api/transaction",
-				{
-					token: accessToken,
-					body: {
-						interaction_type_id:
-							TransactionTypes.GET_WALLET_BALANCE,
-						account: accountNumber,
-					},
-					timeout: 30000,
-				}
-			)
+			fetcher("/api/transaction", {
+				token: accessToken,
+				body: {
+					interaction_type_id: TransactionTypes.GET_WALLET_BALANCE,
+					account: accountNumber,
+				},
+				timeout: 30000,
+			})
 				.then((data) => {
 					console.log(
 						`[refreshAccountBalance] Balance for bankId ${bankId}: `,
@@ -229,7 +226,11 @@ const WalletProvider = ({ children }) => {
 		setLastUpdatedDate(new Date());
 	}, []);
 
-	const { fetchBalance, loading } = useFetchBalance(setBalance, accessToken, userData);
+	const { fetchBalance, loading } = useFetchBalance(
+		setBalance,
+		accessToken,
+		userData
+	);
 	// const router = useRouter();
 
 	// const gsdata = useGlobalSearch();

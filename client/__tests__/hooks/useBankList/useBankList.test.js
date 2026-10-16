@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import useBankList from "hooks/useBankList";
+import useBankList, { clearAllBankListCache } from "hooks/useBankList";
 
 // Mock dependencies
 jest.mock("contexts", () => ({
@@ -24,6 +24,7 @@ jest.mock("@chakra-ui/react", () => ({
 
 describe("useBankList hook", () => {
 	const mockAccessToken = "mock-access-token";
+	const mockUserId = "mock-user-id";
 	const mockGenerateNewToken = jest.fn();
 	const mockFetcher = fetcher;
 	const mockUseSession = useSession;
@@ -42,8 +43,11 @@ describe("useBankList hook", () => {
 
 	beforeEach(() => {
 		jest.clearAllMocks();
+		// The bank list is cached per user at module level
+		clearAllBankListCache();
 		mockUseSession.mockReturnValue({
 			accessToken: mockAccessToken,
+			userId: mockUserId,
 		});
 		mockUseRefreshToken.mockReturnValue({
 			generateNewToken: mockGenerateNewToken,
@@ -134,12 +138,46 @@ describe("useBankList hook", () => {
 	it("should not fetch when accessToken is not available", () => {
 		mockUseSession.mockReturnValue({
 			accessToken: null,
+			userId: mockUserId,
 		});
 
 		const { result } = renderHook(() => useBankList());
 
 		expect(result.current.isLoading).toBe(false);
 		expect(mockFetcher).not.toHaveBeenCalled();
+	});
+
+	it("should not fetch when the user is not known", () => {
+		mockUseSession.mockReturnValue({
+			accessToken: mockAccessToken,
+			userId: null,
+		});
+
+		const { result } = renderHook(() => useBankList());
+
+		expect(result.current.isLoading).toBe(false);
+		expect(mockFetcher).not.toHaveBeenCalled();
+	});
+
+	it("should reuse the cached bank list for the same user", async () => {
+		mockFetcher.mockResolvedValueOnce(mockBankListResponse);
+
+		const first = renderHook(() => useBankList());
+		await waitFor(() => {
+			expect(first.result.current.isLoading).toBe(false);
+		});
+		expect(mockFetcher).toHaveBeenCalledTimes(1);
+
+		// A second consumer gets the cached list without another API call
+		const second = renderHook(() => useBankList());
+		await waitFor(() => {
+			expect(second.result.current.isLoading).toBe(false);
+		});
+
+		expect(second.result.current.banks).toEqual(
+			mockBankListResponse.param_attributes.list_elements
+		);
+		expect(mockFetcher).toHaveBeenCalledTimes(1);
 	});
 
 	it("should refetch bank list when refetch is called", async () => {

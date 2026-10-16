@@ -33,7 +33,8 @@ describe("StepperLayout", () => {
 	});
 
 	it("should render all visible steps", () => {
-		render(<StepperLayout {...defaultProps} />);
+		// Labels are shown in the vertical layout (horizontal shows only indicators)
+		render(<StepperLayout {...defaultProps} orientation="vertical" />);
 
 		expect(screen.getByText("Step 1")).toBeInTheDocument();
 		expect(screen.getByText("Step 2")).toBeInTheDocument();
@@ -69,6 +70,7 @@ describe("StepperLayout", () => {
 		render(
 			<StepperLayout
 				{...defaultProps}
+				orientation="vertical"
 				allowNavigation={true}
 				onStepClick={jest.fn()}
 			/>
@@ -94,6 +96,9 @@ describe("StepperLayout", () => {
 				<StepperLayout {...defaultProps} orientation="horizontal" />
 			);
 			expect(container).not.toBeEmptyDOMElement();
+
+			// The compact horizontal layout shows step indicators, not labels
+			expect(screen.queryByText("Step 1")).not.toBeInTheDocument();
 		});
 
 		it("should accept vertical orientation", () => {
@@ -131,7 +136,13 @@ describe("StepperLayout", () => {
 				],
 			};
 
-			render(<StepperLayout {...defaultProps} state={stateWithIcons} />);
+			render(
+				<StepperLayout
+					{...defaultProps}
+					orientation="vertical"
+					state={stateWithIcons}
+				/>
+			);
 
 			expect(screen.getByText("Address")).toBeInTheDocument();
 			expect(screen.getByText("Shipping")).toBeInTheDocument();

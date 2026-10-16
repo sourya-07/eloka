@@ -123,7 +123,8 @@ const UpdatePersonalInfo = () => {
 		)?.is_visible === 1;
 
 	useEffect(() => {
-		if (agentData !== undefined) {
+		// useAgentDetails returns null until the agent is loaded
+		if (agentData) {
 			let defaultValues = {};
 			const agentName = nameSplitter(agentData.agent_name);
 

@@ -76,6 +76,9 @@ const calculateVariation = (current, lastPeriod) => {
  * @param {string} props.dateTo - End date for filtering data.
  * @param {Function} props.setTotalBusiness - Function to set total business data (total GTV & Transaction count) in parent component.
  * @param {boolean} [props.isDraggable] - Whether the component is draggable in the grid.
+ * @param props.userCode
+ * @param props.initiatorId
+ * @param props.orgId
  * @returns {JSX.Element} The rendered earning overview component
  * @example
  * <EarningOverview
@@ -317,7 +320,15 @@ const EarningOverview = ({
 				},
 			},
 		});
-	}, [dateFrom, dateTo, cacheKey, isTodayRange, userCode, initiatorId, orgId]);
+	}, [
+		dateFrom,
+		dateTo,
+		cacheKey,
+		isTodayRange,
+		userCode,
+		initiatorId,
+		orgId,
+	]);
 
 	const earningOverviewList = [
 		{

@@ -95,22 +95,19 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
 		}
 
 		try {
-			const res = await fetcher(
-				"/api/transactionjson",
-				{
-					headers: {
-						"tf-req-uri-root-path": "/ekoicici/v1",
-						"tf-req-uri": `/network/agents/updateStatus`,
-						"tf-req-method": "POST",
-					},
-					body: {
-						csp_code: eko_code,
-						agentAccountStatus: accountStatusId,
-						updateStatusNote: _reason,
-					},
-					token: accessToken,
-				}
-			);
+			const res = await fetcher("/api/transactionjson", {
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": `/network/agents/updateStatus`,
+					"tf-req-method": "POST",
+				},
+				body: {
+					csp_code: eko_code,
+					agentAccountStatus: accountStatusId,
+					updateStatusNote: _reason,
+				},
+				token: accessToken,
+			});
 
 			const isSuccess =
 				res.response_type_id === AGENT_STATUS_UPDATE_SUCCESSFULL &&

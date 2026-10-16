@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * Custom hook for voice recording functionality
- * @param {object} options - Options for the voice capture
+ * @param {object} [options] - Options for the voice capture
  * @param {number} [options.maxDurationMs] - Maximum duration for recording in milliseconds (defaul: 30000 ms)
  * @param {number} [options.maxSizeBytes] - Maximum size for recording in bytes (default: 25 * 1024 * 1024 bytes or 25 MB)
  * @param {number} [options.silenceTimeoutMs] - Timeout for silence detection in milliseconds (default: 0 or no timeout). It stops recording if no speech is detected for this duration.
@@ -19,7 +19,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * @returns {Function} .start - Function to start audio recording
  * @returns {Function} .stop - Function to stop audio recording
  */
-const useVoiceCapture = (options) => {
+const useVoiceCapture = (options = {}) => {
 	const {
 		maxDurationMs = 30000, // Default max duration is 30 seconds
 		maxSizeBytes = 25 * 1024 * 1024, // Default maximum size is 25 MB

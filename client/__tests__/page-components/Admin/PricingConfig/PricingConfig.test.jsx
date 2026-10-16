@@ -1,5 +1,8 @@
-import { PricingConfig } from "components/PricingConfig";
-import { render } from "test-utils";
+import {
+	PricingConfig,
+	PricingConfigProvider,
+} from "page-components/Admin/PricingConfig";
+import { adminRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +20,12 @@ import { render } from "test-utils";
 
 describe("PricingConfig", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<PricingConfig />);
+		// PricingConfig reads the pricing tree from PricingConfigProvider (as in pages/admin/pricing-config)
+		const { container } = adminRender(
+			<PricingConfigProvider>
+				<PricingConfig />
+			</PricingConfigProvider>
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

@@ -1,5 +1,6 @@
+import { UserType } from "constants";
 import { OnboardViaFile } from "page-components/Admin/OnboardAgents/OnboardViaFile";
-import { pageRender } from "test-utils";
+import { adminRender, screen } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -15,10 +16,35 @@ import { pageRender } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
+// Props as passed by the parent OnboardAgents page
+const defaultProps = {
+	permissions: {
+		allowedAgentTypes: [UserType.MERCHANT],
+		autoMapDistributor: false,
+	},
+	agentTypeList: [{ label: "Retailer", value: `${UserType.MERCHANT}` }],
+	agentTypeValueToApi: { 1: "2", 2: "0" },
+};
+
 describe("OnboardViaFile", () => {
-	it("renders without error with no attributes", () => {
-		const { container } = pageRender(<OnboardViaFile />);
+	it("renders without error with the required props", () => {
+		const { container } = adminRender(<OnboardViaFile {...defaultProps} />);
 		expect(container).not.toBeEmptyDOMElement();
+
+		// Sample file link for the only allowed agent type
+		expect(
+			screen.getByText(/Download Sample File \(for Onboarding Retailer\)/)
+		).toBeInTheDocument();
+		expect(screen.getByRole("link", { name: /download/i })).toHaveAttribute(
+			"href",
+			"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx"
+		);
+
+		// Agent type selector is hidden when only one type is allowed
+		expect(screen.queryByText("Select Agent Type")).not.toBeInTheDocument();
+
+		// Upload stays disabled until a file is chosen
+		expect(screen.getByRole("button", { name: "Upload" })).toBeDisabled();
 
 		// expect(container).toHaveTextContent("Any text");
 

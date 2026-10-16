@@ -205,9 +205,7 @@ const VerifyOtp = ({
 				alignItems="center"
 				gap={1.5}
 				onClick={() =>
-					setStep(
-						loginType === "Mobile" ? "LOGIN" : "SOCIAL_VERIFY"
-					)
+					setStep(loginType === "Mobile" ? "LOGIN" : "SOCIAL_VERIFY")
 				}
 				cursor="pointer"
 				mb={8}

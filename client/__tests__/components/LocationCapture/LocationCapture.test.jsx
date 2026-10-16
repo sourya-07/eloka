@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { LocationCapture } from "components/LocationCapture";
+import { CommonHooksProviders, render } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,12 @@ import { LocationCapture } from "components/LocationCapture";
 
 describe("LocationCapture", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<LocationCapture />);
+		// Needs the app source (Android check) and PubSub (Android responses)
+		const { container } = render(
+			<CommonHooksProviders>
+				<LocationCapture />
+			</CommonHooksProviders>
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

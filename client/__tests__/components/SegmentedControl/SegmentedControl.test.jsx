@@ -1,5 +1,11 @@
-import { render } from "test-utils";
 import { SegmentedControl } from "components/SegmentedControl";
+import { fireEvent, render, screen } from "test-utils";
+
+const segments = [
+	{ value: "day", label: "Day" },
+	{ value: "week", label: "Week" },
+	{ value: "month", label: "Month" },
+];
 
 /*
 	* React Testing Library:
@@ -19,6 +25,53 @@ describe("SegmentedControl", () => {
 	it("renders without error with no attributes", () => {
 		const { container } = render(<SegmentedControl />);
 		expect(container).not.toBeEmptyDOMElement();
+	});
+
+	it("selects segments in uncontrolled mode", () => {
+		const onChange = jest.fn();
+		render(
+			<SegmentedControl
+				name="Period"
+				segments={segments}
+				defaultIndex={1}
+				onChange={onChange}
+			/>
+		);
+
+		expect(screen.getByRole("radio", { name: "Week" })).toHaveAttribute(
+			"aria-checked",
+			"true"
+		);
+
+		fireEvent.click(screen.getByRole("radio", { name: "Month" }));
+
+		expect(onChange).toHaveBeenCalledWith("month", 2);
+		expect(screen.getByRole("radio", { name: "Month" })).toHaveAttribute(
+			"aria-checked",
+			"true"
+		);
+		expect(screen.getByRole("radio", { name: "Week" })).toHaveAttribute(
+			"aria-checked",
+			"false"
+		);
+	});
+
+	it("follows the value prop in controlled mode", () => {
+		const { rerender } = render(
+			<SegmentedControl name="Period" segments={segments} value="day" />
+		);
+		expect(screen.getByRole("radio", { name: "Day" })).toHaveAttribute(
+			"aria-checked",
+			"true"
+		);
+
+		rerender(
+			<SegmentedControl name="Period" segments={segments} value="month" />
+		);
+		expect(screen.getByRole("radio", { name: "Month" })).toHaveAttribute(
+			"aria-checked",
+			"true"
+		);
 
 		// expect(container).toHaveTextContent("Any text");
 
