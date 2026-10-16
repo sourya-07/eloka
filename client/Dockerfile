@@ -8,7 +8,7 @@
 # WLC_SUBDOMAIN_ROOT, ORG_CACHE_EXPIRY_SEC) are read at runtime from the environment.
 
 ## Stage 1: dependencies (dev dependencies are needed for the build)
-FROM node:20-alpine AS deps
+FROM node:25-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json .npmrc ./
@@ -16,7 +16,7 @@ COPY package.json package-lock.json .npmrc ./
 RUN npm ci --ignore-scripts
 
 ## Stage 2: build
-FROM node:20-alpine AS builder
+FROM node:25-alpine AS builder
 WORKDIR /app
 ENV DOCKER_BUILD=true \
     NODE_ENV=production \
@@ -38,7 +38,7 @@ RUN test -n "$NEXT_PUBLIC_API_BASE_URL" || (echo "Set --build-arg NEXT_PUBLIC_AP
 RUN npm run build
 
 ## Stage 3: runtime
-FROM node:20-alpine AS runner
+FROM node:25-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
