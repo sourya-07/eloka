@@ -12,7 +12,7 @@ import in.eko.eloka.gateway.internal.dispatch.RouteKey;
 import in.eko.eloka.gateway.internal.envelope.EpsEnvelope;
 import in.eko.eloka.gateway.internal.envelope.EpsResponse;
 import in.eko.eloka.gateway.internal.envelope.UploadedFile;
-import in.eko.eloka.network.AgentOnboarding;
+import in.eko.eloka.network.AgentEnrolment;
 import in.eko.eloka.network.AgentSignup;
 import in.eko.eloka.network.OnboardResult;
 import in.eko.eloka.network.UserTypes;
@@ -71,10 +71,10 @@ final class OnboardAgentsHandlers {
 	@Component
 	static class ByForm implements EpsHandler {
 
-		private final AgentOnboarding onboarding;
+		private final AgentEnrolment onboarding;
 		private final WalletApi wallets;
 
-		ByForm(AgentOnboarding onboarding, WalletApi wallets) {
+		ByForm(AgentEnrolment onboarding, WalletApi wallets) {
 			this.onboarding = onboarding;
 			this.wallets = wallets;
 		}
@@ -121,9 +121,9 @@ final class OnboardAgentsHandlers {
 	@Component
 	static class ByFile implements EpsHandler {
 
-		private final AgentOnboarding onboarding;
+		private final AgentEnrolment onboarding;
 
-		ByFile(AgentOnboarding onboarding) {
+		ByFile(AgentEnrolment onboarding) {
 			this.onboarding = onboarding;
 		}
 

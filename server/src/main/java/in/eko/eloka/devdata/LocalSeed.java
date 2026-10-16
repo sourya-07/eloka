@@ -13,7 +13,8 @@ record LocalSeed(List<SeedOrg> orgs) {
 	}
 
 	record SeedUser(String mobile, String code, String parent, String name, String email, int userType, boolean orgAdmin,
-			SeedShop shop, java.math.BigDecimal balance, java.time.LocalDate joined, boolean transactions) {
+			SeedShop shop, java.math.BigDecimal balance, java.time.LocalDate joined, boolean transactions,
+			List<String> kycDone) {
 	}
 
 	record SeedNotification(String type, String title, String body, int priority, String link, String linkLabel) {

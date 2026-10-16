@@ -225,22 +225,30 @@ describe("onboard agents", until(4), () => {
 });
 
 describe("self-onboarding journey", until(5), () => {
-	it("takes a new retailer from role selection to onboarded", async () => {
-		const mobile = "9000000004";
-		const profile = async () =>
-			(await post("/", { interaction_type_id: "151", mobile })).data
-				.user_detail;
+	/** A 1x1 PNG: the server checks that uploads really are images. */
+	const PNG = Buffer.from(
+		"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+		"base64"
+	);
 
-		const role = await post("/", {
+	it("takes a new retailer from role selection to onboarded", async () => {
+		// The server keeps its data between runs, so use a fresh number (and PAN) there.
+		const suffix = String(Date.now()).slice(-5);
+		const mobile = EXTERNAL ? `98555${suffix}` : "9000000004";
+		const token = await login(mobile);
+		const step = (body) => post("/", { mobile, ...body }, token);
+		const profile = async () =>
+			(await step({ interaction_type_id: "151" })).data.user_detail;
+
+		const role = await step({
 			interaction_type_id: 521,
-			mobile,
 			applicant_type: 0,
 		});
 		assert.equal(role.response_type_id, 1566);
 		assert.equal((await profile()).onboarding, 1);
 		assert.equal((await profile()).onboarding_steps.length, 7);
 
-		const upload = (docType) => {
+		const upload = (docType, extra = {}, files = ["file1"]) => {
 			const form = new FormData();
 			form.append(
 				"form-data",
@@ -248,38 +256,82 @@ describe("self-onboarding journey", until(5), () => {
 					interaction_type_id: "523",
 					mobile,
 					doc_type: docType,
+					...extra,
 				}).toString()
 			);
-			form.append("file1", new Blob(["fake"]), "doc.png");
-			return fetch(base, { method: "POST", body: form }).then((r) =>
-				r.json()
-			);
+			for (const name of files) {
+				form.append(
+					name,
+					new Blob([PNG], { type: "image/png" }),
+					`${name}.png`
+				);
+			}
+			return fetch(base, {
+				method: "POST",
+				headers: { Authorization: `Bearer ${token}` },
+				body: form,
+			}).then((r) => r.json());
 		};
 
-		assert.equal((await upload("1")).response_type_id, 1569); // Aadhaar
-		assert.equal((await upload("2")).response_type_id, 1569); // PAN
-		await post("/", { interaction_type_id: 298, mobile });
+		assert.equal(
+			(await upload("1", {}, ["file1", "file2"])).response_type_id,
+			1569
+		); // Aadhaar front + back
+		assert.equal(
+			(await upload("2", { doc_id: `ABCDE${suffix.slice(0, 4)}F` }))
+				.response_type_id,
+			1569
+		); // PAN
+		await step({
+			interaction_type_id: 298,
+			latlong: "12.97,77.59",
+			shop_type: "1",
+		});
 		await upload("3"); // selfie
-		assert.equal(
-			(await post("/", { interaction_type_id: 522, mobile }))
-				.response_type_id,
-			1567
-		);
-		await post("/", { interaction_type_id: 454, mobile });
+		const business = await step({
+			interaction_type_id: 522,
+			name: "Asha Stores",
+			authorized_signatory_name: "Asha Rao",
+			current_address_line1: "1 MG Road",
+			current_address_district: "Bengaluru",
+			current_address_state: "Karnataka",
+			current_address_pincode: "560001",
+			company_type: "1",
+		});
+		assert.equal(business.response_type_id, 1567);
+		await step({
+			interaction_type_id: 454,
+			bank_code: "SBIN",
+			account: "123456789012",
+			ifsc: "SBIN0001234",
+		});
 		await upload("7"); // passbook
+
+		await step({ interaction_type_id: 170 });
+		const key = (await step({ interaction_type_id: 10005 })).data;
+		const encoded = `${[..."4826"].map((d) => key.pintwin_key[d]).join("")}|${key.key_id}`;
 		assert.equal(
-			(await post("/", { interaction_type_id: 5, mobile }))
-				.response_type_id,
+			(
+				await step({
+					interaction_type_id: 5,
+					first_okekey: encoded,
+					second_okekey: encoded,
+					is_pintwin_user: 0,
+				})
+			).response_type_id,
 			9
 		);
+
+		const esign = await step({ interaction_type_id: 287, agreement_id: 5 });
+		assert.equal(esign.response_type_id, 1069);
 		assert.equal(
-			(await post("/", { interaction_type_id: 287, mobile }))
-				.response_type_id,
-			1069
-		);
-		assert.equal(
-			(await post("/", { interaction_type_id: 293, mobile }))
-				.response_type_id,
+			(
+				await step({
+					interaction_type_id: 293,
+					document_id: esign.data.document_id,
+					esign_completed: true,
+				})
+			).response_type_id,
 			1615
 		);
 
@@ -289,10 +341,12 @@ describe("self-onboarding journey", until(5), () => {
 	});
 
 	it("resumes the half-done retailer at Selfie KYC", async () => {
-		const res = await post("/", {
-			interaction_type_id: "151",
-			mobile: "9000000005",
-		});
+		const token = await login("9000000005");
+		const res = await post(
+			"/",
+			{ interaction_type_id: "151", mobile: "9000000005" },
+			token
+		);
 		assert.equal(res.data.user_detail.role_list.split(",")[0], "12500");
 	});
 });

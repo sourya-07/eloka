@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import in.eko.eloka.audit.AuditEntry;
 import in.eko.eloka.audit.AuditLog;
-import in.eko.eloka.network.AgentOnboarding;
+import in.eko.eloka.network.AgentEnrolment;
 import in.eko.eloka.network.AgentSignup;
 import in.eko.eloka.network.NewUser;
 import in.eko.eloka.network.OnboardResult;
@@ -34,7 +34,7 @@ import org.springframework.transaction.support.TransactionTemplate;
  * mobile, unknown distributor) never undoes the others.
  */
 @Service
-class AgentOnboardingService implements AgentOnboarding {
+class AgentEnrolmentService implements AgentEnrolment {
 
 	private static final String NAME_PATTERN = "[A-Za-z][A-Za-z .']{1,99}";
 
@@ -45,7 +45,7 @@ class AgentOnboardingService implements AgentOnboarding {
 	private final AuditLog audit;
 	private final Clock clock;
 
-	AgentOnboardingService(AppUserRepository users, UserCommands userCommands, BlindIndex index,
+	AgentEnrolmentService(AppUserRepository users, UserCommands userCommands, BlindIndex index,
 			TransactionTemplate transactions, AuditLog audit, Clock clock) {
 		this.users = users;
 		this.userCommands = userCommands;

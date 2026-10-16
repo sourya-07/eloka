@@ -127,7 +127,11 @@
           },
           "balance": 0,
           "joined": "2026-10-10",
-          "transactions": false
+          "transactions": false,
+          "kycDone": [
+            "AADHAAR",
+            "PAN"
+          ]
         },
         {
           "mobile": "9000000011",

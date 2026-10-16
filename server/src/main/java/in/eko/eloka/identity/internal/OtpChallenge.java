@@ -16,6 +16,8 @@ class OtpChallenge extends BaseEntity {
 
 	static final String PURPOSE_LOGIN = "LOGIN";
 	static final String PURPOSE_EMAIL = "EMAIL";
+	/** An agent's consent to be onboarded by a distributor/admin (assisted onboarding). */
+	static final String PURPOSE_CONSENT = "AGENT_CONSENT";
 
 	@Column(name = "org_id", nullable = false)
 	private long orgId;
@@ -79,6 +81,11 @@ class OtpChallenge extends BaseEntity {
 	int recordFailure() {
 		attempts++;
 		return Math.max(0, maxAttempts - attempts);
+	}
+
+	/** True when this OTP was used successfully within the window ending now. */
+	boolean consumedWithin(Instant now, java.time.Duration window) {
+		return consumedAt != null && !consumedAt.isBefore(now.minus(window));
 	}
 
 	void consume(Instant now) {

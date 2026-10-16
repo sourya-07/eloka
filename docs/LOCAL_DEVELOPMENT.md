@@ -60,6 +60,8 @@ cd client && npm run dev:server
 
 Same dummy logins and OTP `123456` as the mock. The seed creates the `demo` org (`demo.eloka.localhost`) and the users `9000000001/2/3/5` (plus `9000000011/12` in the network). `9000000004` or any other number is a new user.
 
+Onboarding against the server works like the mock, with these differences: uploads must be real images or PDFs; PAN must look valid (`ABCDE1234F`) and be unused; the secret PIN rejects easy PINs (`1234`, `1111`); DigiLocker opens the server's fake consent page (`/v1/dev/digilocker`); the agreement counts as signed. The server keeps its data, so a finished sign-up stays finished: use a new number or reset the database.
+
 Useful while developing:
 
 ```bash

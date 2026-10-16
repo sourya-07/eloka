@@ -116,10 +116,17 @@ final class SessionRoutes {
 
 		private final IdentityApi identity;
 		private final SessionObjects objects;
+		private final in.eko.eloka.network.NetworkQueries network;
+		private final UserDirectory users;
+		private final ProfileAssembler assembler;
 
-		RefreshProfile(IdentityApi identity, SessionObjects objects) {
+		RefreshProfile(IdentityApi identity, SessionObjects objects, in.eko.eloka.network.NetworkQueries network,
+				UserDirectory users, ProfileAssembler assembler) {
 			this.identity = identity;
 			this.objects = objects;
+			this.network = network;
+			this.users = users;
+			this.assembler = assembler;
 		}
 
 		@Override
@@ -134,13 +141,31 @@ final class SessionRoutes {
 
 		@Override
 		public EpsResponse handle(EpsCall call) {
-			if (call.params().string("csp_id").isPresent()) {
-				// Assisted onboarding lookup arrives in P5.
-				return EpsEnvelope.fail("This feature is not available yet.").type(-2).build();
-			}
 			Caller caller = call.caller();
+			java.util.Optional<String> agent = call.params().string("csp_id");
+			if (agent.isPresent()) {
+				return agentStatus(caller, agent.get());
+			}
 			TokenPair tokens = identity.rotate(caller.sessionId());
 			return EpsResponse.Json.ok(objects.of(caller, tokens));
+		}
+
+		/**
+		 * Assisted onboarding status check: {@code {details: {user_detail}}} for an agent in the
+		 * caller's network; no details when the agent has no account yet (the client then starts
+		 * role selection).
+		 */
+		private EpsResponse agentStatus(Caller caller, String agentMobile) {
+			if (caller.role() != in.eko.eloka.shared.security.Role.DISTRIBUTOR
+					&& caller.role() != in.eko.eloka.shared.security.Role.ORG_ADMIN) {
+				throw new in.eko.eloka.shared.error.ForbiddenException("NOT_ALLOWED", "You are not allowed to do this.");
+			}
+			String mobile = in.eko.eloka.shared.crypto.Mobiles.normalize(agentMobile);
+			if (users.findByMobile(caller.orgId(), mobile).isEmpty()) {
+				return EpsEnvelope.ok().build();
+			}
+			var agent = network.findInScope(caller, mobile);
+			return EpsResponse.Json.ok(Map.of("details", assembler.profileData(users.profile(caller.orgId(), agent.id()))));
 		}
 	}
 

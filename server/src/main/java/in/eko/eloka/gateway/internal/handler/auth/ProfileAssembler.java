@@ -3,6 +3,8 @@ package in.eko.eloka.gateway.internal.handler.auth;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import in.eko.eloka.agentonboarding.AgentOnboardingApi;
+import in.eko.eloka.agentonboarding.OnboardingStatus;
 import in.eko.eloka.identity.TokenPair;
 import in.eko.eloka.network.ShopView;
 import in.eko.eloka.network.UserProfile;
@@ -22,9 +24,11 @@ import org.springframework.stereotype.Component;
 public class ProfileAssembler {
 
 	private final WalletApi wallets;
+	private final AgentOnboardingApi onboarding;
 
-	public ProfileAssembler(WalletApi wallets) {
+	public ProfileAssembler(WalletApi wallets, AgentOnboardingApi onboarding) {
 		this.wallets = wallets;
+		this.onboarding = onboarding;
 	}
 
 	public Map<String, Object> profileData(UserProfile profile) {
@@ -73,7 +77,7 @@ public class ProfileAssembler {
 		return body;
 	}
 
-	private static Map<String, Object> userDetail(UserView user) {
+	private Map<String, Object> userDetail(UserView user) {
 		Map<String, Object> detail = new LinkedHashMap<>();
 		detail.put("name", user.name());
 		detail.put("mobile", user.mobile());
@@ -86,9 +90,12 @@ public class ProfileAssembler {
 		detail.put("is_org_admin", user.orgAdmin() ? 1 : 0);
 		detail.put("email", user.email() == null ? "" : user.email());
 		detail.put("date_of_joining", user.dateOfJoining().toString());
-		detail.put("onboarding", 0);
-		detail.put("onboarding_steps", List.of());
-		detail.put("role_list", "");
+		OnboardingStatus status = onboarding.status(user.orgId(), user.id());
+		detail.put("onboarding", status.inProgress() ? 1 : 0);
+		detail.put("onboarding_steps", status.plan().stream()
+			.map(step -> Map.<String, Object>of("role", step.role(), "label", step.label()))
+			.toList());
+		detail.put("role_list", String.join(",", status.pending().stream().map(step -> Integer.toString(step.role())).toList()));
 		detail.put("is_demo", user.demo() ? 1 : 0);
 		detail.put("business_email", user.businessEmail());
 		return detail;

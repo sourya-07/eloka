@@ -11,7 +11,7 @@ import in.eko.eloka.shared.security.Caller;
  * <li>distributor: retailers only, always placed under themselves.</li>
  * </ul>
  */
-public interface AgentOnboarding {
+public interface AgentEnrolment {
 
 	int MAX_ROWS = 5000;
 

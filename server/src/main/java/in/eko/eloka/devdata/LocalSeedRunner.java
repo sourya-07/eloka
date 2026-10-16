@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import in.eko.eloka.agentonboarding.AgentOnboardingApi;
+import in.eko.eloka.agentonboarding.KycStep;
 import in.eko.eloka.history.HistoryApi;
 import in.eko.eloka.network.NewUser;
 import in.eko.eloka.network.ShopView;
@@ -49,17 +51,20 @@ class LocalSeedRunner implements ApplicationRunner, UnsafeInProduction {
 	private final WalletApi wallets;
 	private final HistoryApi history;
 	private final NotificationApi notifications;
+	private final AgentOnboardingApi onboarding;
 	private final JsonMapper json;
 	private final java.time.Clock clock;
 
 	LocalSeedRunner(OrgApi orgs, UserDirectory userDirectory, UserCommands userCommands, WalletApi wallets,
-			HistoryApi history, NotificationApi notifications, JsonMapper json, java.time.Clock clock) {
+			HistoryApi history, NotificationApi notifications, AgentOnboardingApi onboarding, JsonMapper json,
+			java.time.Clock clock) {
 		this.orgs = orgs;
 		this.userDirectory = userDirectory;
 		this.userCommands = userCommands;
 		this.wallets = wallets;
 		this.history = history;
 		this.notifications = notifications;
+		this.onboarding = onboarding;
 		this.json = json;
 		this.clock = clock;
 	}
@@ -97,6 +102,7 @@ class LocalSeedRunner implements ApplicationRunner, UnsafeInProduction {
 							: userDirectory.findByUserCode(org.id(), user.parent()).orElseThrow().id();
 					UserView view = userCommands.createUser(toNewUser(org.id(), user, parentId));
 					seedMoney(view, user);
+					seedKyc(view, user);
 					created++;
 				}
 			}
@@ -113,6 +119,13 @@ class LocalSeedRunner implements ApplicationRunner, UnsafeInProduction {
 		if (seed.transactions()) {
 			DummyTransactions.forUser(user, account.id(), clock).forEach(history::record);
 		}
+	}
+
+	/** Seeded agents are onboarded, except the ones whose seed lists only some finished steps. */
+	private void seedKyc(UserView user, LocalSeed.SeedUser seed) {
+		java.util.Set<KycStep> done = seed.kycDone() == null ? java.util.EnumSet.allOf(KycStep.class)
+				: seed.kycDone().stream().map(KycStep::valueOf).collect(java.util.stream.Collectors.toSet());
+		onboarding.completeSteps(user.orgId(), user.id(), done);
 	}
 
 	private void seedNotifications(long orgId, List<LocalSeed.SeedNotification> items) {

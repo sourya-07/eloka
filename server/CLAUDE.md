@@ -3,7 +3,7 @@
 The ELOKA backend: **Java 25, Spring Boot 4.1, Spring Modulith 2.1, MySQL 8.4, Flyway, Gradle (Kotlin DSL)**.
 Read the root [`CLAUDE.md`](../CLAUDE.md) first. Decisions: ADR-0004 (system of record, EPS wire format), ADR-0005 (opaque tokens), ADR-0006 (logging, secrets). Plan and phases: [`docs/BACKEND_PLAN.md`](../docs/BACKEND_PLAN.md).
 
-> Status: **P1–P4 done** (foundation, login, org lookup, home, dashboards, network, history, profile, settings, pricing, onboard agents, support). Next: P5 (agent onboarding). Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
+> Status: **P1–P5 done** (foundation, login, org lookup, home, dashboards, network, history, profile, settings, pricing, onboard agents, support, agent onboarding). Next: P6 (hardening). Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
 
 ## Commands
 
@@ -27,7 +27,10 @@ src/main/java/in/eko/eloka/
 │                  BlindIndex, Tokens, Masking, Mobiles), logging (RequestIdFilter, PiiMasker), ProductionSafetyGuard,
 │                  BaseEntity (UUIDv7 id, version, timestamps), clock
 ├── gateway/       EPS wire format → domain calls. internal/{envelope, dispatch, web, report (XLSX/PDF/CSV), handler/<area>}
-├── identity/      login OTP (OtpService), sessions (SessionService = CallerResolver), IdentityApi
+├── identity/      login, email and agent-consent OTPs (OtpService), sessions (SessionService = CallerResolver),
+│                  PinTwin keys + BCrypt transaction PIN (PinService), IdentityApi
+├── agentonboarding/ KYC steps per role (KycStep, plans), progress + encrypted KYC data, funnel stages (AgentOnboardingApi)
+├── integration/   ports for outside providers (DigiLockerProvider, EsignProvider); fakes in local/test, "not configured" elsewhere
 ├── tenant/        orgs, domains, public metadata, org tokens (OrgApi, OrgTokens)
 ├── network/       users, shops, hierarchy; scoped queries + commands (UserDirectory, UserCommands, NetworkQueries, NetworkCommands)
 ├── notification/  SmsSender port + LogOnlySmsSender; in-app inbox (NotificationApi)
@@ -40,7 +43,7 @@ src/main/java/in/eko/eloka/
 ├── audit/         AuditLog: hash-chained audit_event, mirrored to eloka-audit.log
 ├── devdata/       local profile only: LocalSeedRunner (devdata/local-seed.json)
 ├── system/        /v1/system/info, migrate profile runner
-└── onboarding/ verification/ documents/ agreement/ whitelabel/ review/ provisioning/ lead/ integration/  (Release 2, empty)
+└── onboarding/ verification/ agreement/ whitelabel/ review/ provisioning/ lead/  (Release 2, empty)
 src/main/resources/
 ├── application.yaml / application-local.yaml / application-prod.yaml
 ├── logback-spring.xml          three rolling files; text locally, JSON (ECS) in prod

@@ -32,4 +32,23 @@ public interface IdentityApi {
 
 	/** Links a pre-registration session to the account created during self-onboarding. */
 	void attachUser(UUID sessionId, UUID userId);
+
+	/** Sends the agent an OTP so {@code assistantId} may onboard them. */
+	OtpDispatch sendAgentConsentOtp(long orgId, String agentMobile, UUID assistantId, String clientIp);
+
+	boolean verifyAgentConsentOtp(long orgId, String agentMobile, UUID assistantId, String code);
+
+	/** True when the agent confirmed {@code assistantId}'s OTP within the last 30 minutes. */
+	boolean hasAgentConsent(long orgId, String agentMobile, UUID assistantId);
+
+	/** A fresh one-time PinTwin key for this session (valid 10 minutes). */
+	PinKey issuePinKey(UUID sessionId);
+
+	/**
+	 * Sets the user's secret transaction PIN from two PinTwin-encoded entries ({@code "<code>|<keyId>"}).
+	 *
+	 * @throws in.eko.eloka.shared.error.ValidationException when the key is unknown/expired, the entries
+	 *         differ, or the PIN is too weak
+	 */
+	void setTransactionPin(long orgId, UUID userId, UUID sessionId, String encodedPin, String encodedConfirm);
 }

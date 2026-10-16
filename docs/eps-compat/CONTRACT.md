@@ -29,7 +29,7 @@ Status: ✅ implemented in `server/` · ⬜ not yet · ➖ out of scope (runs in
 | 151 profile | login, signup refresh | `mobile` + Bearer (FE-6) | `response_type_id 369`, `data{user_detail, personal_detail, shop_detail, account_detail}`; new user = not 369 | ✅ |
 | `/authentication/revoke` | logout | Bearer (FE-2) or `refresh_token` | `status 0` always | ✅ |
 | `/authentication/token` | token refresh | `refresh_token` | `{access_token, refresh_token, …}`; invalid → **HTTP 200** + fail | ✅ |
-| `/authentication/refresh-profile` | profile cards, widget | Bearer, `last_refresh_token` | `access_token, refresh_token, details, personal_details, shop_details, account_details` (the `{csp_id}` variant is P5) | ✅ |
+| `/authentication/refresh-profile` | profile cards, widget | Bearer, `last_refresh_token` | `access_token, refresh_token, details, personal_details, shop_details, account_details` (`{csp_id}`: assisted onboarding status, P5) | ✅ |
 | `/transactions/getip` | Dropzone watermark | — | `ip` | ✅ |
 | 774 | Configurations → Theme | `orgDetails.metadata[{name:"theme", type:"json", value}]` | `status 0` | ✅ |
 
@@ -47,19 +47,19 @@ Status: ✅ implemented in `server/` · ⬜ not yet · ➖ out of scope (runs in
 | 1044 | dashboard filter | `param_attributes.list_elements[{label, tx_typeid}]` | ✅ |
 | 682 | business dashboard | `data.dashboard_object.{products_overview{}, successRate{}, mostUsedServices{}, verificationTrends[], gtv_top_merchants[]}` (verificationTrends stays `[]`: no verification products yet) | ✅ |
 | 817 | onboarding dashboard: joined per user type | `data.onboarding_funnel[0]{<type>:{totalCount}}` | ✅ |
-| 683 / 727 | onboarding dashboard: funnel cards and table | `data.onboarding_funnel…`, `totalRecords` (needs onboarding states, P5) | ⬜ |
+| 683 / 727 | onboarding dashboard: funnel cards and table | `data.onboarding_funnel[]{status_ids…}`, `totalRecords`; 727 pages by `account_status` (stage ids 10/11/12) | ✅ |
 
 ### Network, history, profile (P3)
 
 | Key | Screen | Status |
 |---|---|---|
-| tf GET `/network/agents` (paging + filters, `search_value` → 1827, `document=1`) | My Network, agent profile (KYC images with `document=1` arrive in P5) | ✅ |
+| tf GET `/network/agents` (paging + filters, `search_value` → 1827, `document=1`) | My Network, agent profile (KYC images with `document=1`: `cspDetails` still empty, follow-up) | ✅ |
 | tf GET `/network/agent-list` (`usertype`, `user_id`) | network users, change role | ✅ |
 | dojson tf POST `/network/agents/updateStatus` → 1831 | mark active/inactive | ✅ |
 | tf PUT `/network/agents/profile/changeRole/{upgrademerchant 1842, promotecsps 1967, transfercsps 1872}` | change role | ✅ |
 | dojson tf POST `/network/agents/profile/personalInfo/update`, `/address/update` | edit agent | ✅ |
 | dojson tf POST `/network/agent` (delete demo) | demo users | ✅ |
-| 792 | download agreement (needs agent agreements, P5) | ⬜ |
+| 792 | download agreement (answers "not available yet" until a real e-sign provider stores signed PDFs) | ⬜ |
 | tf GET `/network/agents/transaction_history[/recent_transaction[/account_statement]]` | network statement (legacy) | ✅ |
 | tf GET `/network/agents/ids` | notification creator (page not in the menu) | ➖ |
 | 154 (`isNetworkTransactionHistory`, `account_id`, filters, paging 25) | history, network transactions | ✅ |
@@ -87,16 +87,16 @@ Status: ✅ implemented in `server/` · ⬜ not yet · ➖ out of scope (runs in
 
 | Key | Step | Status |
 |---|---|---|
-| 521 | role selection (1566) | ⬜ |
-| 523 multipart `doc_type 1/2/3/7` | Aadhaar, PAN, selfie, passbook (1569) | ⬜ |
-| 298 | selfie location (1076) | ⬜ |
-| 522 | business details (1567) | ⬜ |
-| tf POST `/karza/digilocker-redirection-url` + 552 | DigiLocker (1621) | ⬜ |
-| 454 / 155 | bank (1445) / bank list (155 done in P3) | ⬜ |
-| 170 / 10005 / 5 | secret PIN (1646 / key / 9) | ⬜ |
-| 287 / 293 | agreement (1069/1613 / 1615) | ⬜ |
+| 521 | role selection (1566); assisted needs the agent's consent OTP first (`CONSENT_REQUIRED`) | ✅ |
+| 523 multipart `doc_type 1/2/3/7` | Aadhaar, PAN (`doc_id`, duplicate = `PAN_ALREADY_REGISTERED`), selfie, passbook (1569) | ✅ |
+| 298 | selfie location (1076) | ✅ |
+| 522 | business details (1567) | ✅ |
+| tf POST `/karza/digilocker-redirection-url` + 552 | DigiLocker (1621); local/test use a fake consent page (`/v1/dev/digilocker`) | ✅ |
+| 454 / 155 | bank (1445) / bank list (155 done in P3) | ✅ |
+| 170 / 10005 / 5 | secret PIN (1646 / one-time PinTwin key / 9); weak PINs rejected, stored as BCrypt | ✅ |
+| 287 / 293 | agreement (1069 with the local fake e-sign / 1615); production needs an e-sign provider | ✅ |
 | 519 / 387 | shop types / states (done in P3, used by the profile) | ✅ |
-| 194 / 197 / refresh-profile `{csp_id}` | assisted onboarding | ⬜ |
+| 194 / 197 / refresh-profile `{csp_id}` | assisted onboarding (873 OTP sent / 874 already exists; 876 ok / 302 wrong OTP) | ✅ |
 
 ### Out of scope for Release 1
 

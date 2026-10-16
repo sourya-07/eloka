@@ -26,14 +26,16 @@ class IdentityService implements IdentityApi {
 	private final UserDirectory users;
 	private final AuditLog audit;
 	private final IdentityProperties properties;
+	private final PinService pins;
 
 	IdentityService(OtpService otps, SessionService sessions, UserDirectory users, AuditLog audit,
-			IdentityProperties properties) {
+			IdentityProperties properties, PinService pins) {
 		this.otps = otps;
 		this.sessions = sessions;
 		this.users = users;
 		this.audit = audit;
 		this.properties = properties;
+		this.pins = pins;
 	}
 
 	@Override
@@ -109,5 +111,34 @@ class IdentityService implements IdentityApi {
 	@Override
 	public void attachUser(UUID sessionId, UUID userId) {
 		sessions.attachUser(sessionId, userId);
+	}
+
+	@Override
+	@Transactional
+	public OtpDispatch sendAgentConsentOtp(long orgId, String agentMobile, UUID assistantId, String clientIp) {
+		String mobile = Mobiles.normalize(agentMobile);
+		String code = otps.issueAgentConsent(orgId, mobile, assistantId, clientIp);
+		return new OtpDispatch(mobile, properties.otpLength(), properties.exposeOtpInResponse() ? code : null);
+	}
+
+	@Override
+	@Transactional(noRollbackFor = RuntimeException.class)
+	public boolean verifyAgentConsentOtp(long orgId, String agentMobile, UUID assistantId, String code) {
+		return otps.checkAgentConsent(orgId, Mobiles.normalize(agentMobile), assistantId, code) instanceof OtpService.Check.Valid;
+	}
+
+	@Override
+	public boolean hasAgentConsent(long orgId, String agentMobile, UUID assistantId) {
+		return otps.hasRecentConsent(orgId, Mobiles.normalize(agentMobile), assistantId, java.time.Duration.ofMinutes(30));
+	}
+
+	@Override
+	public in.eko.eloka.identity.PinKey issuePinKey(UUID sessionId) {
+		return pins.issue(sessionId);
+	}
+
+	@Override
+	public void setTransactionPin(long orgId, UUID userId, UUID sessionId, String encodedPin, String encodedConfirm) {
+		pins.setPin(orgId, userId, sessionId, encodedPin, encodedConfirm);
 	}
 }

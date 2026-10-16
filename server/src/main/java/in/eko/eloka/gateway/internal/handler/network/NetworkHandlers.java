@@ -93,7 +93,7 @@ final class NetworkHandlers {
 				data.put("totalRecords", 1);
 				data.put("agent_details", List.of(AgentRows.detail(user, network.shopOf(caller, user.id()), balances.of(user))));
 				if (params.string("document").isPresent()) {
-					// KYC images arrive with agent onboarding (P5).
+					// KYC images are not served yet: the profile shows no documents.
 					data.put("cspDetails", new LinkedHashMap<>(Map.of()));
 				}
 				return EpsEnvelope.ok().type(AGENT_FOUND).data(data).build();

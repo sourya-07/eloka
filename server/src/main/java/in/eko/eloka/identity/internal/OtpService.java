@@ -85,6 +85,32 @@ class OtpService implements SafetyCheck {
 	}
 
 	/**
+	 * OTP sent to an agent so a distributor/admin can onboard them. The target hash includes the
+	 * assistant, so only the assistant who asked can use the code.
+	 */
+	String issueAgentConsent(long orgId, String agentMobile, java.util.UUID assistantId, String clientIp) {
+		return issue(orgId, OtpChallenge.PURPOSE_CONSENT, consentTarget(assistantId, agentMobile), clientIp,
+				code -> sms.send(new SmsMessage(agentMobile, "AGENT_CONSENT_OTP",
+						Map.of("otp", code, "minutes", Long.toString(properties.otpTtl().toMinutes())), "otp")));
+	}
+
+	Check checkAgentConsent(long orgId, String agentMobile, java.util.UUID assistantId, String code) {
+		return check(orgId, OtpChallenge.PURPOSE_CONSENT, consentTarget(assistantId, agentMobile), code);
+	}
+
+	boolean hasRecentConsent(long orgId, String agentMobile, java.util.UUID assistantId, java.time.Duration window) {
+		Instant now = Instant.now(clock);
+		return challenges.findFirstByOrgIdAndMobileHashAndPurposeOrderByCreatedAtDesc(orgId,
+				consentTarget(assistantId, agentMobile), OtpChallenge.PURPOSE_CONSENT)
+			.filter(challenge -> challenge.consumedWithin(now, window))
+			.isPresent();
+	}
+
+	private byte[] consentTarget(java.util.UUID assistantId, String agentMobile) {
+		return index.hash("consent", assistantId + ":" + agentMobile);
+	}
+
+	/**
 	 * Creates a challenge for any target (mobile, email) and hands the code to {@code deliver}.
 	 * Limits are counted per target across purposes.
 	 */
