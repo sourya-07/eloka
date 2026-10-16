@@ -1,6 +1,6 @@
  # ELOKA: architecture overview (rough)
 
-> Status: **rough, for discussion** · 15 October 2026
+> Status: updated 16 October 2026 (Release 1 phases P0–P5 built)
 > The detailed design of the first backend feature (Local Admin onboarding) is in [`onboarding/ARCHITECTURE.md`](./onboarding/ARCHITECTURE.md). This page is the one-screen picture of the whole project.
 
 ## 1. What we are building
@@ -11,8 +11,8 @@ ELOKA is Eko's white-label fintech platform. A business (a **tenant**) gets its 
 |---|---|---|
 | Applicant (wants to become a tenant) | Local Admin onboarding journey | **new** `server/` + onboarding UI in `client/` |
 | Eko staff | Review, approve, provision tenants | **new** `server/` + staff screens |
-| Local Admin | Configure network, pricing, branding | `client/` → EPS |
-| Agent (retailer / distributor) | Transactions, wallet, own onboarding | `client/` → EPS |
+| Local Admin | Configure network, pricing, branding, onboard agents | `client/` → `server/` (EPS wire format) |
+| Agent (retailer / distributor) | Wallet, history, own onboarding; transactions via the EkoConnect widget (off in production) | `client/` → `server/`; widget → EPS |
 
 ## 2. System context
 
@@ -47,8 +47,8 @@ flowchart LR
     W -.-> EPS
     C -->|"REST /v1 (Release 2)"| S
     S --> DB
-    S --> EPS
-    S --> EXT
+    S -.->|"later: token exchange for the widget"| EPS
+    S -->|"ports; fakes until contracts exist"| EXT
 ```
 
 Key point (ADR-0004, 15 Oct 2026): **`server/` is the system of record and answers the same requests EPS did**, so the client works unchanged. The EkoConnect widget (money transactions) still talks to EPS and is switched off in production until a token exchange with EPS exists. Release 2 adds Local Admin onboarding (application state, staff review, provisioning into our own database).
@@ -73,11 +73,11 @@ eloka/
 
 ## 4. Client (frontend) in one paragraph
 
-Next.js 14 (pages router), React 18, Chakra UI, TypeScript where new. Component-based: `components/` (reusable UI), `page-components/` (one per route), `features/` (self-contained modules such as onboarding, KYC, DigiKhata), `contexts/` (global state), `hooks/`, `tf-components/` (config-driven forms). Every backend call goes through `pages/api/transaction.js`, a server-side proxy to EPS. The tenant (branding, features) is resolved from the sub-domain. Details: [`client/CLAUDE.md`](../client/CLAUDE.md).
+Next.js 14 (pages router), React 18, Chakra UI, TypeScript where new. Component-based: `components/` (reusable UI), `page-components/` (one per route), `features/` (self-contained modules such as onboarding, KYC, DigiKhata), `contexts/` (global state), `hooks/`, `tf-components/` (config-driven forms). Every backend call goes through `pages/api/transaction.js`, a server-side proxy to `NEXT_PUBLIC_API_BASE_URL` (our `server/`; EPS only in the legacy `npm run dev` setup). The tenant (branding, features) is resolved from the sub-domain. Details: [`client/CLAUDE.md`](../client/CLAUDE.md).
 
 ## 5. Server (backend) in one paragraph
 
-Spring Boot 4 **modular monolith** (Spring Modulith). One deployable, split into modules that own their data and talk through public interfaces or events: `identity`, `lead`, `onboarding`, `verification`, `documents`, `agreement`, `whitelabel`, `review`, `provisioning`, `tenant`, `audit`, `notification`, `integration`, plus `shared` and `system`. MySQL 8.4 with Flyway migrations. Layering inside a module: controller → service → domain → repository/adapter. External systems sit behind port interfaces with fake adapters for local runs and tests. Details: [`server/CLAUDE.md`](../server/CLAUDE.md).
+Spring Boot 4 **modular monolith** (Spring Modulith). One deployable, split into modules that own their data and talk through public interfaces or events. Built (Release 1): `gateway` (EPS wire format → domain calls), `identity`, `tenant`, `network`, `agentonboarding`, `wallet`, `history`, `pricing`, `support`, `documents`, `reference`, `notification`, `integration`, `audit`, plus `shared`, `system` and the local-only `devdata`. Planned (Release 2): `lead`, `onboarding`, `verification`, `agreement`, `whitelabel`, `review`, `provisioning`. MySQL 8.4 with Flyway migrations. Layering inside a module: controller → service → domain → repository/adapter. External systems sit behind port interfaces with fake adapters for local runs and tests. Details: [`server/CLAUDE.md`](../server/CLAUDE.md).
 
 ```mermaid
 flowchart TB
@@ -114,20 +114,21 @@ Rule: **the same build runs everywhere; only configuration changes.** Configurat
 sequenceDiagram
     participant B as Browser :3002
     participant N as Next.js server (client/)
-    participant M as mock-eps :4010
-    participant S as server/ :8090 (future onboarding APIs)
+    participant S as server/ :8090 (npm run dev:server)
 
     B->>N: POST /api/transaction {interaction_type_id: 515, mobile}
-    N->>M: POST / (same body)
-    M-->>N: {status:0, data:{otp:"123456"}}
+    N->>S: POST / (same body)
+    S-->>N: {status:0, data:{otp:"123456"}} (local profile only)
     N-->>B: same JSON
-    B->>M: POST /transactions/wlc (menu, direct call)
-    B-->>S: (later) /v1/onboarding/... with session cookie
+    B->>S: POST /transactions/wlc (menu, direct call, Bearer token)
+    B-->>S: (Release 2) /v1/onboarding/... REST
 ```
 
 ## 8. Next steps (rough order)
 
-1. Review this layout and the onboarding blueprint; answer the blocking open questions ([`onboarding/OPEN_QUESTIONS.md`](./onboarding/OPEN_QUESTIONS.md)).
-2. Server Phase 1 foundation: audit, outbox, idempotency, encryption, observability ([`onboarding/IMPLEMENTATION_PLAN.md`](./onboarding/IMPLEMENTATION_PLAN.md)).
-3. Server Phase 2–3: applicant OTP login + onboarding application with its state machine, with a local seed (fixed OTP) like the client mock.
-4. Client: onboarding UI that calls `server/` for the Local Admin journey (decision ADR-011 in the blueprint is still open).
+`client/mock-eps` (`npm run dev:mock`) answers the same calls without Java, for UI-only work.
+
+1. **P6 hardening:** client fixes FE-1..FE-5, load test, dependency and secret scans, client container, backups, staging sign-off, tag `v1.0.0` ([`BACKEND_PLAN.md`](./BACKEND_PLAN.md)).
+2. **Real providers:** SMS, email, DigiLocker, e-sign (production cannot finish agent onboarding without them, see [`deploy/RUNBOOK.md`](./deploy/RUNBOOK.md)).
+3. **Release 2 (P7–P9):** Local Admin onboarding, staff review, provisioning and go-live. It replaces today's Eko Connect + Go-Live tool + email/CRM process ([`onboarding/ELOKA_ONBOARDING_JOURNEY.md`](./onboarding/ELOKA_ONBOARDING_JOURNEY.md) §2). Blocking questions: [`onboarding/OPEN_QUESTIONS.md`](./onboarding/OPEN_QUESTIONS.md).
+4. **CD:** a pipeline that builds and publishes images once a deploy target is chosen.

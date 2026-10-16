@@ -116,6 +116,8 @@ Provisioning creates an org + Local Admin in our own DB, in **one transaction** 
 
 ## Phases (SDLC: each phase = design note → build → tests → review → demo)
 
+> Status (2026-10-16): **P0–P5 done** and committed on `main`. Next: P6. Per-call progress: [`eps-compat/CONTRACT.md`](./eps-compat/CONTRACT.md).
+
 **Release 1: our server replaces EPS for the existing screens**
 
 | Phase | Deliverables | Done when |
@@ -125,7 +127,7 @@ Provisioning creates an org + Local Admin in our own DB, in **one transaction** 
 | P2 Homes + dashboards | 9, `/transactions/wlc`, 10010/10012/10023, 623, 154, pricing_commission, 818, 1044, 682, 817/683/727 | Both home pages and both dashboard tabs render; no "unsupported" in logs |
 | P3 Network, history, profile | `/network/agents` (paging, filters), agent-list, agent profile + documents, updateStatus 1831, changeRole 1842/1967/1872, personalInfo/address update, 792, demo delete, statements, 154 network/self + 183 export, `/reports/agent-subnetwork`, 401, 373 | Admin + distributor network flows end to end; cross-org and cross-subtree access denied |
 | P4 Settings, pricing, onboard agents, support | 737 ops, 726, agreement-signing v2 + email OTP 553/554/555, 353; 837/1046/838/756; multiple_onboarding (+demo), bulk_onboarding (CSV/XLSX); 692, 10016–10020, 10022, 10000 | All those screens work; replayed `client_ref_id` does not double-apply |
-| P5 Agent onboarding | 521, 523 (doc types 1/2/3/7), 298, 522, 552 + DigiLocker fake page, 454, 155, 170, 10005, 5, 287/293, 519, 387, 194, 197, refresh-profile `{csp_id}` | Mock's self-onboarding + resume tests pass against Java; DB scan proves no Aadhaar number stored |
+| P5 Agent onboarding | 521, 523 (doc types 1/2/3/7), 298, 522, 552 + DigiLocker fake page, 454, 155, 170, 10005, 5, 287/293, 519, 387, 194, 197, refresh-profile `{csp_id}` | Mock's self-onboarding + resume tests pass against Java; DB scan proves no Aadhaar number stored. **Done 2026-10-16**: contract journey green on mock and server; the schema has no Aadhaar-number column (only front/back image ids, V18) |
 | P6 Hardening + release | FE-1..FE-5; refresh rotation on; k6 load test on login/home; OWASP dependency check, Trivy, gitleaks; backup/restore drill; `docs/deploy/RUNBOOK.md` | Staging sign-off, tag `v1.0.0` |
 
 **Release 2: Local Admin onboarding (blueprint)**

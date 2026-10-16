@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Staging/production until a provider contract exists: the steps fail with a clear message
- * instead of pretending. Orgs can hide these steps via the {@code onboarding} metadata.
+ * instead of pretending.
  */
 final class UnconfiguredProviders {
 

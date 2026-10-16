@@ -19,7 +19,7 @@ One-page picture: [`docs/ARCHITECTURE_OVERVIEW.md`](./docs/ARCHITECTURE_OVERVIEW
 eloka/
 ├── client/            Next.js 14 web app (moved here from the repo root on 2026-10-15)
 │   └── mock-eps/      dummy EPS server for local logins (dev tool, not shipped)
-├── server/            Java 25 + Spring Boot 4.1 + MySQL 8.4 (skeleton; modules planned)
+├── server/            Java 25 + Spring Boot 4.1 + MySQL 8.4 backend (system of record, speaks the EPS wire format)
 ├── docs/              overview, local dev, workflow (SDLC), ADRs, onboarding blueprint
 ├── .github/           CI (path-filtered per folder), CodeQL, PR template
 └── Makefile           `make help`

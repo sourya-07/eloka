@@ -33,6 +33,8 @@ Definition: [`deploy/docker-compose.yml`](../../deploy/docker-compose.yml).
 
 Until a real SMS provider is integrated, run as `ELOKA_ENVIRONMENT=staging` and read OTPs from the app log only if `ELOKA_SMS_REVEAL_SECRETS=true` (staging only).
 
+**Agent onboarding providers (known gap).** DigiLocker and agreement e-sign have no real provider yet. Outside the `local` and `test` profiles both steps answer `PROVIDER_NOT_CONFIGURED` ("not available yet"), so in staging and production a distributor cannot pass DigiLocker and no agent can sign the agreement, which means no new agent finishes onboarding. This includes agents added by an admin through Onboard Agents: they start the same KYC steps. Fix: integrate the providers behind `integration/DigiLockerProvider` and `integration/EsignProvider`.
+
 ## Routine deployment
 
 ```bash
