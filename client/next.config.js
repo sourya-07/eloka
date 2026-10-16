@@ -238,7 +238,6 @@ const nextConfig = {
 	// },
 	reactStrictMode: isDev ? true : false,
 	poweredByHeader: false,
-	swcMinify: true,
 	eslint: {
 		dirs: [
 			"components",
@@ -383,11 +382,8 @@ const nextConfig = {
 if (isDockerBuild) {
 	nextConfig.output = "standalone";
 	// Build-only binaries the file tracer picks up; the running app never loads them
-	nextConfig.experimental = {
-		...nextConfig.experimental,
-		outputFileTracingExcludes: {
-			"*": ["node_modules/@esbuild/**", "node_modules/esbuild/**"],
-		},
+	nextConfig.outputFileTracingExcludes = {
+		"*": ["node_modules/@esbuild/**", "node_modules/esbuild/**"],
 	};
 }
 

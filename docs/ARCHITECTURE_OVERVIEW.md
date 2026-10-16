@@ -26,7 +26,7 @@ flowchart LR
     end
 
     subgraph Repo["This repository"]
-        C["client/<br/>Next.js 14 web app<br/>(multi-tenant, by sub-domain)"]
+        C["client/<br/>Next.js 15 web app<br/>(multi-tenant, by sub-domain)"]
         S["server/<br/>Java 25 + Spring Boot 4<br/>ELOKA backend (modular monolith)"]
         DB[(MySQL 8.4)]
     end
@@ -76,7 +76,7 @@ eloka/
 
 ## 4. Client (frontend) in one paragraph
 
-Next.js 14 (pages router), React 18, Chakra UI, TypeScript where new. Component-based: `components/` (reusable UI), `page-components/` (one per route), `features/` (self-contained modules such as onboarding, KYC, DigiKhata), `contexts/` (global state), `hooks/`, `tf-components/` (config-driven forms). Every backend call goes through `pages/api/transaction.js`, a server-side proxy to `NEXT_PUBLIC_API_BASE_URL` (our `server/`; EPS only in the legacy `npm run dev` setup). The tenant (branding, features) is resolved from the sub-domain. Details: [`client/CLAUDE.md`](../client/CLAUDE.md).
+Next.js 15 (pages router), React 18, Chakra UI, TypeScript where new. Component-based: `components/` (reusable UI), `page-components/` (one per route), `features/` (self-contained modules such as onboarding, KYC, DigiKhata), `contexts/` (global state), `hooks/`, `tf-components/` (config-driven forms). Every backend call goes through `pages/api/transaction.js`, a server-side proxy to `NEXT_PUBLIC_API_BASE_URL` (our `server/`; EPS only in the legacy `npm run dev` setup). The tenant (branding, features) is resolved from the sub-domain. Details: [`client/CLAUDE.md`](../client/CLAUDE.md).
 
 ## 5. Server (backend) in one paragraph
 
@@ -132,7 +132,7 @@ sequenceDiagram
 
 `client/mock-eps` (`npm run dev:mock`) answers the same calls without Java, for UI-only work.
 
-1. **Finish P6:** upgrade Next.js to 15+ (security advisories), clear the client's lint/test debt so CI is green, run the stack on a real staging host, tag `v1.0.0` ([`BACKEND_PLAN.md`](./BACKEND_PLAN.md), [`deploy/RUNBOOK.md`](./deploy/RUNBOOK.md)).
+1. **Finish P6:** run the stack on a real staging host, tag `v1.0.0` ([`BACKEND_PLAN.md`](./BACKEND_PLAN.md), [`deploy/RUNBOOK.md`](./deploy/RUNBOOK.md)).
 2. **Real providers:** SMS, email, DigiLocker, e-sign (production cannot finish agent onboarding without them, see [`deploy/RUNBOOK.md`](./deploy/RUNBOOK.md)).
 3. **Release 2 (P7–P9):** Local Admin onboarding, staff review, provisioning and go-live. It replaces today's Eko Connect + Go-Live tool + email/CRM process ([`onboarding/ELOKA_ONBOARDING_JOURNEY.md`](./onboarding/ELOKA_ONBOARDING_JOURNEY.md) §2). Blocking questions: [`onboarding/OPEN_QUESTIONS.md`](./onboarding/OPEN_QUESTIONS.md).
 4. **CD:** a pipeline that builds and publishes images once a deploy target is chosen (CI already builds and scans both images).

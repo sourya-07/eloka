@@ -4,7 +4,7 @@ Eko's white-label fintech platform: branded portals for businesses (tenants), ru
 
 | Folder | What | Stack |
 |---|---|---|
-| [`client/`](./client) | Web app (agents, admins, onboarding) | Next.js 14, React 18, Chakra UI, TypeScript |
+| [`client/`](./client) | Web app (agents, admins, onboarding) | Next.js 15 (Pages Router), React 18, Chakra UI, TypeScript |
 | [`server/`](./server) | Backend: system of record, speaks the EPS wire format | Java 25, Spring Boot 4, Spring Modulith, MySQL 8.4 |
 | [`deploy/`](./deploy) | Production stack: Docker Compose, Caddy TLS edge, backup/restore | Docker |
 | [`docs/`](./docs) | Architecture, decisions, workflow | Markdown + Mermaid |
