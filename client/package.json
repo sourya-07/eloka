@@ -118,7 +118,7 @@
 		"@babel/core": "^7.24.6",
 		"@chakra-ui/storybook-addon": "^5.2.5",
 		"@chromatic-com/storybook": "^3.2.3",
-		"@commitlint/cli": "^19.3.0",
+		"@commitlint/cli": "^21.2.3",
 		"@commitlint/config-conventional": "^19.2.2",
 		"@eslint/compat": "^1.1.0",
 		"@next/bundle-analyzer": "^14.2.3",
