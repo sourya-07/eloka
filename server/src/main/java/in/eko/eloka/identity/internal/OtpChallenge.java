@@ -18,6 +18,10 @@ class OtpChallenge extends BaseEntity {
 	static final String PURPOSE_EMAIL = "EMAIL";
 	/** An agent's consent to be onboarded by a distributor/admin (assisted onboarding). */
 	static final String PURPOSE_CONSENT = "AGENT_CONSENT";
+	/** A Local Admin applicant's login (platform level, no tenant yet). */
+	static final String PURPOSE_APPLICANT = "APPLICANT_LOGIN";
+	/** Step-up before a sensitive action, bound to one session. */
+	static final String PURPOSE_REAUTH = "REAUTH";
 
 	@Column(name = "org_id", nullable = false)
 	private long orgId;

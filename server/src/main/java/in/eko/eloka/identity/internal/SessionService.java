@@ -124,6 +124,12 @@ class SessionService implements CallerResolver {
 
 	private Optional<Caller> toCaller(AuthSession session, Instant now) {
 		String mobile = cipher.decrypt(session.getMobileEnc());
+		if (session.getKind() == SessionKind.LA_APPLICANT) {
+			// Applicants are not users of any tenant: the session's user id is the applicant id.
+			touch(session, now);
+			return Optional.of(new Caller(session.getId(), session.getKind(), session.getOrgId(), session.getUserId(), null,
+					mobile, Role.LA_APPLICANT, Set.of()));
+		}
 		if (session.getKind() == SessionKind.PRE_REGISTRATION) {
 			touch(session, now);
 			return Optional.of(new Caller(session.getId(), session.getKind(), session.getOrgId(), null, null, mobile,

@@ -76,6 +76,20 @@ Access tokens last 30 minutes; the website rotates them with the refresh token o
 
 Reset the local database: `cd server && docker compose down -v`, then `./gradlew bootRun` again.
 
+### Try the Local Admin applicant API (P7)
+
+There is no screen yet (FE-R2). With the server running, any 10-digit mobile and OTP `123456`:
+
+```bash
+API=http://localhost:8090/v1/onboarding
+REF=$(curl -s $API/otp -H 'Content-Type: application/json' -H "Idempotency-Key: $(uuidgen)" \
+  -d '{"mobile":"9811122233"}' | jq -r .otp_ref)
+curl -s -D - $API/otp/verify -H 'Content-Type: application/json' -d "{\"otp_ref\":\"$REF\",\"otp\":\"123456\"}"
+# → access_token, application (onboarding_id, steps, next_recommended_step) and an ETag header
+```
+
+Every write sends `Authorization: Bearer <access_token>`, `If-Match: <ETag>` and a new `Idempotency-Key`; bank, e-sign and withdraw also need `X-Reauth-Token` from `POST $API/reauth` + `POST $API/reauth/verify {"otp":"123456"}`. The full journey in order, with request bodies, is the test `server/src/test/java/in/eko/eloka/onboarding/internal/OnboardingApplicantIntegrationTest.java`. Fake providers: PAN digits `0000` fail and `9999` are pending once; a PAN like `ABCCD1234E` is a company PAN; bank accounts ending `0000` fail. Details: [`onboarding/P7_APPLICANT_API.md`](./onboarding/P7_APPLICANT_API.md).
+
 ## Run the website against real EPS (UAT)
 
 ```bash

@@ -106,6 +106,32 @@ class OtpService implements SafetyCheck {
 			.isPresent();
 	}
 
+	/** Local Admin applicant login OTP (platform org, purpose of its own). */
+	String issueApplicant(long platformOrgId, String mobile, String clientIp) {
+		return issue(platformOrgId, OtpChallenge.PURPOSE_APPLICANT, index.hash("mobile", mobile), clientIp,
+				code -> sms.send(new SmsMessage(mobile, "APPLICANT_LOGIN_OTP",
+						Map.of("otp", code, "minutes", Long.toString(properties.otpTtl().toMinutes())), "otp")));
+	}
+
+	Check checkApplicant(long platformOrgId, String mobile, String code) {
+		return check(platformOrgId, OtpChallenge.PURPOSE_APPLICANT, index.hash("mobile", mobile), code);
+	}
+
+	/** Step-up OTP to the session's verified mobile; only that session can use it. */
+	String issueReauth(long orgId, java.util.UUID sessionId, String mobile, String clientIp) {
+		return issue(orgId, OtpChallenge.PURPOSE_REAUTH, reauthTarget(sessionId), clientIp,
+				code -> sms.send(new SmsMessage(mobile, "REAUTH_OTP",
+						Map.of("otp", code, "minutes", Long.toString(properties.otpTtl().toMinutes())), "otp")));
+	}
+
+	Check checkReauth(long orgId, java.util.UUID sessionId, String code) {
+		return check(orgId, OtpChallenge.PURPOSE_REAUTH, reauthTarget(sessionId), code);
+	}
+
+	private byte[] reauthTarget(java.util.UUID sessionId) {
+		return index.hash("reauth", sessionId.toString());
+	}
+
 	private byte[] consentTarget(java.util.UUID assistantId, String agentMobile) {
 		return index.hash("consent", assistantId + ":" + agentMobile);
 	}

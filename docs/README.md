@@ -11,6 +11,7 @@
 | [commit-message-instructions.md](./commit-message-instructions.md) | You are writing a commit message |
 | [adr/](./adr) | You need to know why a big decision was made, or are making one (0007: TLS edge) |
 | [onboarding/](./onboarding/ARCHITECTURE.md) | You work on Local Admin onboarding (journey, state machine, DB, API, security, plan, open questions) |
+| [onboarding/P7_APPLICANT_API.md](./onboarding/P7_APPLICANT_API.md) | You change the applicant API (`/v1/onboarding`): what was built, deviations, fakes |
 
 Frontend-only docs (animations, feature notes, Docker for the web app) stay in [`client/docs/`](../client/docs).
 

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,7 +47,12 @@ public class SecurityConfig {
 						.requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
 						.requestMatchers("/v1/system/**", "/v1/dev/**", "/error").permitAll()
 						.requestMatchers(EPS_PATHS).permitAll()
-						.requestMatchers("/v1/onboarding/**", "/v1/admin/**").authenticated()
+						// Local Admin applicants: OTP login is public; everything else needs an applicant session.
+						// Agent/admin tokens are refused here, and applicant tokens are refused on EPS calls (AccessPolicy).
+						.requestMatchers(HttpMethod.POST, "/v1/onboarding/otp", "/v1/onboarding/otp/verify",
+								"/v1/onboarding/session/refresh").permitAll()
+						.requestMatchers("/v1/onboarding/**").hasAuthority("KIND_" + SessionKind.LA_APPLICANT.name())
+						.requestMatchers("/v1/admin/**").authenticated()
 						.anyRequest().denyAll())
 				.exceptionHandling(ex -> ex
 						.authenticationEntryPoint((request, response, e) -> writeJson(response,

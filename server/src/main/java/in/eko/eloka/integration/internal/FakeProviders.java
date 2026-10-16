@@ -29,8 +29,66 @@ final class FakeProviders {
 		}
 
 		@Override
+		public java.util.Optional<KycIdentity> identity(String requestId, String hintName) {
+			return isCompleted(requestId)
+					? java.util.Optional.of(new KycIdentity(hintName == null ? "DEMO SIGNATORY" : hintName, "XXXX-XXXX-1234"))
+					: java.util.Optional.empty();
+		}
+
+		@Override
 		public String unsafeReason() {
 			return "FakeDigiLocker approves every Aadhaar consent";
+		}
+	}
+
+	/**
+	 * PAN rules for demos and tests (by the four digits): {@code 0000} is invalid, {@code 9999} is
+	 * pending on the first call and valid afterwards, anything else is valid with the hinted name.
+	 */
+	@Component
+	@Profile({ "local", "test" })
+	static class FakePanVerification implements in.eko.eloka.integration.PanVerificationProvider, UnsafeInProduction {
+
+		private final java.util.Set<String> asked = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+		@Override
+		public PanCheck verify(String pan, String hintName) {
+			String digits = pan.substring(5, 9);
+			if ("0000".equals(digits)) {
+				return new PanCheck(Outcome.INVALID, null, null);
+			}
+			if ("9999".equals(digits) && asked.add(pan)) {
+				return new PanCheck(Outcome.PENDING, null, null);
+			}
+			return new PanCheck(Outcome.VALID, hintName == null ? "DEMO ENTERPRISE PRIVATE LIMITED" : hintName.toUpperCase(),
+					pan.substring(3, 4));
+		}
+
+		@Override
+		public String unsafeReason() {
+			return "FakePanVerification accepts every well-formed PAN";
+		}
+	}
+
+	/** Bank rules for demos and tests: account ending 0000 is invalid, 1111 returns another holder name. */
+	@Component
+	@Profile({ "local", "test" })
+	static class FakeBankAccountVerifier implements in.eko.eloka.integration.BankAccountVerifier, UnsafeInProduction {
+
+		@Override
+		public BankCheck verify(String ifsc, String accountNumber, String hintName) {
+			if (accountNumber.endsWith("0000")) {
+				return new BankCheck(false, null, "BANK_ACCOUNT_INVALID");
+			}
+			if (accountNumber.endsWith("1111")) {
+				return new BankCheck(true, "SOMEONE ELSE", null);
+			}
+			return new BankCheck(true, hintName == null ? "DEMO ACCOUNT HOLDER" : hintName.toUpperCase(), null);
+		}
+
+		@Override
+		public String unsafeReason() {
+			return "FakeBankAccountVerifier accepts every bank account";
 		}
 	}
 
@@ -40,7 +98,8 @@ final class FakeProviders {
 
 		@Override
 		public EsignSession prepare(UUID userId, String agreementId) {
-			return new EsignSession("FAKE-ESIGN-" + userId, true, null, 0);
+			// unique per session (one provider document per agreement version); fits the 80-char agent column
+			return new EsignSession("FAKE-ESIGN-" + UUID.randomUUID(), true, null, 0);
 		}
 
 		@Override

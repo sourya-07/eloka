@@ -3,6 +3,8 @@
 > Status: **DRAFT for architecture review** · **Revised 14 October 2026:** Java 25 + Spring Boot 4, MySQL 8.4 · Every question here is unresolved unless marked **CLOSED**. **None has been answered with an assumption.**
 > Decisions so far (14 October 2026): database = **MySQL 8.4** (OQ-T1 closed); backend language = **Java 25 + Spring Boot 4** (see ARCHITECTURE.md §5; OQ-T5 now asks only who owns it).
 > Where a working assumption was needed to keep the design moving, it is marked ASSUMPTION in the other docs and **listed here**, so it can be confirmed or replaced.
+>
+> **Since P7 (16 Oct 2026)** the assumptions the applicant API depends on are settings, not code: `eloka.onboarding` in `server/src/main/resources/application.yaml` (idle expiry OQ-B9, live photo OQ-P4, bank OQ-P6, PAN holder types OQ-B5, required documents OQ-P5, consent/terms/declaration versions). Answering a question = changing that setting. Name-match threshold (OQ-C3) is `NameMatch.MATCH_THRESHOLD` (80).
 > "Blocks" = the implementation phase (IMPLEMENTATION_PLAN.md) that cannot start until the question is answered.
 
 ---

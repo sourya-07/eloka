@@ -45,4 +45,24 @@ final class UnconfiguredProviders {
 			return false;
 		}
 	}
+
+	@Component
+	@Profile("!local & !test")
+	static class NoPanVerification implements in.eko.eloka.integration.PanVerificationProvider {
+
+		@Override
+		public PanCheck verify(String pan, String hintName) {
+			throw new ConflictException("PROVIDER_NOT_CONFIGURED", "PAN verification is not available yet.");
+		}
+	}
+
+	@Component
+	@Profile("!local & !test")
+	static class NoBankAccountVerifier implements in.eko.eloka.integration.BankAccountVerifier {
+
+		@Override
+		public BankCheck verify(String ifsc, String accountNumber, String hintName) {
+			throw new ConflictException("PROVIDER_NOT_CONFIGURED", "Bank account verification is not available yet.");
+		}
+	}
 }

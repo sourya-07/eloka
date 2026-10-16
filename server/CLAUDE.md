@@ -3,7 +3,7 @@
 The ELOKA backend: **Java 25, Spring Boot 4.1, Spring Modulith 2.1, MySQL 8.4, Flyway, Gradle (Kotlin DSL)**.
 Read the root [`CLAUDE.md`](../CLAUDE.md) first. Decisions: ADR-0004 (system of record, EPS wire format), ADR-0005 (opaque tokens), ADR-0006 (logging, secrets). Plan and phases: [`docs/BACKEND_PLAN.md`](../docs/BACKEND_PLAN.md).
 
-> Status: **P1–P5 done** (foundation, login, org lookup, home, dashboards, network, history, profile, settings, pricing, onboard agents, support, agent onboarding). **P6 (hardening) in progress**: see the root `CLAUDE.md` status. Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
+> Status: **P1–P6 done** (Release 1: EPS-compatible screens, hardening). **P7 done**: Local Admin applicant API (`/v1/onboarding`, A1–A30, [design note](../docs/onboarding/P7_APPLICANT_API.md)). Next: P8 staff review. Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
 
 ## Commands
 
@@ -28,10 +28,17 @@ src/main/java/in/eko/eloka/
 │                  BlindIndex, Tokens, Masking, Mobiles), logging (RequestIdFilter, PiiMasker), ProductionSafetyGuard,
 │                  BaseEntity (UUIDv7 id, version, timestamps), clock
 ├── gateway/       EPS wire format → domain calls. internal/{envelope, dispatch, web, report (XLSX/PDF/CSV), handler/<area>}
-├── identity/      login, email and agent-consent OTPs (OtpService), sessions (SessionService = CallerResolver),
-│                  PinTwin keys + BCrypt transaction PIN (PinService), IdentityApi
+├── identity/      login, email, agent-consent, applicant and re-auth OTPs (OtpService), sessions (SessionService =
+│                  CallerResolver; kinds USER, PRE_REGISTRATION, LA_APPLICANT), re-auth tokens, PinTwin + PIN, IdentityApi
 ├── agentonboarding/ KYC steps per role (KycStep, plans), progress + encrypted KYC data, funnel stages (AgentOnboardingApi)
-├── integration/   ports for outside providers (DigiLockerProvider, EsignProvider); fakes in local/test, "not configured" elsewhere
+├── integration/   ports for outside providers (DigiLockerProvider, EsignProvider, PanVerificationProvider,
+│                  BankAccountVerifier); fakes in local/test, "not configured" elsewhere
+├── onboarding/    Local Admin applications (P7): applicant, application + step state machines (StepKey, StepContext,
+│                  ApplicationStateMachine), step policy (OnboardingProperties), /v1/onboarding controllers, Idempotency,
+│                  ETag/If-Match (WebSupport), application documents, expiry job
+├── verification/  PAN, DigiLocker KYC and bank attempts (VerificationApi), NameMatch
+├── whitelabel/    sub-domain availability + atomic reservation, branding drafts (WhiteLabelApi)
+├── agreement/     agreement versions rendered to PDF, e-sign sessions; SIGNED only after the provider confirms (AgreementApi)
 ├── tenant/        orgs, domains, public metadata, org tokens (OrgApi, OrgTokens); /v1/system/tls-allowed for the TLS edge
 ├── network/       users, shops, hierarchy; scoped queries + commands (UserDirectory, UserCommands, NetworkQueries, NetworkCommands)
 ├── notification/  SmsSender port + LogOnlySmsSender; in-app inbox (NotificationApi)
@@ -44,7 +51,7 @@ src/main/java/in/eko/eloka/
 ├── audit/         AuditLog: hash-chained audit_event, mirrored to eloka-audit.log
 ├── devdata/       local profile only: LocalSeedRunner (devdata/local-seed.json)
 ├── system/        /v1/system/info, migrate profile runner, first-tenant bootstrap (profile `bootstrap`, TenantBootstrap)
-└── onboarding/ verification/ agreement/ whitelabel/ review/ provisioning/ lead/  (Release 2, empty)
+└── review/ provisioning/ lead/  (Release 2: P8/P9, empty)
 src/main/resources/
 ├── application.yaml / application-local.yaml / application-prod.yaml
 ├── logback-spring.xml          three rolling files; text locally, JSON (ECS) in prod
@@ -73,6 +80,7 @@ src/main/resources/
 - **Errors:** throw `DomainException` subclasses (`NotFoundException`, `ConflictException`, `ValidationException`, `ForbiddenException`, `RateLimitedException`, `UnauthenticatedException`). The gateway maps them to HTTP 200 + fail envelope (401 for unauthenticated).
 - **Audit:** state changes call `AuditLog.record(...)` inside the same transaction, with ids/codes only.
 - **Time:** inject `Clock`.
+- **`/v1` REST (Release 2):** problem+json errors (`ApiProblem` for extra members such as `current`); snake_case fields; side-effect POSTs go through `Idempotency.run(...)`; writes to an application go through `ApplicationService.write(...)` (row lock + `If-Match` + editable check). Never mark a verification or signature done from what the browser sends: ask the provider port.
 - **Hot rows:** a browser sends several calls at once on one session. Do not update a shared row (session, wallet) through a versioned entity on every read; use a guarded `@Modifying` update (see `AuthSessionRepository.touch`). `server/load/home.js` (k6) catches this.
 - **Schema:** Flyway only (`ddl-auto=validate`). `DATETIME(6)` UTC, `BINARY(16)` UUIDv7 ids, `DECIMAL(18,2)` money.
 - **Dev-only behaviour** implements `UnsafeInProduction` (beans) or `SafetyCheck` (config). `ProductionSafetyGuard` blocks production start if any is active.

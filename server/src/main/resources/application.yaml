@@ -57,3 +57,23 @@ eloka:
     access-token-ttl: 30m
   tenant:
     org-token-ttl: 30d
+  # Local Admin onboarding step policy. Open business questions (docs/onboarding/OPEN_QUESTIONS.md)
+  # are working assumptions here: change them in config, not in code.
+  onboarding:
+    idle-expiry: 30d             # OQ-B9
+    max-attempts: 3
+    live-photo-required: true    # OQ-P4
+    bank-account-required: true  # OQ-P6
+    pan-holder-types:            # OQ-B5: 4th PAN character per entity type
+      PRIVATE_LIMITED: [C]
+      LLP: [F]
+      PARTNERSHIP: [F]
+      SOLE_PROPRIETORSHIP: [P]
+    required-documents:          # OQ-P5: no business answer yet
+      PRIVATE_LIMITED: [ADDRESS_PROOF, INCORPORATION_CERTIFICATE]
+      LLP: [ADDRESS_PROOF, INCORPORATION_CERTIFICATE]
+      PARTNERSHIP: [ADDRESS_PROOF, PARTNERSHIP_DEED]
+      SOLE_PROPRIETORSHIP: [ADDRESS_PROOF]
+    consent-version: "2026-10-01"
+    terms-version: "2026-10-01"
+    declaration-version: "2026-10-01"

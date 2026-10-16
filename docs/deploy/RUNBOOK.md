@@ -53,6 +53,7 @@ Until a real SMS provider is integrated, run as `ELOKA_ENVIRONMENT=staging` and 
 
 - **SMS and e-mail providers:** none integrated yet, so production refuses to start (above).
 - **Agent onboarding providers:** DigiLocker and agreement e-sign have no real provider. Outside the `local` and `test` profiles both steps answer `PROVIDER_NOT_CONFIGURED` ("not available yet"), so in staging and production a distributor cannot pass DigiLocker and no agent can sign the agreement, which means no new agent finishes onboarding. This includes agents added by an admin through Onboard Agents: they start the same KYC steps. Fix: integrate the providers behind `integration/DigiLockerProvider` and `integration/EsignProvider`.
+- **Local Admin applicant API (P7):** PAN and bank-account verification have no real provider either (`PanVerificationProvider`, `BankAccountVerifier`), and the agreement text is a placeholder until legal provides the template (OQ-B10). Outside local/test these steps answer `PROVIDER_NOT_CONFIGURED`, so no applicant can finish yet.
 - **Custom domains and CORS:** the browser calls `api.<root>` directly for some requests (menu, logout). The server allows only the origins in `ELOKA_CORS_ALLOWED_ORIGIN_PATTERNS`, so a custom domain must be added there too (and the server restarted) until CORS reads the tenant domains.
 - **Not rehearsed on a real host:** Let's Encrypt issuance and DNS were not tested (the drill used `ELOKA_CADDY_GLOBAL=local_certs`).
 

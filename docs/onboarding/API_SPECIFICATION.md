@@ -1,6 +1,6 @@
 # ELOKA Local Admin Onboarding — API Specification
 
-> Status: **DRAFT for architecture review** · **Revised 14 October 2026:** Java 25 + Spring Boot 4, MySQL 8.4 · Phase 0 (contract design only. **No APIs are implemented.**)
+> Status: applicant APIs **A1–A30 implemented in P7** (16 October 2026); deviations are listed in [P7_APPLICANT_API.md](./P7_APPLICANT_API.md) §2 and §9. Staff (S1–S22), tenant (T1–T4) and webhook (W1–W5) APIs are not built yet (P8/P9). Revised 14 October 2026: Java 25 + Spring Boot 4, MySQL 8.4.
 > All endpoints are **PROPOSED / RECOMMENDED** unless marked otherwise. Existing EPS interactions they wrap are listed in [INTEGRATIONS.md](./INTEGRATIONS.md).
 
 ---

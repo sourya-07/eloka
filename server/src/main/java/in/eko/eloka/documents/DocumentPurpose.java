@@ -9,5 +9,7 @@ public enum DocumentPurpose {
 	BANK_PROOF,
 	SIGNATURE,
 	TICKET_ATTACHMENT,
-	BULK_ONBOARDING_FILE
+	BULK_ONBOARDING_FILE,
+	/** A file of a Local Admin application (P7); read back only by its applicant (and staff in P8). */
+	LOCAL_ADMIN_APPLICATION
 }

@@ -1,7 +1,8 @@
 /**
  * Agreement templates, rendering, e-sign sessions and signed-PDF archive.
  *
- * <p>Status: planned. See docs/onboarding/ARCHITECTURE.md §4 at the repo root.
+ * <p>Built in P7 (docs/onboarding/P7_APPLICANT_API.md): PDF rendering with OpenPDF, e-sign through
+ * {@code integration.EsignProvider}.
  * Only types in this package (the module's public API) may be used by other modules;
  * sub-packages such as {@code internal} are private to the module.
  */

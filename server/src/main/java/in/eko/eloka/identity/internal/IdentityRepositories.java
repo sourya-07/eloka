@@ -39,3 +39,8 @@ interface AuthSessionRepository extends JpaRepository<AuthSession, UUID> {
 	int touch(@Param("id") UUID id, @Param("now") Instant now, @Param("idleUntil") Instant idleUntil,
 			@Param("touchedBefore") Instant touchedBefore);
 }
+
+interface ReauthGrantRepository extends JpaRepository<ReauthGrant, UUID> {
+
+	Optional<ReauthGrant> findByTokenHash(byte[] tokenHash);
+}

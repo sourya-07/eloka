@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 import in.eko.eloka.audit.AuditEntry;
 import in.eko.eloka.audit.AuditLog;
+import in.eko.eloka.identity.ApplicantOtpResult;
 import in.eko.eloka.identity.IdentityApi;
 import in.eko.eloka.identity.IdentityProperties;
 import in.eko.eloka.identity.LoginResult;
@@ -27,16 +28,23 @@ class IdentityService implements IdentityApi {
 	private final AuditLog audit;
 	private final IdentityProperties properties;
 	private final PinService pins;
+	private final ReauthGrantRepository reauthGrants;
+	private final java.time.Clock clock;
 
 	IdentityService(OtpService otps, SessionService sessions, UserDirectory users, AuditLog audit,
-			IdentityProperties properties, PinService pins) {
+			IdentityProperties properties, PinService pins, ReauthGrantRepository reauthGrants, java.time.Clock clock) {
 		this.otps = otps;
 		this.sessions = sessions;
 		this.users = users;
 		this.audit = audit;
 		this.properties = properties;
 		this.pins = pins;
+		this.reauthGrants = reauthGrants;
+		this.clock = clock;
 	}
+
+	/** How long a step-up (re-auth) token stays usable. */
+	static final java.time.Duration REAUTH_TTL = java.time.Duration.ofMinutes(5);
 
 	@Override
 	@Transactional
@@ -140,5 +148,68 @@ class IdentityService implements IdentityApi {
 	@Override
 	public void setTransactionPin(long orgId, UUID userId, UUID sessionId, String encodedPin, String encodedConfirm) {
 		pins.setPin(orgId, userId, sessionId, encodedPin, encodedConfirm);
+	}
+
+	@Override
+	@Transactional
+	public OtpDispatch sendApplicantOtp(String mobile, String clientIp) {
+		String normalized = Mobiles.normalize(mobile);
+		String code = otps.issueApplicant(PLATFORM_ORG_ID, normalized, clientIp);
+		return new OtpDispatch(normalized, properties.otpLength(), properties.exposeOtpInResponse() ? code : null);
+	}
+
+	@Override
+	@Transactional(noRollbackFor = RuntimeException.class)
+	public ApplicantOtpResult verifyApplicantOtp(String mobile, String code) {
+		String normalized = Mobiles.normalize(mobile);
+		OtpService.Check check = otps.checkApplicant(PLATFORM_ORG_ID, normalized, code);
+		if (check instanceof OtpService.Check.NoLiveOtp) {
+			return new ApplicantOtpResult.Expired();
+		}
+		if (check instanceof OtpService.Check.Wrong wrong) {
+			audit.record(new AuditEntry("APPLICANT_OTP_REJECTED", "ANONYMOUS", null, PLATFORM_ORG_ID, "APPLICANT", null,
+					Map.of("attempts_left", Integer.toString(wrong.attemptsLeft()))));
+			return new ApplicantOtpResult.WrongCode(wrong.attemptsLeft());
+		}
+		return new ApplicantOtpResult.Verified(normalized);
+	}
+
+	@Override
+	@Transactional
+	public TokenPair openApplicantSession(UUID applicantId, String mobile) {
+		TokenPair tokens = sessions.open(SessionKind.LA_APPLICANT, PLATFORM_ORG_ID, applicantId, Mobiles.normalize(mobile));
+		audit.record(new AuditEntry("APPLICANT_LOGIN_SUCCEEDED", "APPLICANT", null, PLATFORM_ORG_ID, "APPLICANT",
+				applicantId.toString(), Map.of()));
+		return tokens;
+	}
+
+	@Override
+	@Transactional
+	public OtpDispatch sendReauthOtp(long orgId, UUID sessionId, String mobile, String clientIp) {
+		String code = otps.issueReauth(orgId, sessionId, mobile, clientIp);
+		return new OtpDispatch(mobile, properties.otpLength(), properties.exposeOtpInResponse() ? code : null);
+	}
+
+	@Override
+	@Transactional(noRollbackFor = RuntimeException.class)
+	public Optional<String> verifyReauthOtp(long orgId, UUID sessionId, String code) {
+		if (!(otps.checkReauth(orgId, sessionId, code) instanceof OtpService.Check.Valid)) {
+			return Optional.empty();
+		}
+		String token = in.eko.eloka.shared.crypto.Tokens.random("elk_ra_");
+		reauthGrants.save(new ReauthGrant(sessionId, in.eko.eloka.shared.crypto.Tokens.sha256(token),
+				java.time.Instant.now(clock).plus(REAUTH_TTL)));
+		return Optional.of(token);
+	}
+
+	@Override
+	@Transactional
+	public boolean consumeReauthToken(UUID sessionId, String token) {
+		if (token == null || !token.startsWith("elk_ra_")) {
+			return false;
+		}
+		return reauthGrants.findByTokenHash(in.eko.eloka.shared.crypto.Tokens.sha256(token))
+			.map(grant -> grant.use(sessionId, java.time.Instant.now(clock)))
+			.orElse(false);
 	}
 }

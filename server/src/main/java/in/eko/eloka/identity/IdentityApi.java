@@ -7,6 +7,12 @@ import java.util.UUID;
 public interface IdentityApi {
 
 	/**
+	 * Org id used for platform-level identities that belong to no tenant yet (Local Admin
+	 * applicants). No tenant has this id; identity tables have no foreign key to {@code org}.
+	 */
+	long PLATFORM_ORG_ID = 0L;
+
+	/**
 	 * Sends a login OTP.
 	 *
 	 * @throws in.eko.eloka.shared.error.RateLimitedException when limits are hit
@@ -51,4 +57,22 @@ public interface IdentityApi {
 	 *         differ, or the PIN is too weak
 	 */
 	void setTransactionPin(long orgId, UUID userId, UUID sessionId, String encodedPin, String encodedConfirm);
+
+	/** Sends a Local Admin applicant their login OTP (same limits as agent login). */
+	OtpDispatch sendApplicantOtp(String mobile, String clientIp);
+
+	/** Checks an applicant OTP. Opening the session is a separate step ({@link #openApplicantSession}). */
+	ApplicantOtpResult verifyApplicantOtp(String mobile, String code);
+
+	/** Opens an {@code LA_APPLICANT} session (valid only on {@code /v1/onboarding/**}). */
+	TokenPair openApplicantSession(UUID applicantId, String mobile);
+
+	/** Sends a step-up OTP to the verified mobile of this session. */
+	OtpDispatch sendReauthOtp(long orgId, UUID sessionId, String mobile, String clientIp);
+
+	/** @return a single-use re-auth token (valid 5 minutes, this session only) when the code is right */
+	Optional<String> verifyReauthOtp(long orgId, UUID sessionId, String code);
+
+	/** Uses a re-auth token. @return false when unknown, expired, used, or for another session */
+	boolean consumeReauthToken(UUID sessionId, String token);
 }
