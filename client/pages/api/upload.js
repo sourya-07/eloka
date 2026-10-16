@@ -5,6 +5,8 @@
  * Must disable Next.js body parser so the raw stream is forwarded intact
  * (the multipart boundary in Content-Type must match the raw body).
  */
+import { apiBaseUrl, forwardHeaders, relayStatus } from "helpers/proxyHelper";
+
 export const config = {
 	api: {
 		bodyParser: false,
@@ -38,14 +40,12 @@ export default async function handler(req, res) {
 	try {
 		const body = await readRawBody(req);
 
-		const backendRes = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL, {
+		const backendRes = await fetch(apiBaseUrl(), {
 			method: "POST",
 			headers: {
 				// Forward Content-Type including the multipart boundary
 				"content-type": req.headers["content-type"],
-				...(req.headers.authorization && {
-					Authorization: req.headers.authorization,
-				}),
+				...forwardHeaders(req),
 			},
 			body,
 		});
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
 				.json({ error: "Unexpected response from backend", raw: text });
 		}
 
-		return res.status(200).json(data);
+		return res.status(relayStatus(backendRes, res)).json(data);
 	} catch (err) {
 		console.error("[upload proxy] error:", err);
 		return res.status(500).json({ error: "Internal Server Error" });

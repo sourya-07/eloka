@@ -19,3 +19,6 @@ docs/onboarding/pdf-build/out/
 
 # Deployment secrets
 deploy/.env
+deploy/.env.*
+!deploy/.env.example
+deploy/backups/

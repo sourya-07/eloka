@@ -5,7 +5,8 @@ Eko's white-label fintech platform: branded portals for businesses (tenants), ru
 | Folder | What | Stack |
 |---|---|---|
 | [`client/`](./client) | Web app (agents, admins, onboarding) | Next.js 14, React 18, Chakra UI, TypeScript |
-| [`server/`](./server) | New backend (Local Admin onboarding first) | Java 25, Spring Boot 4, Spring Modulith, MySQL 8.4 |
+| [`server/`](./server) | Backend: system of record, speaks the EPS wire format | Java 25, Spring Boot 4, Spring Modulith, MySQL 8.4 |
+| [`deploy/`](./deploy) | Production stack: Docker Compose, Caddy TLS edge, backup/restore | Docker |
 | [`docs/`](./docs) | Architecture, decisions, workflow | Markdown + Mermaid |
 
 ## Quick start (local, dummy data)
@@ -25,6 +26,7 @@ Backend: `cd server && ./gradlew bootRun` (Docker running), then `curl localhost
 - [Architecture overview](./docs/ARCHITECTURE_OVERVIEW.md): the one-page picture
 - [Local development](./docs/LOCAL_DEVELOPMENT.md): running things, dummy logins
 - [Development workflow](./docs/DEVELOPMENT_WORKFLOW.md): branches, commits, reviews, releases
+- [Deployment runbook](./docs/deploy/RUNBOOK.md): first deployment, first tenant, backups, rollback
 - [Decisions (ADRs)](./docs/adr)
 - [Local Admin onboarding blueprint](./docs/onboarding/ARCHITECTURE.md)
 - Rules for contributors and AI agents: [CLAUDE.md](./CLAUDE.md)

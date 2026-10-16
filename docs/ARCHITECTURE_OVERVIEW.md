@@ -39,9 +39,12 @@ flowchart LR
 
     EXT[External providers<br/>PAN, DigiLocker, e-Sign,<br/>bank, SMS, email]
 
-    AG & LA --> C
-    AP & ST --> C
-    C -->|"EPS wire format (/api/transaction proxy + direct)"| S
+    EDGE["Caddy edge (TLS)<br/>api.&lt;root&gt; → server, other hosts → client"]
+    AG & LA --> EDGE
+    AP & ST --> EDGE
+    EDGE --> C
+    EDGE -->|"direct browser calls"| S
+    C -->|"EPS wire format (/api/transaction proxy, internal network)"| S
     C -->|"org lookup 677"| S
     C -.->|"widget only, off in prod"| W
     W -.-> EPS
@@ -105,6 +108,7 @@ flowchart TB
 | Backend for the client | `server/` (or `client/mock-eps`) | `server/` | `server/` |
 | Data | dummy users only | test data | real data |
 | Secrets | none needed / `client/.env.local` | secrets manager | secrets manager |
+| How it runs | `bootRun` + `npm run dev:server` | `deploy/docker-compose.yml` (mysql, migrate, server, client, Caddy edge) | same |
 
 Rule: **the same build runs everywhere; only configuration changes.** Configuration comes from env files (client) and Spring profiles + environment variables (server). Secrets are never committed.
 
@@ -128,7 +132,7 @@ sequenceDiagram
 
 `client/mock-eps` (`npm run dev:mock`) answers the same calls without Java, for UI-only work.
 
-1. **P6 hardening:** client fixes FE-1..FE-5, load test, dependency and secret scans, client container, backups, staging sign-off, tag `v1.0.0` ([`BACKEND_PLAN.md`](./BACKEND_PLAN.md)).
+1. **Finish P6:** upgrade Next.js to 15+ (security advisories), clear the client's lint/test debt so CI is green, run the stack on a real staging host, tag `v1.0.0` ([`BACKEND_PLAN.md`](./BACKEND_PLAN.md), [`deploy/RUNBOOK.md`](./deploy/RUNBOOK.md)).
 2. **Real providers:** SMS, email, DigiLocker, e-sign (production cannot finish agent onboarding without them, see [`deploy/RUNBOOK.md`](./deploy/RUNBOOK.md)).
 3. **Release 2 (P7–P9):** Local Admin onboarding, staff review, provisioning and go-live. It replaces today's Eko Connect + Go-Live tool + email/CRM process ([`onboarding/ELOKA_ONBOARDING_JOURNEY.md`](./onboarding/ELOKA_ONBOARDING_JOURNEY.md) §2). Blocking questions: [`onboarding/OPEN_QUESTIONS.md`](./onboarding/OPEN_QUESTIONS.md).
-4. **CD:** a pipeline that builds and publishes images once a deploy target is chosen.
+4. **CD:** a pipeline that builds and publishes images once a deploy target is chosen (CI already builds and scans both images).

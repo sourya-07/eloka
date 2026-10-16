@@ -48,8 +48,8 @@ class SessionService implements CallerResolver {
 		String refresh = Tokens.random(REFRESH_PREFIX);
 		AuthSession session = sessions.save(new AuthSession(kind, orgId, userId, cipher.encrypt(mobile),
 				Tokens.sha256(access), Tokens.sha256(refresh), now, properties.sessionIdleTimeout(),
-				properties.sessionAbsoluteTtl()));
-		return new TokenPair(access, refresh, session.remaining(now));
+				properties.sessionAbsoluteTtl(), properties.accessTokenTtl()));
+		return new TokenPair(access, refresh, session.accessRemaining(now));
 	}
 
 	@Override
@@ -60,7 +60,7 @@ class SessionService implements CallerResolver {
 		}
 		Instant now = Instant.now(clock);
 		return sessions.findByAccessTokenHash(Tokens.sha256(bearerToken))
-			.filter(session -> session.isActive(now))
+			.filter(session -> session.acceptsAccessToken(now))
 			.flatMap(session -> toCaller(session, now));
 	}
 
@@ -111,14 +111,21 @@ class SessionService implements CallerResolver {
 	private TokenPair rotate(AuthSession session, Instant now) {
 		String access = Tokens.random(ACCESS_PREFIX);
 		String refresh = Tokens.random(REFRESH_PREFIX);
-		session.rotate(Tokens.sha256(access), Tokens.sha256(refresh), now, properties.sessionIdleTimeout());
-		return new TokenPair(access, refresh, session.remaining(now));
+		session.rotate(Tokens.sha256(access), Tokens.sha256(refresh), now, properties.sessionIdleTimeout(),
+				properties.accessTokenTtl());
+		return new TokenPair(access, refresh, session.accessRemaining(now));
+	}
+
+	private void touch(AuthSession session, Instant now) {
+		if (session.touchDue(now)) {
+			sessions.touch(session.getId(), now, now.plus(properties.sessionIdleTimeout()), AuthSession.touchedBefore(now));
+		}
 	}
 
 	private Optional<Caller> toCaller(AuthSession session, Instant now) {
 		String mobile = cipher.decrypt(session.getMobileEnc());
 		if (session.getKind() == SessionKind.PRE_REGISTRATION) {
-			session.touch(now, properties.sessionIdleTimeout());
+			touch(session, now);
 			return Optional.of(new Caller(session.getId(), session.getKind(), session.getOrgId(), null, null, mobile,
 					Role.PRE_REGISTRATION, Set.of()));
 		}
@@ -127,7 +134,7 @@ class SessionService implements CallerResolver {
 			session.revoke(now, "USER_NOT_ACTIVE");
 			return Optional.empty();
 		}
-		session.touch(now, properties.sessionIdleTimeout());
+		touch(session, now);
 		return Optional.of(new Caller(session.getId(), session.getKind(), session.getOrgId(), user.id(), user.userCode(),
 				mobile, user.role(), Set.of()));
 	}

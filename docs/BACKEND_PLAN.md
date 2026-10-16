@@ -57,7 +57,7 @@ server ─ gateway (EPS wire format) ─► domain modules ─► MySQL
 
 **Auth:** opaque random tokens (`elk_at_…`, `elk_rt_…`), only SHA-256 stored in `auth_session`, so revocation is instant (logout, deactivate, role change).
 - 518 returns the token as `data.otp_verification_token`, plus `refresh_token` and `token_expiration` (ignored by today's client).
-- Until the client stores the refresh token (FE-3): 2 h sliding idle, 12 h absolute. After: 30 min access + refresh rotation with reuse detection.
+- Until the client stores the refresh token (FE-3): 2 h sliding idle, 12 h absolute. After: 30 min access + refresh rotation with reuse detection (**on since P6**, `ELOKA_ACCESS_TOKEN_TTL`).
 - `/authentication/token` answers 200 + a fail envelope on a bad refresh token. Today's client sends `"undefined"` after a reload, and a 401 there would log everyone out.
 - Local Admin applicants use the same bearer tokens (`kind=LA_APPLICANT`, only valid on `/v1/onboarding/**`) with step-up OTP for bank, e-sign and withdraw. ADR-0005 records this deviation from the blueprint's cookie BFF.
 - Eko staff use Google sign-in → opaque staff session + permissions with maker-checker. Locally, staff log in with OTP `123456`.
@@ -116,7 +116,7 @@ Provisioning creates an org + Local Admin in our own DB, in **one transaction** 
 
 ## Phases (SDLC: each phase = design note → build → tests → review → demo)
 
-> Status (2026-10-16): **P0–P5 done** and committed on `main`. Next: P6. Per-call progress: [`eps-compat/CONTRACT.md`](./eps-compat/CONTRACT.md).
+> Status (2026-10-16): **P0–P5 done**, **P6 in progress** (see the P6 row). Per-call progress: [`eps-compat/CONTRACT.md`](./eps-compat/CONTRACT.md).
 
 **Release 1: our server replaces EPS for the existing screens**
 
@@ -128,7 +128,7 @@ Provisioning creates an org + Local Admin in our own DB, in **one transaction** 
 | P3 Network, history, profile | `/network/agents` (paging, filters), agent-list, agent profile + documents, updateStatus 1831, changeRole 1842/1967/1872, personalInfo/address update, 792, demo delete, statements, 154 network/self + 183 export, `/reports/agent-subnetwork`, 401, 373 | Admin + distributor network flows end to end; cross-org and cross-subtree access denied |
 | P4 Settings, pricing, onboard agents, support | 737 ops, 726, agreement-signing v2 + email OTP 553/554/555, 353; 837/1046/838/756; multiple_onboarding (+demo), bulk_onboarding (CSV/XLSX); 692, 10016–10020, 10022, 10000 | All those screens work; replayed `client_ref_id` does not double-apply |
 | P5 Agent onboarding | 521, 523 (doc types 1/2/3/7), 298, 522, 552 + DigiLocker fake page, 454, 155, 170, 10005, 5, 287/293, 519, 387, 194, 197, refresh-profile `{csp_id}` | Mock's self-onboarding + resume tests pass against Java; DB scan proves no Aadhaar number stored. **Done 2026-10-16**: contract journey green on mock and server; the schema has no Aadhaar-number column (only front/back image ids, V18) |
-| P6 Hardening + release | FE-1..FE-5; refresh rotation on; k6 load test on login/home; OWASP dependency check, Trivy, gitleaks; backup/restore drill; `docs/deploy/RUNBOOK.md` | Staging sign-off, tag `v1.0.0` |
+| P6 Hardening + release | FE-1..FE-5; refresh rotation on; k6 load test on login/home; OWASP dependency check, Trivy, gitleaks; backup/restore drill; `docs/deploy/RUNBOOK.md` | Staging sign-off, tag `v1.0.0`. **Done 2026-10-16:** FE-1..FE-5, 30-min access tokens + rotation, k6 (`server/load/home.js`, ~1,080 req/s, p95 59 ms, 0 errors after fixing a session-touch race it found), gitleaks + Trivy + dependency review + Dependabot (instead of OWASP dependency-check: Trivy scans the jars and node modules inside the shipped images), client image + Caddy edge (ADR-0007), first-tenant bootstrap, backup/restore drill passed. **Open:** Next.js 15+ upgrade, client lint/test debt, staging on a real host, tag |
 
 **Release 2: Local Admin onboarding (blueprint)**
 

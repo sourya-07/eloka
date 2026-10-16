@@ -19,3 +19,5 @@ d4de3feb13cf4269677cf1f07478f2a0e963e7b2:hooks/useLogin.js:generic-api-key:85
 d4de3feb13cf4269677cf1f07478f2a0e963e7b2:hooks/useLogin.js:generic-api-key:86
 712c11c08f3af25d982c0e394fd756002096d244:.env.example:generic-api-key:2
 619d9b1f7242d1b3d719715c9d334d195fde1c73:.env.example:generic-api-key:2
+# HmacOrgTokens.DEVELOPMENT_KEY: the published local key, kept in code so ProductionSafetyGuard can refuse it.
+bd102d57456d896316042e9e552cd4d6806a427c:server/src/main/java/in/eko/eloka/tenant/internal/HmacOrgTokens.java:generic-api-key:22

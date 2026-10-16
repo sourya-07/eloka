@@ -360,6 +360,7 @@ function revokeSession(user_id) {
 			user_id: user_id,
 			refresh_token: refresh_token,
 		},
+		token: sessionStorage.getItem("access_token"),
 		timeout: 5000,
 	})
 		// .then((data) => console.log("REFRESH TOKEN REVOKED: ", data))

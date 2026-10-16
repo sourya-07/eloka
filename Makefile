@@ -1,6 +1,6 @@
 # One entry point for common tasks. Run `make help`.
 .DEFAULT_GOAL := help
-.PHONY: help setup dev dev-mock mock client-test client-lint client-build server-run server-test server-build test
+.PHONY: help setup dev dev-mock mock client-test client-lint client-build server-run server-test server-build load-test images test
 
 help: ## List the available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
@@ -34,5 +34,12 @@ server-test: ## Backend tests (Docker needed for the database tests)
 
 server-build: ## Backend jar in server/build/libs
 	cd server && ./gradlew bootJar
+
+load-test: ## k6 load test of the home-page calls against the local server (:8090)
+	docker run --rm -i -e BASE_URL=http://host.docker.internal:8090 grafana/k6:1.3.0 run - < server/load/home.js
+
+images: ## Build both production images (deploy: docs/deploy/RUNBOOK.md)
+	docker build -t eloka-server:local server
+	docker build -t eloka-client:local --build-arg NEXT_PUBLIC_API_BASE_URL=http://localhost:8090 client
 
 test: client-test server-test ## Everything

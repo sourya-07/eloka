@@ -9,7 +9,7 @@
 | [LOCAL_DEVELOPMENT.md](./LOCAL_DEVELOPMENT.md) | You want to run things locally or need the dummy logins |
 | [DEVELOPMENT_WORKFLOW.md](./DEVELOPMENT_WORKFLOW.md) | You are about to plan, branch, commit, review or release |
 | [commit-message-instructions.md](./commit-message-instructions.md) | You are writing a commit message |
-| [adr/](./adr) | You need to know why a big decision was made, or are making one |
+| [adr/](./adr) | You need to know why a big decision was made, or are making one (0007: TLS edge) |
 | [onboarding/](./onboarding/ARCHITECTURE.md) | You work on Local Admin onboarding (journey, state machine, DB, API, security, plan, open questions) |
 
 Frontend-only docs (animations, feature notes, Docker for the web app) stay in [`client/docs/`](../client/docs).

@@ -1,0 +1,62 @@
+# Security checks: leaked secrets (gitleaks), known vulnerabilities in what we ship
+# (Trivy on both images: OS packages, server jars, client node_modules) and new risky
+# dependencies in pull requests (GitHub dependency review).
+name: Security
+
+on:
+    pull_request:
+        branches: [dev, main]
+    push:
+        branches: [dev, main]
+    schedule:
+        - cron: "30 2 * * 1" # Mondays: catch CVEs published since the last change
+
+permissions:
+    contents: read
+
+jobs:
+    secrets:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+            - uses: gitleaks/gitleaks-action@v2
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    dependency-review:
+        if: github.event_name == 'pull_request'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/dependency-review-action@v4
+              with:
+                  fail-on-severity: high
+
+    images:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - name: server
+                      context: server
+                      args: ""
+                      ignores: server/.trivyignore
+                    - name: client
+                      context: client
+                      args: "--build-arg NEXT_PUBLIC_API_BASE_URL=https://api.example.invalid"
+                      ignores: ""
+        steps:
+            - uses: actions/checkout@v4
+            - name: Build ${{ matrix.name }} image
+              run: docker build -t eloka-${{ matrix.name }}:scan ${{ matrix.args }} ${{ matrix.context }}
+            - name: Scan with Trivy (fail on fixable HIGH/CRITICAL)
+              uses: aquasecurity/trivy-action@0.33.1
+              with:
+                  image-ref: eloka-${{ matrix.name }}:scan
+                  severity: HIGH,CRITICAL
+                  ignore-unfixed: true
+                  trivyignores: ${{ matrix.ignores }}
+                  exit-code: "1"

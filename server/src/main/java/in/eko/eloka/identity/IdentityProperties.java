@@ -17,12 +17,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @param fixedOtp local/test only: every OTP equals this value
  * @param exposeOtpInResponse local only: return the OTP in the send-OTP response ("Demo OTP" toast)
  * @param sessionIdleTimeout session ends after this much inactivity
+ * @param accessTokenTtl an access token works this long; the client then rotates it with the refresh token
  * @param sessionAbsoluteTtl session ends this long after login, whatever happens
  */
 @ConfigurationProperties("eloka.identity")
 public record IdentityProperties(int otpLength, Duration otpTtl, int otpMaxAttempts, Duration otpMinGap,
 		int otpMaxPerHour, int otpMaxPerDay, int otpMaxPerIpPerHour, String otpPepper, String fixedOtp,
-		boolean exposeOtpInResponse, Duration sessionIdleTimeout, Duration sessionAbsoluteTtl) {
+		boolean exposeOtpInResponse, Duration sessionIdleTimeout, Duration sessionAbsoluteTtl, Duration accessTokenTtl) {
 
 	public IdentityProperties {
 		otpLength = otpLength == 0 ? 6 : otpLength;
@@ -34,5 +35,6 @@ public record IdentityProperties(int otpLength, Duration otpTtl, int otpMaxAttem
 		otpMaxPerIpPerHour = otpMaxPerIpPerHour == 0 ? 10 : otpMaxPerIpPerHour;
 		sessionIdleTimeout = sessionIdleTimeout == null ? Duration.ofHours(2) : sessionIdleTimeout;
 		sessionAbsoluteTtl = sessionAbsoluteTtl == null ? Duration.ofHours(12) : sessionAbsoluteTtl;
+		accessTokenTtl = accessTokenTtl == null ? Duration.ofMinutes(30) : accessTokenTtl;
 	}
 }

@@ -12,8 +12,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
 /**
- * A login session. Holds only hashes of its tokens. Owns its lifetime rules: sliding idle
- * timeout, absolute lifetime, revocation, and token rotation.
+ * A login session. Holds only hashes of its tokens. Owns its lifetime rules: short-lived access
+ * token, sliding idle timeout, absolute lifetime, revocation, and token rotation.
  */
 @Entity
 @Table(name = "auth_session")
@@ -44,6 +44,9 @@ class AuthSession extends BaseEntity {
 	@Column(name = "previous_refresh_hash", columnDefinition = "BINARY(32)")
 	private byte[] previousRefreshHash;
 
+	@Column(name = "access_expires_at", nullable = false)
+	private Instant accessExpiresAt;
+
 	@Column(name = "idle_expires_at", nullable = false)
 	private Instant idleExpiresAt;
 
@@ -63,7 +66,7 @@ class AuthSession extends BaseEntity {
 	}
 
 	AuthSession(SessionKind kind, long orgId, UUID userId, byte[] mobileEnc, byte[] accessTokenHash,
-			byte[] refreshTokenHash, Instant now, Duration idleTimeout, Duration absoluteTtl) {
+			byte[] refreshTokenHash, Instant now, Duration idleTimeout, Duration absoluteTtl, Duration accessTtl) {
 		this.kind = kind;
 		this.orgId = orgId;
 		this.userId = userId;
@@ -73,30 +76,39 @@ class AuthSession extends BaseEntity {
 		this.lastSeenAt = now;
 		this.idleExpiresAt = now.plus(idleTimeout);
 		this.absoluteExpiresAt = now.plus(absoluteTtl);
+		this.accessExpiresAt = capped(now.plus(accessTtl));
 	}
 
 	boolean isActive(Instant now) {
 		return revokedAt == null && now.isBefore(idleExpiresAt) && now.isBefore(absoluteExpiresAt);
 	}
 
-	/** Extends the idle window on use. @return true when the row changed */
-	boolean touch(Instant now, Duration idleTimeout) {
-		if (lastSeenAt.plus(TOUCH_INTERVAL).isAfter(now)) {
-			return false;
-		}
-		lastSeenAt = now;
-		Instant extended = now.plus(idleTimeout);
-		idleExpiresAt = extended.isBefore(absoluteExpiresAt) ? extended : absoluteExpiresAt;
-		return true;
+	/** The access token works only while the session is active and before its own expiry. */
+	boolean acceptsAccessToken(Instant now) {
+		return isActive(now) && now.isBefore(accessExpiresAt);
 	}
 
-	void rotate(byte[] newAccessHash, byte[] newRefreshHash, Instant now, Duration idleTimeout) {
+	/**
+	 * Whether a use at {@code now} should slide the idle window. The write itself is a guarded
+	 * update ({@code AuthSessionRepository.touch}) so parallel requests do not conflict.
+	 */
+	boolean touchDue(Instant now) {
+		return !lastSeenAt.plus(TOUCH_INTERVAL).isAfter(now);
+	}
+
+	/** Rows last seen before this instant are due a touch. */
+	static Instant touchedBefore(Instant now) {
+		return now.minus(TOUCH_INTERVAL);
+	}
+
+	void rotate(byte[] newAccessHash, byte[] newRefreshHash, Instant now, Duration idleTimeout, Duration accessTtl) {
 		this.previousRefreshHash = this.refreshTokenHash;
 		this.accessTokenHash = newAccessHash;
 		this.refreshTokenHash = newRefreshHash;
 		this.lastSeenAt = now;
 		Instant extended = now.plus(idleTimeout);
 		this.idleExpiresAt = extended.isBefore(absoluteExpiresAt) ? extended : absoluteExpiresAt;
+		this.accessExpiresAt = capped(now.plus(accessTtl));
 	}
 
 	void revoke(Instant now, String reason) {
@@ -127,8 +139,12 @@ class AuthSession extends BaseEntity {
 		return mobileEnc;
 	}
 
-	Duration remaining(Instant now) {
-		Instant end = idleExpiresAt.isBefore(absoluteExpiresAt) ? idleExpiresAt : absoluteExpiresAt;
-		return Duration.between(now, end);
+	/** Lifetime left on the current access token (sent to the client as token_expiration). */
+	Duration accessRemaining(Instant now) {
+		return Duration.between(now, accessExpiresAt);
+	}
+
+	private Instant capped(Instant end) {
+		return end.isBefore(absoluteExpiresAt) ? end : absoluteExpiresAt;
 	}
 }

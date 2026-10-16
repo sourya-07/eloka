@@ -54,5 +54,6 @@ eloka:
     otp-max-attempts: 5
     session-idle-timeout: 2h
     session-absolute-ttl: 12h
+    access-token-ttl: 30m
   tenant:
     org-token-ttl: 30d

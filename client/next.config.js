@@ -64,7 +64,8 @@ const IMG_SRC_DOMAINS = [
 	"*.eko.in", // Eko platform images
 	"files.eko.co.in", // Eko file server
 	"img.youtube.com", // YouTube thumbnails
-];
+	...EKO_DOMAINS, // API host (agent documents, signatures)
+].filter(Boolean);
 
 // Domains for media (audio/video) can be added to img-src if needed
 const MEDIA_SRC_DOMAINS = [
@@ -381,6 +382,13 @@ const nextConfig = {
 // Add standalone build config for Docker
 if (isDockerBuild) {
 	nextConfig.output = "standalone";
+	// Build-only binaries the file tracer picks up; the running app never loads them
+	nextConfig.experimental = {
+		...nextConfig.experimental,
+		outputFileTracingExcludes: {
+			"*": ["node_modules/@esbuild/**", "node_modules/esbuild/**"],
+		},
+	};
 }
 
 export default bundleAnalyzer(nextConfig);

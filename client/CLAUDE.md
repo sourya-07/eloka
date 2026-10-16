@@ -23,6 +23,8 @@ npm run mock          # Mock EPS server only (:4010)
 npm run test:mock     # Contract tests for the mock EPS server (node:test)
 ```
 
+**Production image:** `docker build --build-arg NEXT_PUBLIC_API_BASE_URL=https://api.<root> -t eloka-client .` (standalone output, non-root, `/api/health`). `NEXT_PUBLIC_*` values are baked in at build time; server-side settings are runtime env. Runs behind the Caddy edge in `../deploy/` ([runbook](../docs/deploy/RUNBOOK.md)).
+
 **Git hooks:** husky lives in `client/.husky` but runs from the repo root (`npm run prepare` sets `core.hooksPath`). On commit: lint-staged (prettier + eslint on staged client files) and commitlint. Before a PR: `npm run lint:error && npm run test:mock && npm test`.
 
 ## Local dummy backend (`mock-eps/`)
@@ -53,7 +55,7 @@ When the app starts calling a new EPS interaction, add its handler and a test he
 
 ### Request → Response path
 
-Every API call from the browser goes through a Next.js server-side proxy at **`pages/api/transaction.js`**, which forwards POST requests to `NEXT_PUBLIC_API_BASE_URL`. Never call the backend URL directly from client code — always use `fetcher('/api/transaction', { body: { ... } })` from `helpers/apiHelper.js`. The `fetcher` helper adds default fields (`source`, `client_ref_id`), handles token rotation, enforces a 2-minute timeout, and throws `UnauthorizedError` on 401s.
+Every API call from the browser goes through a Next.js server-side proxy at **`pages/api/transaction.js`** (also `transactionjson.js`, `upload.js`), which forwards POST requests to the backend. Shared proxy rules live in `helpers/proxyHelper.js`: the target is `API_INTERNAL_BASE_URL` when set (inside Docker, e.g. `http://server:8080`) else `NEXT_PUBLIC_API_BASE_URL`; the token, `X-Request-Id` and the browser IP (`X-Forwarded-For`) are forwarded; a backend 401 is passed through so `fetcher` refreshes the token, everything else stays 200. Never call the backend URL directly from client code — always use `fetcher('/api/transaction', { body: { ... } })` from `helpers/apiHelper.js`. The `fetcher` helper adds default fields (`source`, `client_ref_id`), handles token rotation, enforces a 2-minute timeout, and throws `UnauthorizedError` on 401s.
 
 ### How multi-tenancy works
 

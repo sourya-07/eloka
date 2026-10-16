@@ -1,0 +1,13 @@
+# gitleaks config: the default rules, plus an allowlist for the published local/test keys.
+# Those keys are public on purpose and ProductionSafetyGuard refuses them when
+# ELOKA_ENVIRONMENT=production. Never add real secrets here; fix the leak instead.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Published development and test keys"
+paths = [
+  '''server/src/main/resources/application-local\.yaml''',
+  '''server/src/test/.*''',
+  '''client/__tests__/fixtures/.*''',
+]

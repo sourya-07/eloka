@@ -3,7 +3,7 @@
 The ELOKA backend: **Java 25, Spring Boot 4.1, Spring Modulith 2.1, MySQL 8.4, Flyway, Gradle (Kotlin DSL)**.
 Read the root [`CLAUDE.md`](../CLAUDE.md) first. Decisions: ADR-0004 (system of record, EPS wire format), ADR-0005 (opaque tokens), ADR-0006 (logging, secrets). Plan and phases: [`docs/BACKEND_PLAN.md`](../docs/BACKEND_PLAN.md).
 
-> Status: **P1–P5 done** (foundation, login, org lookup, home, dashboards, network, history, profile, settings, pricing, onboard agents, support, agent onboarding). Next: P6 (hardening). Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
+> Status: **P1–P5 done** (foundation, login, org lookup, home, dashboards, network, history, profile, settings, pricing, onboard agents, support, agent onboarding). **P6 (hardening) in progress**: see the root `CLAUDE.md` status. Per-call progress: [`docs/eps-compat/CONTRACT.md`](../docs/eps-compat/CONTRACT.md).
 
 ## Commands
 
@@ -13,6 +13,7 @@ Read the root [`CLAUDE.md`](../CLAUDE.md) first. Decisions: ADR-0004 (system of 
 ./gradlew test --tests 'in.eko.eloka.ModularityTests'   # module-boundary check only
 ./gradlew bootJar          # build/libs/eloka-server-<version>.jar
 docker build -t eloka-server:<version> .                # production image (layered, non-root, prod profile)
+make -C .. load-test       # k6: home-page calls against :8090 (load/home.js)
 ```
 
 Gradle needs a JDK 17+ to start (the default `java` on some Macs is 1.8): `export JAVA_HOME=/opt/homebrew/opt/openjdk` or a Temurin 25. The Java 25 toolchain downloads automatically.
@@ -31,7 +32,7 @@ src/main/java/in/eko/eloka/
 │                  PinTwin keys + BCrypt transaction PIN (PinService), IdentityApi
 ├── agentonboarding/ KYC steps per role (KycStep, plans), progress + encrypted KYC data, funnel stages (AgentOnboardingApi)
 ├── integration/   ports for outside providers (DigiLockerProvider, EsignProvider); fakes in local/test, "not configured" elsewhere
-├── tenant/        orgs, domains, public metadata, org tokens (OrgApi, OrgTokens)
+├── tenant/        orgs, domains, public metadata, org tokens (OrgApi, OrgTokens); /v1/system/tls-allowed for the TLS edge
 ├── network/       users, shops, hierarchy; scoped queries + commands (UserDirectory, UserCommands, NetworkQueries, NetworkCommands)
 ├── notification/  SmsSender port + LogOnlySmsSender; in-app inbox (NotificationApi)
 ├── wallet/        wallet accounts + append-only ledger (WalletApi); opened on UserCreated
@@ -42,7 +43,7 @@ src/main/java/in/eko/eloka/
 ├── reference/     dropdown lists: states, shop types, banks (ReferenceData)
 ├── audit/         AuditLog: hash-chained audit_event, mirrored to eloka-audit.log
 ├── devdata/       local profile only: LocalSeedRunner (devdata/local-seed.json)
-├── system/        /v1/system/info, migrate profile runner
+├── system/        /v1/system/info, migrate profile runner, first-tenant bootstrap (profile `bootstrap`, TenantBootstrap)
 └── onboarding/ verification/ agreement/ whitelabel/ review/ provisioning/ lead/  (Release 2, empty)
 src/main/resources/
 ├── application.yaml / application-local.yaml / application-prod.yaml
@@ -72,6 +73,7 @@ src/main/resources/
 - **Errors:** throw `DomainException` subclasses (`NotFoundException`, `ConflictException`, `ValidationException`, `ForbiddenException`, `RateLimitedException`, `UnauthenticatedException`). The gateway maps them to HTTP 200 + fail envelope (401 for unauthenticated).
 - **Audit:** state changes call `AuditLog.record(...)` inside the same transaction, with ids/codes only.
 - **Time:** inject `Clock`.
+- **Hot rows:** a browser sends several calls at once on one session. Do not update a shared row (session, wallet) through a versioned entity on every read; use a guarded `@Modifying` update (see `AuthSessionRepository.touch`). `server/load/home.js` (k6) catches this.
 - **Schema:** Flyway only (`ddl-auto=validate`). `DATETIME(6)` UTC, `BINARY(16)` UUIDv7 ids, `DECIMAL(18,2)` money.
 - **Dev-only behaviour** implements `UnsafeInProduction` (beans) or `SafetyCheck` (config). `ProductionSafetyGuard` blocks production start if any is active.
 
@@ -83,5 +85,6 @@ src/main/resources/
 | `test` | automated tests | Testcontainers MySQL | fixed OTP, test keys (`src/test/resources/application-test.yaml`) |
 | `prod` | staging + production | `ELOKA_DB_*` | everything from env vars; `ELOKA_ENVIRONMENT=production` by default; JSON logs |
 | `prod,migrate` | one-shot migration job | same | runs Flyway, validates, exits 0 |
+| `prod,bootstrap` | one-shot first tenant | same | creates org + Local Admin from `ELOKA_BOOTSTRAP_*`, exits (idempotent) |
 
 Deployment: `deploy/docker-compose.yml` + `docs/deploy/RUNBOOK.md`.

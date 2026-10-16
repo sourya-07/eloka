@@ -13,7 +13,8 @@ RUN ./gradlew --no-daemon bootJar -x test \
 	&& java -Djarmode=tools -jar build/libs/eloka-server-*.jar extract --layers --launcher --destination build/extracted
 
 FROM eclipse-temurin:25-jre
-RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/* \
+# upgrade: pick up OS security fixes released after the base image was built
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/* \
 	&& useradd --system --uid 10001 --home /app eloka \
 	&& mkdir -p /app/logs /app/data && chown -R eloka /app
 WORKDIR /app

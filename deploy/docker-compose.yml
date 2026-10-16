@@ -1,7 +1,8 @@
-# Server stack for staging/production: MySQL + one-shot migration + API server.
+# Full ELOKA stack for staging/production: MySQL, one-shot migration, API server,
+# web app (client) and the TLS edge (Caddy). Only the edge publishes ports (80/443).
 #   cp .env.example .env   # then fill in real values (never commit .env)
-#   docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --build
-# The client (Next.js) and the TLS edge are added in P6 (see docs/deploy/RUNBOOK.md).
+#   docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --build --wait
+# Operations (deploy, rollback, backups): docs/deploy/RUNBOOK.md
 name: eloka
 
 services:
@@ -27,7 +28,7 @@ services:
     # Same image, runs Flyway once and exits. The API server itself never changes the schema.
     image: eloka-server:${ELOKA_VERSION:-latest}
     build: ../server
-    env_file: .env
+    env_file: ${ELOKA_ENV_FILE:-.env} # the same file passed to --env-file
     environment:
       ELOKA_DB_URL: jdbc:mysql://mysql:3306/eloka
       ELOKA_DB_MIGRATE_ON_START: "true"
@@ -43,19 +44,75 @@ services:
   server:
     image: eloka-server:${ELOKA_VERSION:-latest}
     restart: unless-stopped
-    env_file: .env
+    env_file: ${ELOKA_ENV_FILE:-.env} # the same file passed to --env-file
     environment:
       ELOKA_DB_URL: jdbc:mysql://mysql:3306/eloka
     depends_on:
       migrate:
         condition: service_completed_successfully
-    ports:
-      - "${ELOKA_SERVER_PORT:-8080}:8080" # put the TLS edge in front of this in production
+    # No published port: the edge reaches it on the internal network.
     volumes:
       - server-logs:/app/logs
       - server-files:/app/data
+
+  bootstrap:
+    # One-shot: create the first tenant + Local Admin (RUNBOOK "First tenant"). Not started by `up`:
+    #   docker compose ... --profile tools run --rm -e ELOKA_BOOTSTRAP_SUBDOMAIN=... bootstrap
+    image: eloka-server:${ELOKA_VERSION:-latest}
+    profiles: [tools]
+    env_file: ${ELOKA_ENV_FILE:-.env} # the same file passed to --env-file
+    environment:
+      ELOKA_DB_URL: jdbc:mysql://mysql:3306/eloka
+      SPRING_PROFILES_ACTIVE: prod,bootstrap
+      SPRING_MAIN_WEB_APPLICATION_TYPE: none
+    healthcheck:
+      disable: true
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+
+  client:
+    image: eloka-client:${ELOKA_VERSION:-latest}
+    build:
+      context: ../client
+      args:
+        # Compiled into the browser bundle: rebuild the image when it changes
+        NEXT_PUBLIC_API_BASE_URL: https://api.${ELOKA_PLATFORM_ROOT_DOMAIN}
+        NEXT_PUBLIC_DISABLE_TRANSACTIONS: "true"
+    restart: unless-stopped
+    environment:
+      # Server-side proxy and org lookup stay on the internal network
+      API_INTERNAL_BASE_URL: http://server:8080
+      ORG_META_SERVICE: http://server:8080/
+      ORG_META_SERVICE_SECRET: ${ELOKA_ORG_META_SECRET}
+      WLC_SUBDOMAIN_ROOT: ${ELOKA_PLATFORM_ROOT_DOMAIN}
+      ORG_CACHE_EXPIRY_SEC: ${ELOKA_ORG_CACHE_EXPIRY_SEC:-300}
+    depends_on:
+      server:
+        condition: service_healthy
+
+  edge:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    environment:
+      ELOKA_PLATFORM_ROOT_DOMAIN: ${ELOKA_PLATFORM_ROOT_DOMAIN}
+      ELOKA_ACME_EMAIL: ${ELOKA_ACME_EMAIL}
+      ELOKA_CADDY_GLOBAL: ${ELOKA_CADDY_GLOBAL:-}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data # certificates: keep this volume
+      - caddy-config:/config
+    depends_on:
+      client:
+        condition: service_healthy
 
 volumes:
   mysql-data:
   server-logs:
   server-files:
+  caddy-data:
+  caddy-config:

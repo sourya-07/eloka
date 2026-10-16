@@ -72,6 +72,13 @@ class LoginFlowIntegrationTest {
 	}
 
 	@Test
+	void edgeMayIssueCertificatesOnlyForTenantDomains() {
+		assertThat(mvc.get().uri("/v1/system/tls-allowed?domain=flow.eloka.test")).hasStatusOk();
+		assertThat(mvc.get().uri("/v1/system/tls-allowed?domain=evil.example.com")).hasStatus(404);
+		assertThat(mvc.get().uri("/v1/system/tls-allowed")).hasStatus(404);
+	}
+
+	@Test
 	void retailerLogsInAndReadsOwnProfile() throws Exception {
 		String token = login(RETAILER);
 		JsonNode profile = postWithToken("/", Map.of("interaction_type_id", "151", "mobile", RETAILER, "user_code", "99029899"), token);

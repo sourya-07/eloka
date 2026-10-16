@@ -1,0 +1,21 @@
+# Weekly update PRs for dependencies, base images and CI actions. They target the default branch (`main`) until a `dev` branch exists.
+version: 2
+updates:
+    - package-ecosystem: npm
+      directory: /client
+      schedule:
+          interval: weekly
+      open-pull-requests-limit: 5
+    - package-ecosystem: gradle
+      directory: /server
+      schedule:
+          interval: weekly
+      open-pull-requests-limit: 5
+    - package-ecosystem: docker
+      directories: [/server, /client]
+      schedule:
+          interval: weekly
+    - package-ecosystem: github-actions
+      directory: /
+      schedule:
+          interval: monthly

@@ -68,8 +68,11 @@ Useful while developing:
 tail -f server/logs/eloka-app.log      # application log (personal data masked)
 tail -f server/logs/eloka-access.log   # one line per request: route, outcome, time
 tail -f server/logs/eloka-audit.log    # logins, changes (mirror of the audit_event table)
-EPS_CONTRACT_BASE_URL=http://localhost:8090 EPS_CONTRACT_PHASE=1 npm run test:mock   # contract tests vs the server
+EPS_CONTRACT_BASE_URL=http://localhost:8090 EPS_CONTRACT_PHASE=5 npm run test:mock   # contract tests vs the server
+make load-test                         # k6 load test of the home-page calls (Docker)
 ```
+
+Access tokens last 30 minutes; the website rotates them with the refresh token on its own. To try the full production stack (edge, TLS, images) on your laptop, follow the runbook with `ELOKA_ENVIRONMENT=staging` and `ELOKA_CADDY_GLOBAL=local_certs`: [`deploy/RUNBOOK.md`](./deploy/RUNBOOK.md).
 
 Reset the local database: `cd server && docker compose down -v`, then `./gradlew bootRun` again.
 
