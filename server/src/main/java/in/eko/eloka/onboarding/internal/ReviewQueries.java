@@ -1,7 +1,8 @@
 package in.eko.eloka.onboarding.internal;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedHashMap;
@@ -112,8 +113,9 @@ class ReviewQueries {
 			item.put("company_name", rs.getString("legal_name"));
 			item.put("pan_masked", rs.getString("pan_masked"));
 			item.put("entity_type", rs.getString("entity_type"));
-			Timestamp submitted = rs.getTimestamp("submitted_at");
-			item.put("submitted_at", submitted == null ? null : submitted.toInstant());
+			// DATETIME holds UTC; getTimestamp would read it in the JVM's zone
+			LocalDateTime submitted = rs.getObject("submitted_at", LocalDateTime.class);
+			item.put("submitted_at", submitted == null ? null : submitted.toInstant(ZoneOffset.UTC));
 			byte[] assigned = rs.getBytes("assigned_staff_id");
 			item.put("assigned_staff_id", assigned == null ? null : uuid(assigned));
 			return item;
@@ -155,7 +157,9 @@ class ReviewQueries {
 				.toList()));
 			view.put("business_profile", profile);
 		});
-		view.put("documents", documents.findByApplicationIdOrderByCreatedAtAsc(id).stream().map(d -> {
+		List<ApplicationDocument> documentRows = documents.findByApplicationIdOrderByCreatedAtAsc(id);
+		List<VerificationApi.AttemptView> attempts = verification.attempts(id);
+		view.put("documents", documentRows.stream().map(d -> {
 			Map<String, Object> item = new LinkedHashMap<>();
 			item.put("document_id", d.getPublicId());
 			item.put("doc_type", d.getDocType());
@@ -164,7 +168,7 @@ class ReviewQueries {
 			item.put("uploaded_at", d.getUploadedAt());
 			return item;
 		}).toList());
-		view.put("verifications", verification.attempts(id).stream().map(a -> {
+		view.put("verifications", attempts.stream().map(a -> {
 			Map<String, Object> item = new LinkedHashMap<>();
 			item.put("verification_id", a.verificationId());
 			item.put("kind", a.kind());
@@ -183,6 +187,7 @@ class ReviewQueries {
 			item.put("decision", r.getDecision());
 			item.put("reason_code", r.getReasonCode());
 			item.put("note", r.getNote());
+			item.put("applicant_message", r.getApplicantMessage());
 			item.put("target", r.getTargetRef());
 			item.put("occurred_at", r.getOccurredAt());
 			return item;
@@ -197,7 +202,7 @@ class ReviewQueries {
 			return item;
 		}).toList());
 		view.put("flags", flags(snapshot, id));
-		view.put("approval_blockers", review.approvalBlockers(application, review.latestRecommendation(history)));
+		view.put("approval_blockers", review.approvalBlockers(review.latestRecommendation(history), documentRows, attempts));
 		return view;
 	}
 
@@ -206,7 +211,7 @@ class ReviewQueries {
 	List<AuditTrail.AuditRecord> auditTrail(String publicId) {
 		OnboardingApplication application = applications.findByPublicId(publicId)
 			.orElseThrow(() -> new NotFoundException("ONBOARDING_NOT_FOUND", "Application not found"));
-		return auditTrail.forTarget(List.of(publicId, application.getId().toString()), 500);
+		return auditTrail.forTarget("ONBOARDING_APPLICATION", List.of(publicId, application.getId().toString()), 500);
 	}
 
 	/** Risk and mismatch signals the reviewer should look at (E3, E9, OQ-B6). */

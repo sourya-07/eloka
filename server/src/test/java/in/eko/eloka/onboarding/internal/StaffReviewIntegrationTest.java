@@ -46,13 +46,29 @@ class StaffReviewIntegrationTest extends OnboardingTestSupport {
 			this.token = token;
 		}
 
+		/** Actions on a case send If-Match with the case's current ETag, like the console after a reload. */
 		JsonNode call(HttpMethod method, String path, Object body, int expected) throws Exception {
-			MvcTestResult result = mvc.method(method).uri("/v1/admin" + path)
+			java.util.regex.Matcher action = java.util.regex.Pattern.compile("^/applications/([^/?]+)/(.+)$").matcher(path);
+			String ifMatch = method != HttpMethod.GET && action.matches() && !action.group(2).equals("claim")
+					&& !action.group(2).equals("pii-reveal") ? etag(action.group(1)) : null;
+			return call(method, path, body, ifMatch, expected);
+		}
+
+		String etag(String id) throws Exception {
+			return mvc.get().uri("/v1/admin/applications/" + id).header("Authorization", "Bearer " + token).exchange()
+				.getResponse().getHeader("ETag");
+		}
+
+		JsonNode call(HttpMethod method, String path, Object body, String ifMatch, int expected) throws Exception {
+			var request = mvc.method(method).uri("/v1/admin" + path)
 				.header("Authorization", "Bearer " + token)
 				.header("Idempotency-Key", UUID.randomUUID().toString())
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(body == null ? "{}" : json.writeValueAsString(body))
-				.exchange();
+				.content(body == null ? "{}" : json.writeValueAsString(body));
+			if (ifMatch != null) {
+				request = request.header("If-Match", ifMatch);
+			}
+			MvcTestResult result = request.exchange();
 			assertThat(result.getResponse().getStatus()).as(method + " " + path + " → " + result.getResponse().getContentAsString())
 				.isEqualTo(expected);
 			String text = result.getResponse().getContentAsString();
@@ -157,6 +173,12 @@ class StaffReviewIntegrationTest extends OnboardingTestSupport {
 		JsonNode decided = reviewer.call(HttpMethod.POST, "/applications/" + applicant.id + "/verifications/" + bankVerification
 				+ "/decide", Map.of("decision", "ACCEPT", "reason_code", "PROPRIETOR_NAME"), 200);
 		assertThat(decided.get("approval_blockers").toString()).doesNotContain("BANK_NEEDS_DECISION");
+		for (JsonNode attempt : decided.get("verifications")) {
+			if (attempt.get("verification_id").asString().equals(bankVerification)) {
+				assertThat(attempt.get("status").asString()).isEqualTo("SUCCEEDED");
+				assertThat(attempt.get("failure_code").isNull()).isTrue(); // accepted = no failure code left
+			}
+		}
 	}
 
 	@Test
@@ -393,6 +415,72 @@ class StaffReviewIntegrationTest extends OnboardingTestSupport {
 				+ " AND details LIKE '%ACCOUNT_DISABLED%'", Integer.class, staffId)).isEqualTo(1);
 		assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE details LIKE '%gone.reviewer%'", Integer.class))
 			.isZero();
+	}
+
+	@Test
+	void reviewInputsThatDoNotFitAreRefusedCleanly() throws Exception {
+		Session applicant = submittedApplication("9811120817", "ABCCT2345U", "staff-inputs");
+		Staff rita = staff("9700000001");
+		rita.call(HttpMethod.POST, "/applications/" + applicant.id + "/claim", null, 200);
+		String corrections = "/applications/" + applicant.id + "/corrections";
+		assertThat(rita.call(HttpMethod.POST, corrections, Map.of("step_keys", List.of("BUSINESS_DETAILS"), "reason_code",
+				"R".repeat(41), "message", "fix"), 422).toString()).contains("reason_code");
+		rita.call(HttpMethod.POST, corrections, Map.of("step_keys", List.of("BUSINESS_DETAILS"), "reason_code", "ADDRESS",
+				"message", "fix", "due_in_days", 5_000_000), 422);
+		rita.call(HttpMethod.POST, corrections, Map.of("step_keys", List.of("BUSINESS_DETAILS"), "reason_code", "ADDRESS",
+				"message", "fix", "due_in_days", 0), 422);
+		jdbc.update("UPDATE onboarding_step s JOIN onboarding_application a ON a.id = s.application_id"
+				+ " SET s.status = 'NOT_APPLICABLE' WHERE a.public_id = ? AND s.step_key = 'LIVE_PHOTO'", applicant.id);
+		assertThat(rita.call(HttpMethod.POST, corrections, Map.of("step_keys", List.of("LIVE_PHOTO"), "reason_code", "PHOTO",
+				"message", "Retake the photo"), 422).toString()).contains("step_keys");
+		assertThat(rita.caseOf(applicant.id).at("/application/status").asString()).isEqualTo("UNDER_REVIEW");
+	}
+
+	@Test
+	void aRejectionKeepsTheApplicantMessageAndTheInternalNote() throws Exception {
+		Session applicant = submittedApplication("9811120818", "ABCCU2345V", "staff-notes");
+		Staff rita = staff("9700000001");
+		Staff anil = staff("9700000002");
+		rita.call(HttpMethod.POST, "/applications/" + applicant.id + "/claim", null, 200);
+		JsonNode rejected = anil.call(HttpMethod.POST, "/applications/" + applicant.id + "/reject", Map.of("reason_code",
+				"PAN_MISMATCH", "applicant_message", "Your PAN does not match", "internal_note", "Suspected fraud, ticket 123"),
+				200);
+		JsonNode reject = null;
+		for (JsonNode item : rejected.get("review_history")) {
+			if ("REJECT".equals(item.get("action").asString())) {
+				reject = item;
+			}
+		}
+		assertThat(reject.get("applicant_message").asString()).isEqualTo("Your PAN does not match");
+		assertThat(reject.get("note").asString()).isEqualTo("Suspected fraud, ticket 123");
+	}
+
+	@Test
+	void staffActOnlyOnTheVersionOfTheCaseTheySaw() throws Exception {
+		Session applicant = submittedApplication("9811120819", "ABCCV2345W", "staff-stale");
+		Staff rita = staff("9700000001");
+		Staff anil = staff("9700000002");
+		rita.call(HttpMethod.POST, "/applications/" + applicant.id + "/claim", null, 200);
+		String seen = rita.etag(applicant.id);
+		anil.call(HttpMethod.POST, "/applications/" + applicant.id + "/holds", Map.of("reason_code", "RISK_CHECK"), 200);
+		anil.call(HttpMethod.DELETE, "/applications/" + applicant.id + "/holds", null, 200);
+		// The hold came and went while Rita's screen was open: her recommendation must be refused
+		String path = "/applications/" + applicant.id + "/recommendations";
+		assertThat(rita.call(HttpMethod.POST, path, Map.of("recommendation", "APPROVE"), seen, 412).get("code").asString())
+			.isEqualTo("PRECONDITION_FAILED");
+		assertThat(rita.call(HttpMethod.POST, path, Map.of("recommendation", "APPROVE"), null, 428).get("code").asString())
+			.isEqualTo("PRECONDITION_REQUIRED");
+		rita.call(HttpMethod.POST, path, Map.of("recommendation", "APPROVE"), 200);
+	}
+
+	@Test
+	void disablingAStaffAccountKeepsItsNameAndRoles() throws Exception {
+		identity.saveStaff("leaving.reviewer@eko.co.in", "Leela Reviewer", null, EnumSet.of(StaffRole.REVIEWER), true);
+		// What the runbook's ELOKA_STAFF_ACTIVE=false run sends: no name, no roles
+		var disabled = identity.saveStaff("leaving.reviewer@eko.co.in", null, null, EnumSet.noneOf(StaffRole.class), false);
+		assertThat(disabled.active()).isFalse();
+		assertThat(disabled.displayName()).isEqualTo("Leela Reviewer");
+		assertThat(disabled.roles()).containsExactly(StaffRole.REVIEWER);
 	}
 
 	private int refresh(String uri, String refreshToken) throws Exception {

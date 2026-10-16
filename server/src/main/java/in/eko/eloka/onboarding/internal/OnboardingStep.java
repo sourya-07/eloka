@@ -130,13 +130,19 @@ class OnboardingStep extends BaseEntity {
 		}
 	}
 
-	/** A reviewer asks for this step again (T5); the applicant sees the reason and message. */
-	void reopen(String reasonCode, String message) {
+	/**
+	 * A reviewer asks for this step again (T5); the applicant sees the reason and message.
+	 *
+	 * @return false when the step was never done (not started, not applicable), so there is nothing to reopen
+	 */
+	boolean reopen(String reasonCode, String message) {
 		if (status == StepStatus.LOCKED || status == StepStatus.COMPLETED || status == StepStatus.SKIPPED) {
 			this.status = StepStatus.REOPENED;
 			this.reopenReasonCode = reasonCode;
 			this.reviewerMessage = message;
+			return true;
 		}
+		return false;
 	}
 
 	void markNotApplicable() {

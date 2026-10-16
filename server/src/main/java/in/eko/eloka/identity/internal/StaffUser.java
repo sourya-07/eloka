@@ -48,13 +48,18 @@ class StaffUser extends BaseEntity {
 		this.status = "ACTIVE";
 	}
 
+	/** A blank name, no mobile or no roles keep what the account has (e.g. only disabling it). */
 	void update(String newDisplayName, byte[] newMobileHash, Set<StaffRole> newRoles, boolean active) {
-		this.displayName = newDisplayName;
+		if (newDisplayName != null && !newDisplayName.isBlank()) {
+			this.displayName = newDisplayName;
+		}
 		if (newMobileHash != null) {
 			this.mobileHash = newMobileHash;
 		}
-		this.roles.clear();
-		this.roles.addAll(newRoles);
+		if (!newRoles.isEmpty()) {
+			this.roles.clear();
+			this.roles.addAll(newRoles);
+		}
 		this.status = active ? "ACTIVE" : "DISABLED";
 	}
 

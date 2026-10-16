@@ -108,27 +108,22 @@ class StaffService implements SafetyCheck {
 		if (!normalizedEmail.matches("[^@\\s]+@[^@\\s]+\\.[^@\\s]+")) {
 			throw ValidationException.field("email", "Enter a valid email address");
 		}
-		if (roles.isEmpty()) {
+		Optional<StaffUser> existing = staff.findByEmail(normalizedEmail);
+		if (existing.isEmpty() && roles.isEmpty()) {
 			throw ValidationException.field("roles", "Give the staff member at least one role");
 		}
-		StaffUser user = staff.findByEmail(normalizedEmail)
-			.orElseGet(() -> staff.save(new StaffUser(normalizedEmail, displayName)));
+		StaffUser user = existing.orElseGet(() -> staff.save(new StaffUser(normalizedEmail,
+				displayName == null || displayName.isBlank() ? normalizedEmail : displayName)));
 		user.update(displayName, mobile == null ? null : index.hash("staff_mobile", Mobiles.normalize(mobile)), roles,
 				active);
 		audit.record(new AuditEntry("STAFF_ACCOUNT_SAVED", "SYSTEM", null, IdentityApi.PLATFORM_ORG_ID, "STAFF",
-				user.getId().toString(), Map.of("roles", roles.toString(), "active", Boolean.toString(active))));
+				user.getId().toString(), Map.of("roles", user.view().roles().toString(), "active", Boolean.toString(active))));
 		return user.view();
 	}
 
 	@Transactional(readOnly = true)
 	Optional<StaffView> find(UUID staffId) {
 		return staff.findById(staffId).map(StaffUser::view);
-	}
-
-	/** Permissions of an active staff member, read on every request so revoked roles apply at once. */
-	@Transactional(readOnly = true)
-	Optional<Set<String>> activePermissions(UUID staffId) {
-		return staff.findById(staffId).filter(StaffUser::isActive).map(StaffUser::permissions);
 	}
 
 	private StaffLoginResult open(StaffUser user, String method) {

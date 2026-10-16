@@ -67,9 +67,8 @@ class Verification extends BaseEntity {
 	/** A reviewer's decision on a MANUAL_REVIEW result. */
 	void decide(boolean accept, UUID staffId) {
 		this.status = accept ? "SUCCEEDED" : "FAILED";
-		if (!accept) {
-			this.failureCode = "REJECTED_BY_REVIEWER";
-		}
+		// An accepted result is a success: no failure code may stay next to it
+		this.failureCode = accept ? null : "REJECTED_BY_REVIEWER";
 		this.decidedBy = staffId;
 	}
 

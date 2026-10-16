@@ -53,7 +53,8 @@ class StaffBootstrapRunner implements ApplicationRunner {
 			Set<StaffRole> parsed = EnumSet.noneOf(StaffRole.class);
 			Arrays.stream(roles.split(",")).map(String::trim).filter(r -> !r.isEmpty())
 				.forEach(r -> parsed.add(StaffRole.valueOf(r.toUpperCase())));
-			var staff = identity.saveStaff(email, name.isBlank() ? email : name, null, parsed, active);
+			// A blank name or no roles keep the existing account's (e.g. ELOKA_STAFF_ACTIVE=false alone disables it)
+			var staff = identity.saveStaff(email, name.isBlank() ? null : name, null, parsed, active);
 			log.info("Staff account saved: {} roles={} active={}", staff.id(), staff.roles(), staff.active());
 		}
 		catch (DomainException | IllegalArgumentException ex) {

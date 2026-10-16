@@ -41,6 +41,11 @@ class ReviewService {
 	/** correction_request.message and onboarding_step.reviewer_message (V27). */
 	static final int MAX_MESSAGE = 1000;
 
+	/** Every reason_code column (review_action, correction_request, onboarding_step, application_document). */
+	static final int MAX_REASON_CODE = 40;
+
+	static final int MAX_CORRECTION_DAYS = 90;
+
 	private final OnboardingApplicationRepository applications;
 	private final OnboardingStepRepository steps;
 	private final ApplicationDocumentRepository documents;
@@ -77,9 +82,9 @@ class ReviewService {
 
 	/** S3 / T4: take a submitted case. */
 	@Transactional
-	void claim(Caller staff, String publicId) {
+	void claim(Caller staff, String publicId, Long expectedVersion) {
 		require(staff, StaffPermission.ONBOARDING_REVIEW);
-		OnboardingApplication application = lock(publicId);
+		OnboardingApplication application = lock(publicId, expectedVersion);
 		stateMachine.apply(application, LifecycleEvent.CLAIM, "STAFF", staff.userId().toString());
 		application.assignTo(staff.userId());
 		record(application, staff, ReviewAction.CLAIM, null, null, null, null);
@@ -90,9 +95,9 @@ class ReviewService {
 	 * {@code onboarding.reassign} may release anyone's (a reviewer who left), with a reason.
 	 */
 	@Transactional
-	void release(Caller staff, String publicId, String reason) {
+	void release(Caller staff, String publicId, long expectedVersion, String reason) {
 		require(staff, StaffPermission.ONBOARDING_READ);
-		OnboardingApplication application = lock(publicId);
+		OnboardingApplication application = lock(publicId, expectedVersion);
 		requireUnderReview(application);
 		UUID reviewer = application.getAssignedStaffId();
 		boolean own = application.isAssignedTo(staff.userId());
@@ -113,9 +118,10 @@ class ReviewService {
 
 	/** S5 / S6 */
 	@Transactional
-	void decideDocument(Caller staff, String publicId, String documentId, boolean verified, String reasonCode,
-			String message) {
-		OnboardingApplication application = assignedCase(staff, publicId);
+	void decideDocument(Caller staff, String publicId, long expectedVersion, String documentId, boolean verified,
+			String reasonCode, String message) {
+		OnboardingApplication application = assignedCase(staff, publicId, expectedVersion);
+		reasonCode(reasonCode);
 		ApplicationDocument document = documents.findByPublicIdAndApplicationId(documentId, application.getId())
 			.orElseThrow(() -> new NotFoundException("DOCUMENT_NOT_FOUND", "Document not found"));
 		Instant now = Instant.now(clock);
@@ -133,9 +139,10 @@ class ReviewService {
 
 	/** S7: accept or reject a verification that needs a human (name mismatch). */
 	@Transactional
-	VerificationApi.AttemptView decideVerification(Caller staff, String publicId, UUID verificationId, boolean accept,
-			String reasonCode) {
-		OnboardingApplication application = assignedCase(staff, publicId);
+	VerificationApi.AttemptView decideVerification(Caller staff, String publicId, long expectedVersion,
+			UUID verificationId, boolean accept, String reasonCode) {
+		OnboardingApplication application = assignedCase(staff, publicId, expectedVersion);
+		reasonCode(reasonCode);
 		VerificationApi.AttemptView decided = verification.decide(application.getId(), verificationId, accept, staff.userId());
 		record(application, staff, ReviewAction.VERIFICATION, accept ? "ACCEPT" : "REJECT", reasonCode, null,
 				verificationId.toString());
@@ -144,9 +151,9 @@ class ReviewService {
 
 	/** S8 / T5: reopen steps for the applicant with a reason and a due date. */
 	@Transactional
-	void requestCorrection(Caller staff, String publicId, List<String> stepKeys, String reasonCode, String message,
-			Integer dueInDays) {
-		OnboardingApplication application = assignedCase(staff, publicId);
+	void requestCorrection(Caller staff, String publicId, long expectedVersion, List<String> stepKeys, String reasonCode,
+			String message, Integer dueInDays) {
+		OnboardingApplication application = assignedCase(staff, publicId, expectedVersion);
 		if (stepKeys == null || stepKeys.isEmpty()) {
 			throw ValidationException.field("step_keys", "Choose at least one step to correct");
 		}
@@ -155,6 +162,10 @@ class ReviewService {
 		}
 		if (message.length() > MAX_MESSAGE) {
 			throw ValidationException.field("message", "Keep the message under " + MAX_MESSAGE + " characters");
+		}
+		reasonCode(reasonCode);
+		if (dueInDays != null && (dueInDays < 1 || dueInDays > MAX_CORRECTION_DAYS)) {
+			throw ValidationException.field("due_in_days", "Give the applicant 1 to " + MAX_CORRECTION_DAYS + " days");
 		}
 		List<StepKey> keys = new ArrayList<>();
 		for (String value : stepKeys) {
@@ -173,11 +184,16 @@ class ReviewService {
 			}
 		}
 		Instant now = Instant.now(clock);
-		Instant due = now.plus(dueInDays == null ? DEFAULT_CORRECTION_WINDOW : Duration.ofDays(Math.max(1, dueInDays)));
+		Instant due = now.plus(dueInDays == null ? DEFAULT_CORRECTION_WINDOW : Duration.ofDays(dueInDays));
+		int reopened = 0;
 		for (OnboardingStep step : steps.findByApplicationId(application.getId())) {
-			if (keys.contains(step.getStepKey())) {
-				step.reopen(reasonCode, message);
+			if (keys.contains(step.getStepKey()) && step.reopen(reasonCode, message)) {
+				reopened++;
 			}
+		}
+		if (reopened == 0) {
+			// e.g. a step that does not apply to this business type: the applicant would have nothing to fix
+			throw ValidationException.field("step_keys", "None of these steps can be reopened for this application");
 		}
 		stateMachine.apply(application, LifecycleEvent.REQUEST_CORRECTION, "STAFF", staff.userId().toString());
 		application.correctionDue(due);
@@ -189,8 +205,8 @@ class ReviewService {
 
 	/** S9: the maker's recommendation. */
 	@Transactional
-	void recommend(Caller staff, String publicId, String recommendation, String note) {
-		OnboardingApplication application = assignedCase(staff, publicId);
+	void recommend(Caller staff, String publicId, long expectedVersion, String recommendation, String note) {
+		OnboardingApplication application = assignedCase(staff, publicId, expectedVersion);
 		if (!"APPROVE".equals(recommendation) && !"REJECT".equals(recommendation)) {
 			throw ValidationException.field("recommendation", "APPROVE or REJECT");
 		}
@@ -199,9 +215,9 @@ class ReviewService {
 
 	/** S10 / T7: the checker approves. */
 	@Transactional
-	void approve(Caller staff, String publicId, String note) {
+	void approve(Caller staff, String publicId, long expectedVersion, String note) {
 		require(staff, StaffPermission.ONBOARDING_APPROVE);
-		OnboardingApplication application = lock(publicId);
+		OnboardingApplication application = lock(publicId, expectedVersion);
 		List<ReviewAction> history = reviewActions.findByApplicationIdOrderByOccurredAtAsc(application.getId());
 		Optional<ReviewAction> recommendation = latestRecommendation(history);
 		// Nobody approves a case they claimed or recommended at any point, even after handing it over
@@ -223,22 +239,27 @@ class ReviewService {
 
 	/** S11 / T8 */
 	@Transactional
-	void reject(Caller staff, String publicId, String reasonCode, String applicantMessage, String internalNote) {
+	void reject(Caller staff, String publicId, long expectedVersion, String reasonCode, String applicantMessage,
+			String internalNote) {
 		require(staff, StaffPermission.ONBOARDING_REJECT);
 		if (reasonCode == null || reasonCode.isBlank()) {
 			throw ValidationException.field("reason_code", "A reason code is required");
 		}
-		OnboardingApplication application = lock(publicId);
+		reasonCode(reasonCode);
+		OnboardingApplication application = lock(publicId, expectedVersion);
 		stateMachine.apply(application, LifecycleEvent.REJECT, "STAFF", staff.userId().toString());
-		record(application, staff, ReviewAction.REJECT, "REJECT", reasonCode,
-				applicantMessage == null ? internalNote : applicantMessage, null);
+		// Both are kept: the message for the applicant and the internal note for the review history
+		reviewActions.save(new ReviewAction(application.getId(), staff.userId(), ReviewAction.REJECT, "REJECT", reasonCode,
+				truncate(internalNote, 1000), null, Instant.now(clock)).withApplicantMessage(truncate(applicantMessage, 1000)));
+		audit(application, staff, ReviewAction.REJECT, "REJECT", reasonCode, null);
 	}
 
 	/** S12 / T9 */
 	@Transactional
-	void hold(Caller staff, String publicId, String reasonCode, boolean on) {
+	void hold(Caller staff, String publicId, long expectedVersion, String reasonCode, boolean on) {
 		require(staff, StaffPermission.ONBOARDING_HOLD);
-		OnboardingApplication application = lock(publicId);
+		reasonCode(reasonCode);
+		OnboardingApplication application = lock(publicId, expectedVersion);
 		stateMachine.apply(application, on ? LifecycleEvent.HOLD : LifecycleEvent.RELEASE_HOLD, "STAFF",
 				staff.userId().toString());
 		record(application, staff, on ? ReviewAction.HOLD : ReviewAction.RELEASE_HOLD, null, reasonCode, null, null);
@@ -279,20 +300,23 @@ class ReviewService {
 
 	/** Why the checker cannot approve yet (empty = approvable). */
 	List<String> approvalBlockers(OnboardingApplication application, Optional<ReviewAction> recommendation) {
+		return approvalBlockers(recommendation, documents.findByApplicationIdOrderByCreatedAtAsc(application.getId()),
+				verification.attempts(application.getId()));
+	}
+
+	/** As above, from rows the caller already loaded (the case view). */
+	List<String> approvalBlockers(Optional<ReviewAction> recommendation, List<ApplicationDocument> allDocuments,
+			List<VerificationApi.AttemptView> attempts) {
 		List<String> reasons = new ArrayList<>();
 		if (recommendation.isEmpty() || !"APPROVE".equals(recommendation.get().getDecision())) {
 			reasons.add("NO_APPROVE_RECOMMENDATION");
 		}
-		List<ApplicationDocument> current = documents.findByApplicationIdOrderByCreatedAtAsc(application.getId())
-			.stream()
-			.filter(ApplicationDocument::isCurrent)
-			.toList();
+		List<ApplicationDocument> current = allDocuments.stream().filter(ApplicationDocument::isCurrent).toList();
 		if (current.stream().anyMatch(d -> !"VERIFIED".equals(d.getStatus()))) {
 			reasons.add("DOCUMENTS_NOT_VERIFIED");
 		}
 		Map<String, VerificationApi.AttemptView> latestByKind = new LinkedHashMap<>();
-		verification.attempts(application.getId())
-			.stream()
+		attempts.stream()
 			.filter(a -> !"FAILED".equals(a.status()) || "REJECTED_BY_REVIEWER".equals(a.failureCode()))
 			.forEach(a -> latestByKind.putIfAbsent(a.kind(), a));
 		latestByKind.values().forEach(a -> {
@@ -327,9 +351,9 @@ class ReviewService {
 			.map(summary -> json.readTree(summary).path("bank_account_id").asString(null));
 	}
 
-	private OnboardingApplication assignedCase(Caller staff, String publicId) {
+	private OnboardingApplication assignedCase(Caller staff, String publicId, long expectedVersion) {
 		require(staff, StaffPermission.ONBOARDING_REVIEW);
-		OnboardingApplication application = lock(publicId);
+		OnboardingApplication application = lock(publicId, expectedVersion);
 		requireUnderReview(application);
 		if (!application.isAssignedTo(staff.userId())) {
 			throw new ApiProblem(HttpStatus.FORBIDDEN, "NOT_ASSIGNED", "This case is assigned to another reviewer");
@@ -345,15 +369,30 @@ class ReviewService {
 		}
 	}
 
-	private OnboardingApplication lock(String publicId) {
-		OnboardingApplication application = applications.findByPublicId(publicId).orElseThrow(ReviewService::notFound);
-		return applications.lockById(application.getId()).orElseThrow(ReviewService::notFound);
+	/**
+	 * The application row lock, and the case must still be the version the staff member looked at
+	 * ({@code If-Match}; {@code null} = not checked), so nobody acts on a state they never saw.
+	 */
+	private OnboardingApplication lock(String publicId, Long expectedVersion) {
+		OnboardingApplication found = applications.findByPublicId(publicId).orElseThrow(ReviewService::notFound);
+		OnboardingApplication application = applications.lockById(found.getId()).orElseThrow(ReviewService::notFound);
+		if (expectedVersion != null && application.getVersion() != expectedVersion) {
+			throw new ApiProblem(HttpStatus.PRECONDITION_FAILED, "PRECONDITION_FAILED",
+					"This case changed since you opened it. Reload it and check again.",
+					Map.of("current_version", application.getVersion()));
+		}
+		return application;
 	}
 
 	private void record(OnboardingApplication application, Caller staff, String action, String decision, String reasonCode,
 			String note, String targetRef) {
 		reviewActions.save(new ReviewAction(application.getId(), staff.userId(), action, decision, reasonCode,
 				truncate(note, 1000), targetRef, Instant.now(clock)));
+		audit(application, staff, action, decision, reasonCode, targetRef);
+	}
+
+	private void audit(OnboardingApplication application, Caller staff, String action, String decision, String reasonCode,
+			String targetRef) {
 		Map<String, String> details = new LinkedHashMap<>();
 		if (decision != null) {
 			details.put("decision", decision);
@@ -372,6 +411,13 @@ class ReviewService {
 		if (!staff.hasPermission(permission)) {
 			throw new ApiProblem(HttpStatus.FORBIDDEN, "FORBIDDEN", "You do not have permission to do this",
 					Map.of("missing_permission", permission));
+		}
+	}
+
+	/** A reason code fits its columns (null is allowed here; callers check required ones). */
+	private static void reasonCode(String value) {
+		if (value != null && value.length() > MAX_REASON_CODE) {
+			throw ValidationException.field("reason_code", "Use a reason code of at most " + MAX_REASON_CODE + " characters");
 		}
 	}
 

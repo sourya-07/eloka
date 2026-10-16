@@ -177,7 +177,7 @@ All staff APIs require OIDC auth + MFA claim (`amr` contains `mfa`). Permission 
 | S5 | `POST /v1/admin/applications/{id}/documents/{doc}/verify` 🔁 | `onboarding.review` | `{ note? }` | document | doc `PENDING_REVIEW → VERIFIED` | key |
 | S6 | `POST /v1/admin/applications/{id}/documents/{doc}/reject` 🔁 | `onboarding.review` | `{ reason_code, message }` | document | `→ REJECTED` | key |
 | S7 | `POST /v1/admin/applications/{id}/verifications/{ver}/decide` 🔁 | `onboarding.review` | `{ decision: ACCEPT \| REJECT, reason_code }` | verification | `MANUAL_REVIEW → SUCCEEDED / FAILED` | key |
-| S8 | `POST /v1/admin/applications/{id}/corrections` 🔁 | `onboarding.review` | `{ step_keys[], reason_code, message (≤ 1000), due_in_days? }` | case | T5 | key |
+| S8 | `POST /v1/admin/applications/{id}/corrections` 🔁 | `onboarding.review` | `{ step_keys[], reason_code (≤ 40), message (≤ 1000), due_in_days? (1–90) }` | case | T5 | key |
 | S9 | `POST /v1/admin/applications/{id}/recommendations` 🔁 | `onboarding.review` | `{ recommendation: APPROVE \| REJECT, note }` | case | (records the maker step) | key |
 | S10 | `POST /v1/admin/applications/{id}/approve` 🔁 | `onboarding.approve` (≠ recommender) | `{ note }` | case | T7 → T10 | key |
 | S11 | `POST /v1/admin/applications/{id}/reject` 🔁 | `onboarding.reject` | `{ reason_code, applicant_message, internal_note }` | case | T8 | key |

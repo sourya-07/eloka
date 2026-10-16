@@ -43,7 +43,7 @@ In the commands below, `DC` means `docker compose -f deploy/docker-compose.yml -
    $DC --profile tools run --rm -e SPRING_PROFILES_ACTIVE=prod,staff-bootstrap \
      -e ELOKA_STAFF_EMAIL=reviewer@eko.co.in -e ELOKA_STAFF_NAME="Riya" -e ELOKA_STAFF_ROLES=REVIEWER bootstrap
    ```
-   Roles: `REVIEWER`, `APPROVER`, `AUDITOR`, `ADMIN` (comma-separated). Re-running updates the account; `ELOKA_STAFF_ACTIVE=false` disables it at once (open sessions stop working on the next request).
+   Roles: `REVIEWER`, `APPROVER`, `AUDITOR`, `ADMIN` (comma-separated). Re-running updates the account; a blank `ELOKA_STAFF_NAME` or `ELOKA_STAFF_ROLES` keeps the current ones, so `-e ELOKA_STAFF_EMAIL=… -e ELOKA_STAFF_ACTIVE=false` alone disables it at once (open sessions stop working on the next request).
 7. Smoke test: open `https://<label>.<root>`, log in, check `$DC logs server | grep -i error` is quiet.
 
 ## Production vs staging

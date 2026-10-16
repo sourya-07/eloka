@@ -31,7 +31,8 @@ import tools.jackson.databind.JsonNode;
 
 /**
  * Staff review API (S1–S13, S21; docs/onboarding/P8_STAFF_REVIEW.md). Actions answer with the
- * updated case. Side-effect POSTs take an {@code Idempotency-Key}.
+ * updated case and its {@code ETag}. Side-effect POSTs take an {@code Idempotency-Key}; every
+ * action except claim needs {@code If-Match} with the ETag of the case the staff member looked at.
  */
 @RestController
 @RequestMapping("/v1/admin/applications")
@@ -68,44 +69,51 @@ class StaffReviewController {
 
 	/** S2 */
 	@GetMapping("/{id}")
-	Map<String, Object> get(@PathVariable String id) {
+	ResponseEntity<Map<String, Object>> get(@PathVariable String id) {
 		ReviewService.require(WebSupport.staff(), StaffPermission.ONBOARDING_READ);
-		return queries.caseView(id);
+		return withEtag(queries.caseView(id));
 	}
 
 	/** S3 */
 	@PostMapping("/{id}/claim")
 	ResponseEntity<?> claim(@PathVariable String id, @RequestHeader(value = Idempotency.HEADER, required = false) String key,
-			@RequestBody(required = false) JsonNode body, HttpServletRequest request) {
+			@RequestHeader(value = HttpHeaders.IF_MATCH, required = false) String ifMatch, @RequestBody(required = false) JsonNode body,
+			HttpServletRequest request) {
 		Caller staff = WebSupport.staff();
-		return act(staff, id, key, body, request, () -> review.claim(staff, id));
+		// Claimed from the queue, which shows no version: If-Match is checked only when sent
+		Long version = ifMatch == null || ifMatch.isBlank() ? null : WebSupport.expectedVersion(ifMatch);
+		return act(staff, id, key, body, request, () -> review.claim(staff, id, version));
 	}
 
 	/** S4 */
 	@PostMapping("/{id}/release")
 	ResponseEntity<?> release(@PathVariable String id, @RequestHeader(value = Idempotency.HEADER, required = false) String key,
-			@RequestBody(required = false) JsonNode body, HttpServletRequest request) {
+			@RequestHeader(value = HttpHeaders.IF_MATCH, required = false) String ifMatch, @RequestBody(required = false) JsonNode body,
+			HttpServletRequest request) {
 		Caller staff = WebSupport.staff();
-		return act(staff, id, key, body, request, () -> review.release(staff, id, text(body, "reason", false)));
+		long version = WebSupport.expectedVersion(ifMatch);
+		return act(staff, id, key, body, request, () -> review.release(staff, id, version, text(body, "reason", false)));
 	}
 
 	/** S5 */
 	@PostMapping("/{id}/documents/{documentId}/verify")
 	ResponseEntity<?> verifyDocument(@PathVariable String id, @PathVariable String documentId,
-			@RequestHeader(value = Idempotency.HEADER, required = false) String key, @RequestBody(required = false) JsonNode body,
-			HttpServletRequest request) {
+			@RequestHeader(value = Idempotency.HEADER, required = false) String key, @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) String ifMatch,
+			@RequestBody(required = false) JsonNode body, HttpServletRequest request) {
 		Caller staff = WebSupport.staff();
+		long version = WebSupport.expectedVersion(ifMatch);
 		return act(staff, id, key, body, request,
-				() -> review.decideDocument(staff, id, documentId, true, null, text(body, "note", false)));
+				() -> review.decideDocument(staff, id, version, documentId, true, null, text(body, "note", false)));
 	}
 
 	/** S6 */
 	@PostMapping("/{id}/documents/{documentId}/reject")
 	ResponseEntity<?> rejectDocument(@PathVariable String id, @PathVariable String documentId,
-			@RequestHeader(value = Idempotency.HEADER, required = false) String key, @RequestBody(required = false) JsonNode body,
-			HttpServletRequest request) {
+			@RequestHeader(value = Idempotency.HEADER, required = false) String key, @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) String ifMatch,
+			@RequestBody(required = false) JsonNode body, HttpServletRequest request) {
 		Caller staff = WebSupport.staff();
-		return act(staff, id, key, body, request, () -> review.decideDocument(staff, id, documentId, false,
+		long version = WebSupport.expectedVersion(ifMatch);
+		return act(staff, id, key, body, request, () -> review.decideDocument(staff, id, version, documentId, false,
 				text(body, "reason_code", true), text(body, "message", false)));
 	}
 
@@ -136,71 +144,80 @@ class StaffReviewController {
 	/** S7 */
 	@PostMapping("/{id}/verifications/{verificationId}/decide")
 	ResponseEntity<?> decide(@PathVariable String id, @PathVariable UUID verificationId,
-			@RequestHeader(value = Idempotency.HEADER, required = false) String key, @RequestBody JsonNode body,
-			HttpServletRequest request) {
+			@RequestHeader(value = Idempotency.HEADER, required = false) String key, @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) String ifMatch,
+			@RequestBody JsonNode body, HttpServletRequest request) {
 		Caller staff = WebSupport.staff();
 		String decision = text(body, "decision", true);
 		if (!"ACCEPT".equals(decision) && !"REJECT".equals(decision)) {
 			throw ValidationException.field("decision", "ACCEPT or REJECT");
 		}
-		return act(staff, id, key, body, request, () -> review.decideVerification(staff, id, verificationId,
+		long version = WebSupport.expectedVersion(ifMatch);
+		return act(staff, id, key, body, request, () -> review.decideVerification(staff, id, version, verificationId,
 				"ACCEPT".equals(decision), text(body, "reason_code", false)));
 	}
 
 	/** S8 */
 	@PostMapping("/{id}/corrections")
 	ResponseEntity<?> corrections(@PathVariable String id, @RequestHeader(value = Idempotency.HEADER, required = false) String key,
-			@RequestBody JsonNode body, HttpServletRequest request) {
+			@RequestHeader(value = HttpHeaders.IF_MATCH, required = false) String ifMatch, @RequestBody JsonNode body, HttpServletRequest request) {
 		Caller staff = WebSupport.staff();
 		List<String> steps = new ArrayList<>();
 		if (body != null && body.has("step_keys") && body.get("step_keys").isArray()) {
 			body.get("step_keys").forEach(node -> steps.add(node.asString()));
 		}
 		Integer days = body != null && body.hasNonNull("due_in_days") ? body.get("due_in_days").asInt() : null;
-		return act(staff, id, key, body, request, () -> review.requestCorrection(staff, id, steps,
+		long version = WebSupport.expectedVersion(ifMatch);
+		return act(staff, id, key, body, request, () -> review.requestCorrection(staff, id, version, steps,
 				text(body, "reason_code", true), text(body, "message", true), days));
 	}
 
 	/** S9 */
 	@PostMapping("/{id}/recommendations")
 	ResponseEntity<?> recommend(@PathVariable String id, @RequestHeader(value = Idempotency.HEADER, required = false) String key,
-			@RequestBody JsonNode body, HttpServletRequest request) {
+			@RequestHeader(value = HttpHeaders.IF_MATCH, required = false) String ifMatch, @RequestBody JsonNode body, HttpServletRequest request) {
 		Caller staff = WebSupport.staff();
+		long version = WebSupport.expectedVersion(ifMatch);
 		return act(staff, id, key, body, request,
-				() -> review.recommend(staff, id, text(body, "recommendation", true), text(body, "note", false)));
+				() -> review.recommend(staff, id, version, text(body, "recommendation", true), text(body, "note", false)));
 	}
 
 	/** S10 */
 	@PostMapping("/{id}/approve")
 	ResponseEntity<?> approve(@PathVariable String id, @RequestHeader(value = Idempotency.HEADER, required = false) String key,
-			@RequestBody(required = false) JsonNode body, HttpServletRequest request) {
+			@RequestHeader(value = HttpHeaders.IF_MATCH, required = false) String ifMatch, @RequestBody(required = false) JsonNode body,
+			HttpServletRequest request) {
 		Caller staff = WebSupport.staff();
-		return act(staff, id, key, body, request, () -> review.approve(staff, id, text(body, "note", false)));
+		long version = WebSupport.expectedVersion(ifMatch);
+		return act(staff, id, key, body, request, () -> review.approve(staff, id, version, text(body, "note", false)));
 	}
 
 	/** S11 */
 	@PostMapping("/{id}/reject")
 	ResponseEntity<?> reject(@PathVariable String id, @RequestHeader(value = Idempotency.HEADER, required = false) String key,
-			@RequestBody JsonNode body, HttpServletRequest request) {
+			@RequestHeader(value = HttpHeaders.IF_MATCH, required = false) String ifMatch, @RequestBody JsonNode body, HttpServletRequest request) {
 		Caller staff = WebSupport.staff();
-		return act(staff, id, key, body, request, () -> review.reject(staff, id, text(body, "reason_code", true),
+		long version = WebSupport.expectedVersion(ifMatch);
+		return act(staff, id, key, body, request, () -> review.reject(staff, id, version, text(body, "reason_code", true),
 				text(body, "applicant_message", false), text(body, "internal_note", false)));
 	}
 
 	/** S12: hold */
 	@PostMapping("/{id}/holds")
 	ResponseEntity<?> hold(@PathVariable String id, @RequestHeader(value = Idempotency.HEADER, required = false) String key,
-			@RequestBody(required = false) JsonNode body, HttpServletRequest request) {
+			@RequestHeader(value = HttpHeaders.IF_MATCH, required = false) String ifMatch, @RequestBody(required = false) JsonNode body,
+			HttpServletRequest request) {
 		Caller staff = WebSupport.staff();
-		return act(staff, id, key, body, request, () -> review.hold(staff, id, text(body, "reason_code", true), true));
+		long version = WebSupport.expectedVersion(ifMatch);
+		return act(staff, id, key, body, request,
+				() -> review.hold(staff, id, version, text(body, "reason_code", true), true));
 	}
 
 	/** S12: release the hold */
 	@DeleteMapping("/{id}/holds")
-	Map<String, Object> releaseHold(@PathVariable String id) {
+	ResponseEntity<Map<String, Object>> releaseHold(@PathVariable String id, @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) String ifMatch) {
 		Caller staff = WebSupport.staff();
-		review.hold(staff, id, null, false);
-		return queries.caseView(id);
+		review.hold(staff, id, WebSupport.expectedVersion(ifMatch), null, false);
+		return withEtag(queries.caseView(id));
 	}
 
 	/** S13: valid for this one response only; nothing is cached. */
@@ -223,8 +240,13 @@ class StaffReviewController {
 			Runnable action) {
 		return idempotency.run(staff.userId(), key, WebSupport.fingerprint(request, body), () -> {
 			action.run();
-			return ResponseEntity.ok(queries.caseView(id));
+			return withEtag(queries.caseView(id));
 		});
+	}
+
+	/** The case with its version as {@code ETag} (send it back as {@code If-Match} on the next action). */
+	private static ResponseEntity<Map<String, Object>> withEtag(Map<String, Object> view) {
+		return ResponseEntity.ok().eTag(WebSupport.etag((ApplicationSnapshot) view.get("application"))).body(view);
 	}
 
 	private static String text(JsonNode body, String field, boolean required) {

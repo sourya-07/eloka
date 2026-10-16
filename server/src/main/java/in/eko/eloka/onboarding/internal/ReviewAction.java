@@ -45,6 +45,10 @@ class ReviewAction extends BaseEntity {
 	@Column(name = "target_ref", length = 255)
 	private String targetRef;
 
+	/** What a rejected applicant is told (V28); {@link #note} stays internal. */
+	@Column(name = "applicant_message", length = 1000)
+	private String applicantMessage;
+
 	@Column(name = "occurred_at", nullable = false)
 	private Instant occurredAt;
 
@@ -61,6 +65,15 @@ class ReviewAction extends BaseEntity {
 		this.note = note;
 		this.targetRef = targetRef;
 		this.occurredAt = occurredAt;
+	}
+
+	ReviewAction withApplicantMessage(String message) {
+		this.applicantMessage = message;
+		return this;
+	}
+
+	String getApplicantMessage() {
+		return applicantMessage;
 	}
 
 	UUID getStaffId() {
