@@ -314,7 +314,9 @@ const History = ({ forNetwork = false }) => {
 		// Account_id is required for self (non-network) transaction history
 		if (account_id === null && forNetwork === false) {
 			console.log("[History] Invalid account selected for filtering.");
-			// A cancelled earlier request leaves the spinner to its replacement: this is it
+			// A cancelled earlier request leaves the spinner to its replacement: this is it.
+			// Rows from the previous account no longer apply.
+			setData([]);
 			setLoading(false);
 			return;
 		}
