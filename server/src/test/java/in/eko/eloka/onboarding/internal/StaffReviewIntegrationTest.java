@@ -332,6 +332,7 @@ class StaffReviewIntegrationTest extends OnboardingTestSupport {
 		assertThat(reviewer.call(HttpMethod.GET, "/me", null, 200).get("permissions").toString()).contains("onboarding.review");
 
 		assertThat(google("test-google:anil.approver@eko.co.in:eko.co.in")).isEqualTo(200);
+		assertThat(google("test-google:")).isEqualTo(403); // malformed token: refused, not a crash
 		assertThat(google("test-google:anil.approver@eko.co.in:gmail.com")).isEqualTo(403);
 		assertThat(google("test-google:stranger@eko.co.in:eko.co.in")).isEqualTo(403);
 	}
@@ -409,8 +410,9 @@ class StaffReviewIntegrationTest extends OnboardingTestSupport {
 	@Test
 	void refusedGoogleSignInsAreAudited() throws Exception {
 		assertThat(google("test-google:gone.reviewer@eko.co.in:eko.co.in")).isEqualTo(403);
-		String staffId = jdbc.queryForObject("SELECT LOWER(BIN_TO_UUID(id)) FROM staff_user WHERE email = ?", String.class,
-				"gone.reviewer@eko.co.in");
+		String staffId = identity.saveStaff("gone.reviewer@eko.co.in", null, null, EnumSet.noneOf(StaffRole.class), false)
+			.id()
+			.toString();
 		assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE action = 'STAFF_LOGIN_REFUSED' AND target_id = ?"
 				+ " AND details LIKE '%ACCOUNT_DISABLED%'", Integer.class, staffId)).isEqualTo(1);
 		assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE details LIKE '%gone.reviewer%'", Integer.class))
@@ -481,6 +483,16 @@ class StaffReviewIntegrationTest extends OnboardingTestSupport {
 		assertThat(disabled.active()).isFalse();
 		assertThat(disabled.displayName()).isEqualTo("Leela Reviewer");
 		assertThat(disabled.roles()).containsExactly(StaffRole.REVIEWER);
+	}
+
+	@Test
+	void staffEmailsAreStoredEncrypted() throws Exception {
+		assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE()"
+				+ " AND table_name = 'staff_user' AND column_name = 'email'", Integer.class)).isZero();
+		assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM staff_user WHERE email_masked LIKE '%rita.reviewer%'",
+				Integer.class)).isZero();
+		JsonNode me = staff("9700000001").call(HttpMethod.GET, "/me", null, 200);
+		assertThat(me.get("email").asString()).endsWith("@eko.co.in").isNotEqualTo("rita.reviewer@eko.co.in");
 	}
 
 	private int refresh(String uri, String refreshToken) throws Exception {

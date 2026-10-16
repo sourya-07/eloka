@@ -15,13 +15,22 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
-/** An Eko staff member who reviews Local Admin applications. Identified by their Google email. */
+/**
+ * An Eko staff member who reviews Local Admin applications. Identified by their Google email,
+ * stored encrypted with a blind index for lookups and a masked copy for display (V29).
+ */
 @Entity
 @Table(name = "staff_user")
 class StaffUser extends BaseEntity {
 
-	@Column(nullable = false, unique = true, length = 254)
-	private String email;
+	@Column(name = "email_enc", nullable = false, columnDefinition = "VARBINARY(512)")
+	private byte[] emailEnc;
+
+	@Column(name = "email_hash", nullable = false, unique = true, columnDefinition = "BINARY(32)")
+	private byte[] emailHash;
+
+	@Column(name = "email_masked", nullable = false, length = 254)
+	private String emailMasked;
 
 	@Column(name = "display_name", nullable = false, length = 100)
 	private String displayName;
@@ -42,8 +51,10 @@ class StaffUser extends BaseEntity {
 	protected StaffUser() {
 	}
 
-	StaffUser(String email, String displayName) {
-		this.email = email;
+	StaffUser(byte[] emailEnc, byte[] emailHash, String emailMasked, String displayName) {
+		this.emailEnc = emailEnc;
+		this.emailHash = emailHash;
+		this.emailMasked = emailMasked;
 		this.displayName = displayName;
 		this.status = "ACTIVE";
 	}
@@ -74,10 +85,11 @@ class StaffUser extends BaseEntity {
 	}
 
 	StaffView view() {
-		return new StaffView(getId(), email, displayName, roles, isActive());
+		return new StaffView(getId(), emailMasked, displayName, roles, isActive());
 	}
 
-	String getEmail() {
-		return email;
+	/** For display and the staff Caller: never the full address. */
+	String getEmailMasked() {
+		return emailMasked;
 	}
 }

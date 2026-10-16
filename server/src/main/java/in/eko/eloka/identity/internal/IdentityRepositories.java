@@ -47,7 +47,7 @@ interface ReauthGrantRepository extends JpaRepository<ReauthGrant, UUID> {
 
 interface StaffUserRepository extends JpaRepository<StaffUser, UUID> {
 
-	Optional<StaffUser> findByEmail(String email);
+	Optional<StaffUser> findByEmailHash(byte[] emailHash);
 
 	Optional<StaffUser> findByMobileHash(byte[] mobileHash);
 }

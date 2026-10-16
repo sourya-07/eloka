@@ -12,7 +12,7 @@
 | Production login | **Google sign-in** (Workspace accounts, ADR-0005 / BACKEND_PLAN): the browser gets a Google ID token; `POST /v1/admin/auth/google` verifies it (signature via Google's JWKS, issuer, audience = `ELOKA_STAFF_GOOGLE_CLIENT_ID`, `email_verified`, hosted domain = `ELOKA_STAFF_GOOGLE_DOMAIN`) and opens a `STAFF` session. Without a client id the endpoint answers `409 PROVIDER_NOT_CONFIGURED`; with an empty domain it refuses everyone (and production will not start). Every refused sign-in is audited `STAFF_LOGIN_REFUSED` with a reason code (`TOKEN_OR_DOMAIN`, `UNKNOWN_ACCOUNT`, `ACCOUNT_DISABLED`), never the email |
 | MFA | Enforced by Google Workspace 2-step verification (ID tokens carry no `amr`). **ASSUMPTION** recorded as OQ-S6 |
 | Local / test login | `POST /v1/admin/auth/otp` + `/otp/verify` with OTP `123456` for seeded staff mobiles (`9000000006` reviewer, `9000000007` approver, `9000000008` admin). The OTP route exists only in `local`/`test` (`UnsafeInProduction`) |
-| Accounts | `staff_user` (email unique, optional mobile for local OTP, ACTIVE/DISABLED) + `staff_role_grant`. Production accounts are created with a one-shot `prod,staff-bootstrap` command (like the first tenant). Unknown or disabled emails cannot log in |
+| Accounts | `staff_user` (email stored encrypted + blind index (unique) + masked copy, V29; optional mobile for local OTP, ACTIVE/DISABLED) + `staff_role_grant`. Production accounts are created with a one-shot `prod,staff-bootstrap` command (like the first tenant). Unknown or disabled emails cannot log in |
 | Sessions | Same opaque tokens, session kind `STAFF`, valid only on `/v1/admin/**`; permissions are loaded into the `Caller` on every request, so a revoked role takes effect immediately |
 
 Roles → permissions (code, `StaffRole`):
@@ -39,7 +39,7 @@ S1 list (filters `status`, `assigned_to=me`, `q` = company name / `onb_` id / ex
 
 ## 4. Data
 
-V26: `staff_user`, `staff_role_grant`; `review_action` (maker/checker history: claim, release, recommendation, approve, reject, hold, correction, document and verification decisions); `correction_request` (step keys, reason, message, due); `onboarding_application.assigned_staff_id`, `correction_due_at`; index on `audit_event (target_type, target_id, occurred_at)`.
+V26: `staff_user`, `staff_role_grant`; `review_action` (maker/checker history: claim, release, recommendation, approve, reject, hold, correction, document and verification decisions); `correction_request` (step keys, reason, message, due); `onboarding_application.assigned_staff_id`, `correction_due_at`; index on `audit_event (target_type, target_id, occurred_at)`. V27–V29 (review fixes): wider `target_ref` / `reviewer_message`, `review_action.applicant_message`, staff email encrypted (`email_enc`, `email_hash`, `email_masked`; the clear-text column is gone).
 
 ## 5. Tests
 

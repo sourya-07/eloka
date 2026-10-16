@@ -127,6 +127,9 @@ final class FakeProviders {
 				return java.util.Optional.empty();
 			}
 			String[] parts = idToken.split(":");
+			if (parts.length < 2 || parts[1].isBlank()) {
+				return java.util.Optional.empty(); // malformed: refused like a bad Google token, never a crash
+			}
 			return java.util.Optional.of(new GoogleIdentity(parts[1], true, parts.length > 2 ? parts[2] : null, "Test Staff"));
 		}
 

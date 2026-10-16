@@ -18,6 +18,8 @@ import in.eko.eloka.identity.StaffView;
 import in.eko.eloka.integration.GoogleIdentityVerifier;
 import in.eko.eloka.shared.config.SafetyCheck;
 import in.eko.eloka.shared.crypto.BlindIndex;
+import in.eko.eloka.shared.crypto.FieldCipher;
+import in.eko.eloka.shared.crypto.Masking;
 import in.eko.eloka.shared.crypto.Mobiles;
 import in.eko.eloka.shared.error.NotFoundException;
 import in.eko.eloka.shared.error.ValidationException;
@@ -39,10 +41,12 @@ class StaffService implements SafetyCheck {
 	private final StaffProperties properties;
 	private final IdentityProperties identityProperties;
 	private final BlindIndex index;
+	private final FieldCipher cipher;
 	private final AuditLog audit;
 
 	StaffService(StaffUserRepository staff, OtpService otps, SessionService sessions, GoogleIdentityVerifier google,
-			StaffProperties properties, IdentityProperties identityProperties, BlindIndex index, AuditLog audit) {
+			StaffProperties properties, IdentityProperties identityProperties, BlindIndex index, FieldCipher cipher,
+			AuditLog audit) {
 		this.staff = staff;
 		this.otps = otps;
 		this.sessions = sessions;
@@ -50,6 +54,7 @@ class StaffService implements SafetyCheck {
 		this.properties = properties;
 		this.identityProperties = identityProperties;
 		this.index = index;
+		this.cipher = cipher;
 		this.audit = audit;
 	}
 
@@ -91,7 +96,7 @@ class StaffService implements SafetyCheck {
 				|| domain.isBlank() || !domain.equalsIgnoreCase(identity.get().hostedDomain())) {
 			return refused(null, "TOKEN_OR_DOMAIN");
 		}
-		Optional<StaffUser> user = staff.findByEmail(identity.get().email().toLowerCase(Locale.ROOT));
+		Optional<StaffUser> user = staff.findByEmailHash(emailHash(identity.get().email().toLowerCase(Locale.ROOT)));
 		if (user.isEmpty()) {
 			return refused(null, "UNKNOWN_ACCOUNT");
 		}
@@ -108,12 +113,13 @@ class StaffService implements SafetyCheck {
 		if (!normalizedEmail.matches("[^@\\s]+@[^@\\s]+\\.[^@\\s]+")) {
 			throw ValidationException.field("email", "Enter a valid email address");
 		}
-		Optional<StaffUser> existing = staff.findByEmail(normalizedEmail);
+		Optional<StaffUser> existing = staff.findByEmailHash(emailHash(normalizedEmail));
 		if (existing.isEmpty() && roles.isEmpty()) {
 			throw ValidationException.field("roles", "Give the staff member at least one role");
 		}
-		StaffUser user = existing.orElseGet(() -> staff.save(new StaffUser(normalizedEmail,
-				displayName == null || displayName.isBlank() ? normalizedEmail : displayName)));
+		String masked = Masking.email(normalizedEmail);
+		StaffUser user = existing.orElseGet(() -> staff.save(new StaffUser(cipher.encrypt(normalizedEmail),
+				emailHash(normalizedEmail), masked, displayName == null || displayName.isBlank() ? masked : displayName)));
 		user.update(displayName, mobile == null ? null : index.hash("staff_mobile", Mobiles.normalize(mobile)), roles,
 				active);
 		audit.record(new AuditEntry("STAFF_ACCOUNT_SAVED", "SYSTEM", null, IdentityApi.PLATFORM_ORG_ID, "STAFF",
@@ -132,6 +138,10 @@ class StaffService implements SafetyCheck {
 		audit.record(new AuditEntry("STAFF_LOGIN_SUCCEEDED", "STAFF", user.getId().toString(), IdentityApi.PLATFORM_ORG_ID,
 				"STAFF", user.getId().toString(), Map.of("method", method)));
 		return new StaffLoginResult.Success(tokens, user.view());
+	}
+
+	private byte[] emailHash(String normalizedEmail) {
+		return index.hash("staff_email", normalizedEmail);
 	}
 
 	/** Every refused Google sign-in is audited (a disabled account trying again shows up). Never the email. */
