@@ -1,4 +1,9 @@
 export { fetcher } from "./apiHelper";
+export {
+	buildOrgTheme,
+	computeBrandTokens,
+	PLATFORM_BRAND,
+} from "./buildOrgTheme";
 export { getChatGptAgentUrl } from "./chatGptAgentHelper";
 export { createSupportTicket } from "./createSupportTicket";
 export {

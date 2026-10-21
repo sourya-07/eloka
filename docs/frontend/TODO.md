@@ -4,7 +4,7 @@
 
 **Statuses:** `[ ]` not started · `[~]` in progress · `[x]` done and verified · `[!]` blocked (the reason is written on the task)
 
-**Counts** (update with every change): **total 78** · `[x]` 9 · `[~]` 1 · `[!]` 0 · `[ ]` 68
+**Counts** (update with every change): **total 78** · `[x]` 11 · `[~]` 0 · `[!]` 0 · `[ ]` 67
 
 ## How to use this file
 
@@ -162,7 +162,7 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
 
 ## DS — Tokens and theme (code foundation)
 
-### [~] DS-1 Semantic tokens, status tokens, weights and contrast
+### [x] DS-1 Semantic tokens, status tokens, weights and contrast
 - **P0 · M · deps:** ST-8a
 - **Deliverable:** `client/styles/themes.tsx` and `styles/theme_system/theme/foundations/*`:
   - new `bg.inverse`, `text.inverse`, `text.link`, `focus.ring`, `overlay` and `status.*` tokens
@@ -183,7 +183,7 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
   - **Contrast helpers fixed:** `utils/colorUtils` `contrast()` returned NaN (it passed an object to `luminance(r,g,b)`). It is now `contrastRatio(hex, hex)`. The helpers were unused, so no behaviour changes.
   - **Tests:** `__tests__/utils/colorUtils.test.js`, `__tests__/styles/themeTokens.test.ts`.
 
-### [ ] DS-2 `helpers/buildOrgTheme.ts` and the `_app.tsx` refactor
+### [x] DS-2 `helpers/buildOrgTheme.ts` and the `_app.tsx` refactor
 - **P0 · M · deps:** DS-1
 - **Deliverable:**
   - a pure `buildOrgTheme(org, base)` built from the code in `_app.tsx` lines 84–151
@@ -191,6 +191,7 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
   - `_app.tsx` calls the new helper
 - **Accept:** for all 6 presets in `constants/colorThemes.js`, plus no theme and both `navstyle` values, the legacy keys (`primary`, `accent`, `navbar`, `sidebar`, `status`, `logo`) deep-equal the old output, and `brand.fg` passes 4.5:1.
 - **Verify:** a new parity test; the regression gate; a manual check of 2 presets on `dev:mock`.
+- **Done 2026-10-21:** `client/helpers/buildOrgTheme.ts` (`buildOrgTheme`, `computeBrandTokens`, `PLATFORM_BRAND`); `_app.tsx` calls it. `__tests__/helpers/buildOrgTheme.test.ts` (38 tests) compares the output with a copy of the old inline code for no org, an org without a theme, all 6 presets with dark and light nav, a primary-only theme and invalid colours; it also checks `brand.fg` contrast. `make ci-client` green (250 suites). On screen, only the default tenant's login page was checked (`dev:mock` at 1280 and 390 px); the presets are covered by the parity tests.
 
 ### [ ] DS-3 Load Inter with `next/font`
 - **P1 · S · deps:** DS-1

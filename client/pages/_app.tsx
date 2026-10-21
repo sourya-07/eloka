@@ -18,7 +18,7 @@ import {
 	WalletProvider,
 } from "contexts";
 import { MenuProvider } from "contexts/MenuContext";
-import { localStorageProvider } from "helpers";
+import { buildOrgTheme, localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
 import { Layout } from "layout-components";
 import App from "next/app";
@@ -81,74 +81,8 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		}
 	}
 
-	// Setup custom theme...
-	const colors = org?.metadata?.theme;
-	const theme = colors
-		? {
-				...light,
-				colors: {
-					...light.colors,
-					navstyle: colors.navstyle,
-					primary: {
-						...light.colors.primary,
-						light:
-							colors?.primary_light || light.colors.primary.light,
-						DEFAULT:
-							colors?.primary || light.colors.primary.DEFAULT,
-						dark: colors?.primary_dark || light.colors.primary.dark,
-					},
-					accent: {
-						...light.colors.accent,
-						light:
-							colors?.accent_light || light.colors.accent.light,
-						DEFAULT: colors?.accent || light.colors.accent.DEFAULT,
-						dark: colors?.accent_dark || light.colors.accent.dark,
-					},
-				},
-			}
-		: {
-				...light,
-			};
-
-	// Add NavBar style colors (light or default dark)...
-	const lightNav = colors?.navstyle === "light";
-	theme.colors = {
-		...theme.colors,
-		navbar: {
-			...light.colors.navbar,
-			bg: lightNav ? theme.colors.primary.DEFAULT : "#FFF",
-			bgAlt: lightNav ? "#FFFFFF30" : "#00000020",
-			text: lightNav ? "#FFFFFFEE" : "#000000DD",
-			textLight: lightNav ? "#FFFFFF70" : "#00000070",
-			dark: lightNav ? "#FFFFFF" : "#000000",
-		},
-		sidebar: {
-			...light.colors.sidebar,
-			bg: lightNav ? "#FFF" : theme.colors.primary.DEFAULT,
-			text: lightNav ? "#333" : "#FFF",
-			dark: lightNav ? "#000000" : "#FFFFFF",
-			sel: lightNav
-				? theme.colors.primary.DEFAULT // theme.colors.primary.DEFAULT + "40"
-				: theme.colors.primary.dark, // Selection color
-
-			divider: lightNav
-				? theme.colors.primary.light + "40"
-				: theme.colors.primary.light,
-		},
-		status: {
-			...light.colors.status,
-			bg: lightNav ? theme.colors.primary.DEFAULT + "30" : "#00000050",
-			bgLight: lightNav ? "#FFF" : "#00000030",
-			text: lightNav ? "#111" : "#FFF",
-			wm: lightNav ? "#00000050" : "#FFFFFF50", // Watermark color
-			wmLight: lightNav ? "#00000030" : "#FFFFFF25",
-			title: lightNav ? theme.colors.primary.dark : "#FFD93B",
-			borderRightColor: lightNav ? "#FFF" : "#00000050",
-		},
-		logo: {
-			text: lightNav ? "#fff" : "primary.dark",
-		},
-	};
+	// Setup custom theme (tenant colours + navbar/sidebar styles + brand slot)...
+	const theme = buildOrgTheme(org, light);
 
 	// Setup default toast options for small screen...
 	if (typeof window !== "undefined") {
