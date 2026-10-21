@@ -212,6 +212,33 @@ Applicant-facing labels use plain words, for example "Waiting for review" for `S
 - **Session:** tokens stored in `la_*` keys.
 - **Accept:** paste fills the OTP; resend is disabled until the timer ends; never says whether a mobile is known (A1 answers the same either way).
 
+### APP-01B Choose how to apply (owner request 2026-10-21)
+- **Purpose:** after the mobile OTP, the applicant picks one of two paths.
+- **Option A, "Apply with DigiLocker" (faster):** DigiLocker supplies the signatory's identity (Aadhaar last 4 digits only), the PAN details and any documents it holds. The applicant then adds only the bank account, the platform setup, and the declaration plus agreement. The card shows "about 8 minutes · 6 steps".
+- **Option B, "Apply step by step":** the full 13-step flow (APP-04…APP-15).
+- **Actions:** "Continue"; "What is DigiLocker?" (help).
+- **Rules:** the applicant can switch to step by step at any time, and anything fetched from DigiLocker is kept.
+- **Note:** the backend has no DigiLocker-only path today (see [OPEN_QUESTIONS.md](./OPEN_QUESTIONS.md) FQ-16), so this is a design only.
+
+### APP-22 DigiLocker quick path (owner request 2026-10-21)
+A 6-step flow:
+1. Mobile verification
+2. DigiLocker
+3. Check details
+4. Bank account
+5. Platform setup
+6. Declaration and agreement
+
+Frames:
+- **Connect DigiLocker:** shows what will be fetched, a consent checkbox, then a redirect. Also a pending state, and an error state with retry and "Apply step by step instead".
+- **Check your details:** fetched data in summary cards (signatory, business PAN, business details, documents), each with "Edit". Each document shows "Fetched" or "Not found"; a missing document gets "Upload".
+- **Almost done:** a hub with the 6-step list, the next step, and "Switch to step-by-step application".
+
+**Acceptance:**
+- Aadhaar never appears beyond its last 4 digits.
+- Fetched values are clearly labelled with the date fetched.
+- A missing document can be uploaded without leaving the flow.
+
 ### APP-03 Application hub (A5)
 - **Purpose:** the home page while the application is live.
 - **Content:**
@@ -535,6 +562,8 @@ The list comes from the server-side `required-documents` config (FQ-10: expose i
 | DS-00 | Design system | — | DS-1, CMP-1…14 | ST-6a / ST-8a |
 | APP-01 | Journey step 0 | — | APP-C | ST-6b |
 | APP-02 | `MOBILE_VERIFICATION` | A1, A2 | APP-C | ST-6b |
+| APP-01B | Choose application path (owner request) | none yet (FQ-16) | — | ST-6e |
+| APP-22 | DigiLocker quick path (owner request) | none yet (FQ-16); reuses A15/A16, A17, A26, A27–A29 | — | ST-6e |
 | APP-03 | Snapshot / resume | A5 | APP-D | ST-6b |
 | APP-04 | `CONSENT` | A8 | APP-E | ST-6b |
 | APP-05 | `PROGRAM_SELECTION` | A8 | APP-E | ST-6b |

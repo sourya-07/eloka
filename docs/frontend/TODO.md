@@ -4,7 +4,9 @@
 
 **Statuses:** `[ ]` not started · `[~]` in progress · `[x]` done and verified · `[!]` blocked (the reason is written on the task)
 
-**Counts** (update with every change): **total 78** · `[x]` 11 · `[~]` 0 · `[!]` 0 · `[ ]` 67
+**Counts** (update with every change): **total 79** · `[x]` 12 · `[~]` 0 · `[!]` 0 · `[ ]` 67
+
+> **2026-10-21 — DESIGN ONLY for now (owner).** Do not start any code task (CMP, APP, STF, R1, DS-3…DS-5). Only Stitch design tasks (ST-*) continue until the owner says to build. Already committed: DS-1 (`d048c65`) and DS-2 (`2038532`). Unfinished component code (StatusBadge, EmptyState, ErrorState, FormField, PageHeader, SectionCard, KeyValueList, Timeline) is kept in `git stash` ("CMP components WIP"), not in the repo.
 
 ## How to use this file
 
@@ -127,6 +129,12 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
 - **Deliverable:** STF-01…11 at DESKTOP. Saved to `designs/`.
 - **Accept:** as ST-6b.
 - **Verify:** as ST-6b.
+
+### [x] ST-6e Design the DigiLocker quick path (owner request 2026-10-21)
+- **P1 · S · deps:** ST-8a
+- **Deliverable:** APP-01B (choose a path) and APP-22 (DigiLocker quick path, 6 steps), with prompts in `client/.stitch/prompts/`.
+- **Accept:** both screens are generated and stored in `designs/`; the new option is in UI_UX_PLAN; the backend gap is recorded as FQ-16.
+- **Verify:** screenshots viewed. APP-22's Stitch screenshot stops after the first frame, so `designs/APP-22.png` is a full-length local render of its HTML.
 
 ### [ ] ST-7 Refine the designs
 - **P1 · M · deps:** ST-6b, ST-6c
@@ -564,11 +572,11 @@ Every R1 task follows the same rules:
 | Group | Tasks |
 |---|---|
 | F0 | 2 |
-| ST | 14 (ST-1, ST-2, ST-3, ST-4, ST-5, ST-6a, ST-6b, ST-6c, ST-6d, ST-7, ST-8a, ST-8b, ST-8c, ST-8d) |
+| ST | 15 (ST-1, ST-2, ST-3, ST-4, ST-5, ST-6a, ST-6b, ST-6c, ST-6d, ST-6e, ST-7, ST-8a, ST-8b, ST-8c, ST-8d) |
 | DS | 5 |
 | CMP | 14 |
 | APP | 20 (APP-A … APP-T) |
 | STF | 8 (STF-A … STF-H) |
 | R1 | 11 |
 | QA | 4 |
-| **Total** | **78** |
+| **Total** | **79** |

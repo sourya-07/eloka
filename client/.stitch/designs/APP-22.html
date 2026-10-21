@@ -1,0 +1,328 @@
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>APP-22 DigiLocker quick path</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-container-low": "#f4f4f1",
+          "on-primary-container": "#858383",
+          "on-secondary-fixed": "#000f5d",
+          "tertiary-fixed-dim": "#c8c6c0",
+          "background": "#f9f9f6",
+          "surface-container-highest": "#e2e3e0",
+          "secondary-fixed": "#dee0ff",
+          "error-container": "#ffdad6",
+          "surface-container-lowest": "#ffffff",
+          "on-secondary-container": "#001a88",
+          "on-primary-fixed-variant": "#474646",
+          "surface-bright": "#f9f9f6",
+          "tertiary-fixed": "#e4e2dc",
+          "on-surface-variant": "#444748",
+          "on-tertiary-fixed-variant": "#474742",
+          "on-tertiary-container": "#84847e",
+          "on-tertiary": "#ffffff",
+          "primary-container": "#1c1b1b",
+          "secondary": "#4053c4",
+          "primary-fixed-dim": "#c9c6c5",
+          "surface-dim": "#dadad7",
+          "on-primary-fixed": "#1c1b1b",
+          "surface": "#f9f9f6",
+          "outline-variant": "#c4c7c7",
+          "outline": "#747878",
+          "on-tertiary-fixed": "#1b1c18",
+          "surface-variant": "#e2e3e0",
+          "on-secondary-fixed-variant": "#2439ab",
+          "surface-tint": "#5f5e5e",
+          "primary-fixed": "#e5e2e1",
+          "inverse-surface": "#2f312f",
+          "inverse-on-surface": "#f1f1ee",
+          "tertiary-container": "#1b1c18",
+          "primary": "#000000",
+          "tertiary": "#000000",
+          "on-primary": "#ffffff",
+          "error": "#ba1a1a",
+          "surface-container": "#eeeeeb",
+          "inverse-primary": "#c9c6c5",
+          "secondary-fixed-dim": "#bbc3ff",
+          "on-surface": "#1a1c1b",
+          "on-secondary": "#ffffff",
+          "on-error-container": "#93000a",
+          "on-background": "#1a1c1b",
+          "surface-container-high": "#e8e8e5",
+          "secondary-fixed-dim": "#bbc3ff"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "space-sm": "8px",
+          "gutter": "1rem",
+          "space-xl": "24px",
+          "space-md": "12px",
+          "space-xs": "4px",
+          "margin": "1.5rem",
+          "space-4xl": "64px",
+          "space-lg": "16px",
+          "space-3xl": "48px",
+          "space-2xl": "32px"
+        },
+        "fontFamily": {
+          "label": ["Inter"],
+          "display": ["Inter"],
+          "body": ["Inter"],
+          "h2": ["Inter"],
+          "h3": ["Inter"],
+          "display-mobile": ["Inter"],
+          "h1": ["Inter"],
+          "body-sm": ["Inter"]
+        },
+        "fontSize": {
+          "label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+          "display": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "body": ["16px", {"lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "400"}],
+          "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "normal", "fontWeight": "600"}],
+          "h3": ["16px", {"lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "600"}],
+          "display-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+          "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "normal", "fontWeight": "400"}]
+        }
+      }
+    }
+  }
+</script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body antialiased min-h-screen flex justify-center py-space-xl">
+<div class="w-full max-w-[640px] flex flex-col gap-space-4xl px-gutter">
+<!-- Top App Bar per JSON -->
+<header class="bg-surface text-primary font-h2 text-h2 flex justify-between items-center w-full px-gutter py-space-md rounded-lg shadow-sm border border-outline-variant/30">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+<span class="font-bold tracking-tight text-primary">DigiLocker Setup</span>
+</div>
+<span class="font-label text-label text-on-surface-variant cursor-pointer hover:text-primary">Help</span>
+</header>
+<!-- FRAME A — CONNECT DIGILOCKER (STEP 2 OF 6) -->
+<section class="flex flex-col gap-space-lg bg-surface-container-lowest border border-[#E5E5E0] rounded-xl p-space-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+<div class="flex justify-between items-center">
+<span class="font-label text-label uppercase tracking-wider text-secondary">FRAME A — CONNECT DIGILOCKER (STEP 2 OF 6)</span>
+<span class="font-label text-label text-on-surface-variant">Step 2 of 6</span>
+</div>
+<h1 class="font-display-mobile text-display-mobile text-on-surface">Connect DigiLocker</h1>
+<!-- Card: What we'll fetch -->
+<div class="bg-surface-container-low border border-[#E5E5E0] rounded-lg p-space-lg flex flex-col gap-space-md">
+<h3 class="font-h3 text-h3 text-on-surface">What we'll fetch</h3>
+<div class="flex items-start gap-space-md">
+<span class="material-symbols-outlined text-outline mt-0.5">person</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Signatory name and Aadhaar (last 4 digits only)</p>
+</div>
+<div class="flex items-start gap-space-md">
+<span class="material-symbols-outlined text-outline mt-0.5">badge</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Business PAN details</p>
+</div>
+<div class="flex items-start gap-space-md">
+<span class="material-symbols-outlined text-outline mt-0.5">description</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Documents available in DigiLocker (for example GST or incorporation certificate)</p>
+</div>
+</div>
+<!-- Consent checkbox -->
+<label class="flex items-start gap-space-md cursor-pointer pt-space-xs">
+<input class="mt-1 rounded border-outline text-primary focus:ring-secondary" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">I allow ELOKA to fetch these details from DigiLocker for this application.</span>
+</label>
+<!-- Primary Button -->
+<button class="w-full bg-primary text-on-primary py-space-md px-space-lg rounded-lg font-h3 text-h3 flex items-center justify-center gap-space-sm hover:opacity-95 active:translate-y-[1px] transition-all">
+      Continue to DigiLocker
+      <span class="material-symbols-outlined text-on-primary text-sm">open_in_new</span>
+</button>
+<!-- State variants section -->
+<div class="border-t border-[#E5E5E0] pt-space-lg flex flex-col gap-space-lg">
+<span class="font-label text-label text-on-surface-variant">State Variants Preview</span>
+<!-- Pending variant -->
+<div class="bg-surface-container p-space-md rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined animate-spin text-secondary">progress_activity</span>
+<span class="font-body-sm text-body-sm text-on-surface">Waiting for DigiLocker…</span>
+</div>
+<button class="font-label text-label text-secondary font-bold hover:underline">Check again</button>
+</div>
+<!-- Error variant -->
+<div class="bg-error-container/40 border border-error/30 p-space-md rounded-lg flex flex-col gap-space-sm">
+<div class="flex items-start gap-space-md">
+<span class="material-symbols-outlined text-error mt-0.5">error</span>
+<p class="font-body-sm text-body-sm text-on-error-container">We couldn't connect to DigiLocker. 2 attempts left.</p>
+</div>
+<div class="flex items-center justify-between pl-8">
+<button class="bg-primary text-on-primary px-space-md py-space-sm rounded font-label text-label">Try again</button>
+<a class="font-label text-label text-secondary underline" href="#">Apply step by step instead</a>
+</div>
+</div>
+</div>
+</section>
+<!-- FRAME B — CHECK YOUR DETAILS (STEP 3 OF 6) -->
+<section class="flex flex-col gap-space-lg bg-surface-container-lowest border border-[#E5E5E0] rounded-xl p-space-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+<div class="flex justify-between items-center">
+<span class="font-label text-label uppercase tracking-wider text-secondary">FRAME B — CHECK YOUR DETAILS (STEP 3 OF 6)</span>
+<span class="font-label text-label text-on-surface-variant">Step 3 of 6</span>
+</div>
+<div>
+<h1 class="font-display-mobile text-display-mobile text-on-surface">Check your details</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Fetched from DigiLocker on 21 Oct 2026. Edit anything that's wrong.</p>
+</div>
+<!-- Summary Cards -->
+<div class="flex flex-col gap-space-md">
+<!-- Signatory Card -->
+<div class="bg-surface-container-low border border-[#E5E5E0] rounded-lg p-space-md flex justify-between items-center">
+<div class="flex flex-col gap-space-xs">
+<span class="font-label text-label text-on-surface-variant">Signatory</span>
+<div class="flex items-center gap-space-sm">
+<span class="font-h3 text-h3 text-on-surface">RAVI SAMPLE</span>
+<span class="bg-emerald-100 text-emerald-800 font-label text-[10px] px-2 py-0.5 rounded-full">Verified</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Aadhaar XXXX-XXXX-1234</span>
+</div>
+<button class="font-label text-label text-secondary hover:underline">Edit</button>
+</div>
+<!-- Business PAN Card -->
+<div class="bg-surface-container-low border border-[#E5E5E0] rounded-lg p-space-md flex justify-between items-center">
+<div class="flex flex-col gap-space-xs">
+<span class="font-label text-label text-on-surface-variant">Business PAN</span>
+<div class="flex items-center gap-space-sm">
+<span class="font-h3 text-h3 text-on-surface">XXXXX1234X</span>
+<span class="bg-emerald-100 text-emerald-800 font-label text-[10px] px-2 py-0.5 rounded-full">Verified</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">SAMPLE TRADERS PRIVATE LIMITED</span>
+</div>
+<button class="font-label text-label text-secondary hover:underline">Edit</button>
+</div>
+<!-- Business details Card -->
+<div class="bg-surface-container-low border border-[#E5E5E0] rounded-lg p-space-md flex justify-between items-center">
+<div class="flex flex-col gap-space-xs">
+<span class="font-label text-label text-on-surface-variant">Business details</span>
+<span class="font-h3 text-h3 text-on-surface">Sample Traders Pvt Ltd</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Address Mumbai 400051 • Company type Private Limited</span>
+</div>
+<button class="font-label text-label text-secondary hover:underline">Edit</button>
+</div>
+<!-- Documents fetched Card -->
+<div class="bg-surface-container-low border border-[#E5E5E0] rounded-lg p-space-md flex flex-col gap-space-md">
+<span class="font-label text-label text-on-surface-variant">Documents fetched</span>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-outline text-sm">description</span>
+<span class="font-body-sm text-body-sm text-on-surface">Certificate of incorporation</span>
+</div>
+<span class="bg-blue-100 text-blue-800 font-label text-[10px] px-2 py-0.5 rounded-full">Fetched</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-outline text-sm">description</span>
+<span class="font-body-sm text-body-sm text-on-surface">GST certificate</span>
+</div>
+<span class="bg-blue-100 text-blue-800 font-label text-[10px] px-2 py-0.5 rounded-full">Fetched</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-outline text-sm">description</span>
+<span class="font-body-sm text-body-sm text-on-surface">Address proof</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="bg-surface-container-highest text-on-surface-variant font-label text-[10px] px-2 py-0.5 rounded-full">Not found</span>
+<button class="bg-surface text-primary border border-outline-variant px-space-sm py-1 rounded font-label text-label hover:bg-surface-container">Upload</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Primary Button -->
+<button class="w-full bg-primary text-on-primary py-space-md px-space-lg rounded-lg font-h3 text-h3 flex items-center justify-center gap-space-sm hover:opacity-95 active:translate-y-[1px] transition-all">
+      Confirm and continue
+    </button>
+</section>
+<!-- FRAME C — ALMOST DONE (STEP 4 OF 6) -->
+<section class="flex flex-col gap-space-lg bg-surface-container-lowest border border-[#E5E5E0] rounded-xl p-space-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+<div class="flex justify-between items-center">
+<span class="font-label text-label uppercase tracking-wider text-secondary">FRAME C — ALMOST DONE (STEP 4 OF 6)</span>
+<span class="font-label text-label text-on-surface-variant">Step 4 of 6</span>
+</div>
+<div class="flex items-center justify-between">
+<h1 class="font-display-mobile text-display-mobile text-on-surface">Almost done</h1>
+<span class="bg-surface-container border border-outline-variant/50 font-label text-label px-space-md py-1 rounded-full text-on-surface-variant">onb_7Q2K9X</span>
+</div>
+<!-- Step list card -->
+<div class="bg-surface-container-low border border-[#E5E5E0] rounded-lg p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-emerald-600 text-sm">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">1 Mobile verification</span>
+</div>
+<span class="font-label text-label text-on-surface-variant">Completed</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-emerald-600 text-sm">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">2 DigiLocker</span>
+</div>
+<span class="font-label text-label text-on-surface-variant">Completed</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-emerald-600 text-sm">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">3 Check details</span>
+</div>
+<span class="font-label text-label text-on-surface-variant">Completed</span>
+</div>
+<!-- Highlighted Step -->
+<div class="flex items-center justify-between bg-surface-container border border-secondary/40 p-space-sm rounded-lg">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-secondary text-sm">radio_button_checked</span>
+<span class="font-h3 text-h3 text-on-surface">4 Bank account</span>
+</div>
+<span class="font-label text-label text-secondary font-bold">In progress</span>
+</div>
+<div class="flex items-center justify-between opacity-60">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-outline text-sm">radio_button_unchecked</span>
+<span class="font-body-sm text-body-sm text-on-surface">5 Platform setup</span>
+</div>
+<span class="font-label text-label text-on-surface-variant">Not started</span>
+</div>
+<div class="flex items-center justify-between opacity-60">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-outline text-sm">radio_button_unchecked</span>
+<span class="font-body-sm text-body-sm text-on-surface">6 Declaration and agreement</span>
+</div>
+<span class="font-label text-label text-on-surface-variant">Not started</span>
+</div>
+</div>
+<!-- Current focus card -->
+<div class="bg-surface-container-lowest border border-secondary/30 rounded-lg p-space-lg flex flex-col gap-space-md shadow-sm">
+<div class="flex flex-col gap-space-xs">
+<span class="font-label text-label text-secondary">Next focus</span>
+<h3 class="font-h3 text-h3 text-on-surface">Next: Bank account</h3>
+</div>
+<button class="w-full bg-primary text-on-primary py-space-md px-space-lg rounded-lg font-h3 text-h3 flex items-center justify-center gap-space-sm hover:opacity-95 active:translate-y-[1px] transition-all">
+        Continue
+      </button>
+</div>
+<!-- Ghost link -->
+<div class="text-center pb-space-lg">
+<button class="font-body-sm text-body-sm text-secondary hover:underline">Switch to step-by-step application</button>
+</div>
+</section>
+</div>
+</body></html>

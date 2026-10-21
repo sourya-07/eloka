@@ -35,6 +35,7 @@
 | FQ-12 | P9 provisioning is not built, so an approved application has no next step | APP-18 shows "We're setting up your platform"; no activation UI | Backend (P9) |
 | FQ-13 | `purposes[]` for consent is free-form (the tests use `"KYC"`) | Use a fixed list from constants pending compliance (OQ-C5) | Compliance |
 | FQ-14 | S21 audit is served at `/v1/admin/applications/{id}/audit`, while the spec says `/v1/admin/audit?entity_type=&entity_id=` | Use the implemented path | Backend (doc fix) |
+| FQ-16 | **DigiLocker-only path (owner request 2026-10-21).** The backend requires all 13 steps and has no "path" field. A DigiLocker-only path needs answers to four questions: (1) can business PAN, business details and documents be taken from DigiLocker data instead of PAN verification (A12), the business-details form and uploads; (2) which documents DigiLocker can supply for each entity type (an incorporation certificate is not always in the signatory's DigiLocker); (3) is a live photo still needed; (4) does compliance (OQ-C1, OQ-C5) accept DigiLocker as the only KYC source. | Designs only (APP-01B, APP-22). No build until answered. | Product + compliance + backend |
 
 ## Assumptions in use (replace when answered)
 

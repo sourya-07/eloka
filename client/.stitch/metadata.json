@@ -102,6 +102,18 @@
 			"sourceScreen": "projects/18017913531452476583/screens/eb81bb553247482aae7c9ed174afb245",
 			"files": ["designs/STF-04-11.png", "designs/STF-04-11.html"],
 			"status": "generated 2026-10-21, awaiting owner review (ST-8c)"
+		},
+		"APP-01B": {
+			"id": "9e6b04e73e2d42d786e53a7cd24f45e9",
+			"sourceScreen": "projects/18017913531452476583/screens/9e6b04e73e2d42d786e53a7cd24f45e9",
+			"files": ["designs/APP-01B.png", "designs/APP-01B.html"],
+			"status": "generated 2026-10-21, awaiting owner review; owner request: choose DigiLocker or step-by-step"
+		},
+		"APP-22": {
+			"id": "b8f2947bffde406ba875801366becbb6",
+			"sourceScreen": "projects/18017913531452476583/screens/b8f2947bffde406ba875801366becbb6",
+			"files": ["designs/APP-22.png", "designs/APP-22.html"],
+			"status": "generated 2026-10-21, awaiting owner review; owner request: DigiLocker quick path; PNG is a full-length local render of the HTML"
 		}
 	},
 	"unusedScreens": {

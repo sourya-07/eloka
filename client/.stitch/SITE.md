@@ -33,12 +33,13 @@ The real app is Next.js + Chakra UI. Stitch output is a **visual spec only** and
 
 ## 4. Live Sitemap
 - [ ] DS-00 Component sheet
-- [ ] APP-01 Entry · [ ] APP-02 Mobile + OTP · [ ] APP-03 Hub
+- [ ] APP-01 Entry · [ ] APP-02 Mobile + OTP · [ ] APP-01B Choose path (DigiLocker or step by step) · [ ] APP-03 Hub
 - [ ] APP-04 Consent · [ ] APP-05 Program · [ ] APP-06 Business PAN · [ ] APP-07 Business details
 - [ ] APP-08 Email · [ ] APP-09 Signatory KYC · [ ] APP-10 Live photo · [ ] APP-11 Documents
 - [ ] APP-12 Bank account · [ ] APP-13 White-label setup · [ ] APP-14 Review + declaration · [ ] APP-15 Agreement + e-sign
 - [ ] APP-16 Submitted / under review · [ ] APP-17 Corrections · [ ] APP-18 Outcomes
 - [ ] APP-19 Re-auth dialog · [ ] APP-20 Withdraw dialog · [ ] APP-21 System states
+- [ ] APP-22 DigiLocker quick path (6 steps)
 - [ ] STF-01 Sign-in · [ ] STF-02 Queue · [ ] STF-03 Case view · [ ] STF-04 Document review
 - [ ] STF-05 Verification decision · [ ] STF-06 Corrections dialog · [ ] STF-07 Recommendation
 - [ ] STF-08 Approve / reject / hold · [ ] STF-09 PII reveal · [ ] STF-10 Audit trail · [ ] STF-11 Permission states
