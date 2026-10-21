@@ -4,7 +4,7 @@
 
 **Statuses:** `[ ]` not started · `[~]` in progress · `[x]` done and verified · `[!]` blocked (the reason is written on the task)
 
-**Counts** (update with every change): **total 78** · `[x]` 9 · `[~]` 0 · `[!]` 0 · `[ ]` 69
+**Counts** (update with every change): **total 78** · `[x]` 9 · `[~]` 1 · `[!]` 0 · `[ ]` 68
 
 ## How to use this file
 
@@ -162,7 +162,7 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
 
 ## DS — Tokens and theme (code foundation)
 
-### [ ] DS-1 Semantic tokens, status tokens, weights and contrast
+### [~] DS-1 Semantic tokens, status tokens, weights and contrast
 - **P0 · M · deps:** ST-8a
 - **Deliverable:** `client/styles/themes.tsx` and `styles/theme_system/theme/foundations/*`:
   - new `bg.inverse`, `text.inverse`, `text.link`, `focus.ring`, `overlay` and `status.*` tokens
@@ -173,6 +173,15 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
   - The legacy colour keys are unchanged.
   - Every text token passes 4.5:1 on `bg.surface` and `bg.canvas`.
 - **Verify:** a new contrast unit test; the regression gate; a look at login, home and network on `dev:mock`.
+- **Progress 2026-10-21:**
+  - **Added** to `styles/themes.tsx`: `bg.inverse`, `text.inverse`, `text.link`, `border.input`, `focus.ring`, `overlay`, `neutral.{bg,fg,border}`, the shadows `focusRing`/`e1`/`e2`/`e3`, and the font weights `title` 600 / `display` 700.
+  - **Changed:** `text.secondary` to `#5C5C57` and `text.tertiary` to `#6F6F6A` (contrast fixes).
+  - **Deferred to R1-01** (both visible on every Release 1 screen; they need the visual check there):
+    - restoring `semibold`/`bold` to 600/700 (the theme deliberately collapses them to 500)
+    - moving the global Input/Select borders to `border.input`
+  - **Not done here:** the Card/Modal/Alert component themes. New components use the tokens directly.
+  - **Contrast helpers fixed:** `utils/colorUtils` `contrast()` returned NaN (it passed an object to `luminance(r,g,b)`). It is now `contrastRatio(hex, hex)`. The helpers were unused, so no behaviour changes.
+  - **Tests:** `__tests__/utils/colorUtils.test.js`, `__tests__/styles/themeTokens.test.ts`.
 
 ### [ ] DS-2 `helpers/buildOrgTheme.ts` and the `_app.tsx` refactor
 - **P0 · M · deps:** DS-1
@@ -507,7 +516,7 @@ Every R1 task follows the same rules:
 
 | ID | Group | Priority | Effort | Deps |
 |---|---|---|---|---|
-| [ ] R1-01 | App shell: NavBar, SideBar, BottomAppBar, PageTitle; decide the Button default (FQ-4); `Text` user-select | P1 | L | ST-8d, CMP-12, CMP-14 |
+| [ ] R1-01 | App shell: NavBar, SideBar, BottomAppBar, PageTitle; decide the Button default (FQ-4); `Text` user-select; restore `semibold`/`bold` weights to 600/700; global Input/Select borders → `border.input` (both deferred from DS-1) | P1 | L | ST-8d, CMP-12, CMP-14 |
 | [ ] R1-02 | Login and OTP (`page-components/LoginPanel/**`), removing the "Secured by DemoPortal" literal per FQ-8 | P1 | M | R1-01 |
 | [ ] R1-03 | Agent home (`page-components/Home/**`) | P1 | M | R1-01 |
 | [ ] R1-04 | Admin dashboards (`page-components/Admin/Dashboard/**`), chart colours from tokens | P2 | L | R1-01 |

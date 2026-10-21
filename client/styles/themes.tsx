@@ -33,13 +33,21 @@ export const light = extendTheme({
 			"bg.canvas": { default: "#FAFAF7" },
 			"bg.surface": { default: "#FFFFFF" },
 			"bg.subtle": { default: "#F4F3EE" },
-			// Text
+			"bg.inverse": { default: "#0A0A0A" },
+			// Text (secondary and tertiary pass 4.5:1 on canvas, surface and subtle)
 			"text.primary": { default: "#0A0A0A" },
-			"text.secondary": { default: "#6B6B6B" },
-			"text.tertiary": { default: "#9A9A9A" },
+			"text.secondary": { default: "#5C5C57" },
+			"text.tertiary": { default: "#6F6F6A" },
+			"text.inverse": { default: "#FFFFFF" },
+			"text.link": { default: "#11299E" },
 			// Border
 			"border.default": { default: "#E5E5E0" },
 			"border.strong": { default: "#D4D4CE" },
+			// Edge of inputs, selects and checkboxes (3:1 against white, WCAG 1.4.11)
+			"border.input": { default: "#85857F" },
+			// Focus ring and modal scrim
+			"focus.ring": { default: "#11299E" },
+			overlay: { default: "rgba(10,10,10,0.48)" },
 			// CTA — the single black primary action
 			"cta.bg": { default: "#0A0A0A" },
 			"cta.bgHover": { default: "#1F1F1F" },
@@ -57,6 +65,9 @@ export const light = extendTheme({
 			"info.bg": { default: "#EFF6FF" },
 			"info.fg": { default: "#1E40AF" },
 			"info.border": { default: "#BFDBFE" },
+			"neutral.bg": { default: "#F4F3EE" },
+			"neutral.fg": { default: "#5C5C57" },
+			"neutral.border": { default: "#E5E5E0" },
 		},
 	},
 	colors: {
@@ -253,6 +264,11 @@ export const light = extendTheme({
 		// New semantic shadows
 		focus: "0 0 0 3px rgba(10,10,10,0.08)",
 		menu: "0 4px 16px rgba(0,0,0,0.08)",
+		// Platform screens (docs/frontend/UI_UX_PLAN.md §2.3)
+		focusRing: "0 0 0 2px #FFFFFF, 0 0 0 4px #11299E",
+		e1: "0 1px 2px rgba(10,10,10,0.04)",
+		e2: "0 8px 24px rgba(10,10,10,0.08)",
+		e3: "0 16px 48px rgba(10,10,10,0.12)",
 		none: "none",
 	},
 	sizes: {
@@ -345,6 +361,9 @@ export const light = extendTheme({
 		semibold: 500, // collapsed from 600 — two weights only: 400 and 500
 		bold: 500, // collapsed from 700
 		extrabold: 500, // collapsed from 800
+		// Real weights for the new platform screens; existing screens keep the collapse until the R1 reskin
+		title: 600,
+		display: 700,
 	},
 	lineHeights: {
 		normal: "normal",

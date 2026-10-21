@@ -12,6 +12,7 @@ export {
 } from "./cacheUtils";
 export {
 	darken,
+	contrastRatio,
 	generateShades,
 	getContrastColor,
 	getFirstContrastColor,

@@ -16,15 +16,18 @@ const luminance = (r, g, b) => {
 };
 
 /**
- * Returns contrast between two colors.
+ * Returns the WCAG contrast ratio between two colors (1 to 21).
  * The minimum contrast for proper legibility should be 4.5 for small text and 3 for large text.
- * @param {object} rgb1 - The first color object { r, g, b }.
- * @param {object} rgb2 - The second color object { r, g, b }.
- * @returns {number} The contrast value between the two colors
+ * @param {string} hex1 - The first hexadecimal color string (e.g., "#RGB", "#RRGGBB").
+ * @param {string} hex2 - The second hexadecimal color string (e.g., "#RGB", "#RRGGBB").
+ * @returns {number} The contrast ratio, or NaN if either color is invalid.
  */
-const contrast = (rgb1, rgb2) => {
-	const lum1 = luminance(rgb1);
-	const lum2 = luminance(rgb2);
+export const contrastRatio = (hex1, hex2) => {
+	const rgb1 = hexToRgba(hex1);
+	const rgb2 = hexToRgba(hex2);
+	if (!rgb1 || !rgb2) return NaN;
+	const lum1 = luminance(rgb1.r, rgb1.g, rgb1.b);
+	const lum2 = luminance(rgb2.r, rgb2.g, rgb2.b);
 	const brightest = Math.max(lum1, lum2);
 	const darkest = Math.min(lum1, lum2);
 	return (brightest + 0.05) / (darkest + 0.05);
@@ -38,10 +41,7 @@ const contrast = (rgb1, rgb2) => {
  * @returns {boolean} True if the contrast between the two colors is greater than the minimum ratio.
  */
 export function hasMinimumContrast(hex1, hex2, minimumRatio = 4.5) {
-	const rgb1 = hexToRgba(hex1);
-	const rgb2 = hexToRgba(hex2);
-	const ratio = contrast(rgb1, rgb2);
-	return ratio >= minimumRatio;
+	return contrastRatio(hex1, hex2) >= minimumRatio;
 }
 
 /**
@@ -51,14 +51,7 @@ export function hasMinimumContrast(hex1, hex2, minimumRatio = 4.5) {
  * @returns {string} The first contrasting color out of the rest of the colors.
  */
 export function getFirstContrastColor(color, ...colors) {
-	const rgb1 = hexToRgba(color);
-	for (let i = 0; i < colors.length; i++) {
-		const rgb2 = hexToRgba(colors[i]);
-		if (hasMinimumContrast(rgb1, rgb2)) {
-			return colors[i];
-		}
-	}
-	return null;
+	return colors.find((c) => hasMinimumContrast(color, c)) ?? null;
 }
 
 /**
@@ -221,7 +214,9 @@ export const getContrastColor = (hex) => {
  * @returns {string} The color with the highest contrast ratio.
  */
 export const getHighContrastColor = (color, color2, color3) => {
-	return contrast(color, color2) > contrast(color, color3) ? color2 : color3;
+	return contrastRatio(color, color2) > contrastRatio(color, color3)
+		? color2
+		: color3;
 };
 
 /**
