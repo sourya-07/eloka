@@ -248,7 +248,7 @@ A generated Stitch screen is **a spec, not a feature**.
 
 **Regression gates on every task**, one heavy job at a time on the 8 GB Mac:
 - `npm run lint:error`
-- `npm test -- --ci`
+- `npm test -- --ci --maxWorkers=2`
 - `npm run test:mock`
 - `npm run build`
 

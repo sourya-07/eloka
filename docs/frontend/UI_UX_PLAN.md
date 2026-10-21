@@ -49,12 +49,13 @@
 | `bg.subtle` | `#F4F3EE` | Recessed areas, table header, sidebar (platform) | exists |
 | `bg.inverse` | `#0A0A0A` | Inverse bars and toasts | new |
 | `text.primary` | `#0A0A0A` | Body and headings | exists |
-| `text.secondary` | `#6B6B6B` | Labels, metadata (5.3:1) | exists |
-| `text.tertiary` | `#767676` | Hints, placeholders (4.5:1). Was `#9A9A9A` | **changed** |
+| `text.secondary` | `#5C5C57` | Labels, metadata (≥ 6.0:1 on all three surfaces). Was `#6B6B6B` | **changed** |
+| `text.tertiary` | `#6F6F6A` | Hints, placeholders (≥ 4.55:1 on white, canvas and subtle). Was `#9A9A9A` (2.8:1) | **changed** |
 | `text.inverse` | `#FFFFFF` | Text on `bg.inverse` | new |
 | `text.link` | `#11299E` | Links on platform hosts; on tenants it maps to `brand.emphasis` | new |
 | `border.default` | `#E5E5E0` | Hairlines (decorative) | exists |
-| `border.strong` | `#D4D4CE` | Input borders (paired with the label, so the field stays identifiable) | exists |
+| `border.strong` | `#D4D4CE` | Card and divider emphasis (decorative) | exists |
+| `border.input` | `#85857F` | Input, select and checkbox boundaries (≥ 3.3:1, WCAG 1.4.11) | new |
 | `focus.ring` | `#11299E` (platform) / `brand.emphasis` (tenant) | 2 px focus outline | new |
 | `overlay` | `rgba(10,10,10,0.48)` | Modal scrim | new |
 | `cta.bg` / `cta.bgHover` / `cta.fg` | `#0A0A0A` / `#1F1F1F` / `#FFFFFF` | Primary action (platform) | exists |

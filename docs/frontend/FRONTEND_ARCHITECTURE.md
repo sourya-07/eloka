@@ -139,7 +139,7 @@ request(method, path, { body, ifMatch?: 'auto' | string, idempotent?: boolean, r
 - staff: `staff_access_token`, `staff_refresh_token`, `staff_expires_at`
 - Neither ever touches `UserContext` keys.
 
-**Base URL:** `NEXT_PUBLIC_API_BASE_URL`, the existing variable. The CSP already allows the API host.
+**Transport:** decided in APP-A. See [OPEN_QUESTIONS.md](./OPEN_QUESTIONS.md) FQ-15. The recommended option is a new pass-through proxy `pages/api/v1/[...path].ts` that keeps HTTP statuses and headers, so the documented "go through the proxy" rule still holds. The alternative is direct calls to `NEXT_PUBLIC_API_BASE_URL`; the CSP already allows the API host.
 
 ### 6.4 Planned: route guard
 

@@ -4,7 +4,7 @@
 
 **Statuses:** `[ ]` not started · `[~]` in progress · `[x]` done and verified · `[!]` blocked (the reason is written on the task)
 
-**Counts** (update with every change): **total 78** · `[x]` 1 · `[~]` 0 · `[!]` 0 · `[ ]` 77
+**Counts** (update with every change): **total 78** · `[x]` 3 · `[~]` 0 · `[!]` 0 · `[ ]` 75
 
 ## How to use this file
 
@@ -23,8 +23,10 @@
 **Regression gate** (for every code task; run one at a time on the 8 GB Mac):
 
 ```
-cd eloka/client && npm run lint:error && npm test -- --ci && npm run test:mock && npm run build
+cd eloka/client && npm run lint:error && npm test -- --ci --maxWorkers=2 && npm run test:mock && npm run build
 ```
+
+The dev machine has 8 GB RAM. Always keep `--maxWorkers=2` (plain Jest starts about 7 workers). Never run the build, Jest, a dev server or a Gradle task at the same time as another.
 
 Priority: **P0** blocks the release · **P1** needed for quality · **P2** later. Effort: **S** < ½ day · **M** ½–2 days · **L** 2–5 days · **XL** > 5 days.
 
@@ -42,17 +44,18 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
 - **Accept:** all five docs exist; links resolve; no application code changed.
 - **Verify:** `git diff --stat` shows docs only; relative links checked.
 
-### [ ] F0-2 Re-check the test baseline
+### [x] F0-2 Re-check the test baseline
 - **P0 · S · deps:** F0-1
 - **Deliverable:** a baseline note added under this task: suite count, results, build time.
 - **Accept:** lint, Jest, mock tests and build are all green before any code change, or every failure is recorded as a new task.
 - **Verify:** the regression gate, run sequentially.
+- **Baseline (2026-10-21, commit b78a5e8, Node 24 local):** lint:error clean · test:mock 13/13 · Jest 247/247 suites, 871 passed + 156 todo, 86 s with `--maxWorkers=2` · `npm run build` OK in 67 s (JSDoc / TODO warnings only).
 
 ---
 
 ## ST — Stitch design (no app code)
 
-### [ ] ST-1 Write `client/.stitch/DESIGN.md`
+### [x] ST-1 Write `client/.stitch/DESIGN.md`
 - **P0 · M · deps:** F0-1
 - **Deliverable:** DESIGN.md following the `design-md` structure (atmosphere, palette and roles, typography, components, layout), the token values from [UI_UX_PLAN.md](./UI_UX_PLAN.md) §2, and the anti-patterns from `taste-design`.
 - **Accept:**
