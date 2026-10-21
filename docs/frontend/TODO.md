@@ -4,7 +4,7 @@
 
 **Statuses:** `[ ]` not started · `[~]` in progress · `[x]` done and verified · `[!]` blocked (the reason is written on the task)
 
-**Counts** (update with every change): **total 78** · `[x]` 3 · `[~]` 0 · `[!]` 0 · `[ ]` 75
+**Counts** (update with every change): **total 78** · `[x]` 7 · `[~]` 1 · `[!]` 0 · `[ ]` 70
 
 ## How to use this file
 
@@ -65,13 +65,14 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
   - No real data appears in it.
 - **Verify:** compare it against `client/styles/themes.tsx` and UI_UX_PLAN §2.
 
-### [ ] ST-2 Owner approval of the design system (skill checkpoint)
+### [x] ST-2 Owner approval of the design system (skill checkpoint)
 - **P0 · S · deps:** ST-1
 - **Deliverable:** a summary to the owner (display name, key colours, fonts, roundness) and their explicit OK.
 - **Accept:** written approval exists.
 - **Verify:** the approval is noted here with its date.
+- **Done:** owner approved the summary on 2026-10-21.
 
-### [ ] ST-3 Create the Stitch project and design system
+### [x] ST-3 Create the Stitch project and design system
 - **P0 · S · deps:** ST-2
 - **Deliverable:**
   1. `create_project` "ELOKA Platform"
@@ -81,14 +82,15 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
   5. `client/.stitch/metadata.json` holding the project id and asset id
 - **Accept:** the design system is visible in Stitch; the ids are recorded.
 - **Verify:** `get_project` shows the design system instance.
+- **Done 2026-10-21:** project `18017913531452476583`, design system `assets/a88c4be87ed045d89dcdc3d07e9f73d1`. Stitch's import changed primary to `#000000`, secondary to `#4053C4` and roundness to 4 px; corrected with `update_design_system` (primary `#0A0A0A`, secondary `#11299E`, `ROUND_EIGHT`). The project-level theme still lists the derived values; generated screens follow the design system asset.
 
-### [ ] ST-4 Write `client/.stitch/SITE.md`
+### [x] ST-4 Write `client/.stitch/SITE.md`
 - **P1 · S · deps:** ST-3
 - **Deliverable:** SITE.md following the `site-md` structure. The sitemap is the screen IDs; the roadmap follows this file's order.
 - **Accept:** all sections present; every APP, STF and R1 ID is listed.
 - **Verify:** cross-check against UI_UX_PLAN §4–6.
 
-### [ ] ST-5 Write the screen prompts
+### [x] ST-5 Write the screen prompts
 - **P0 · M · deps:** ST-3
 - **Deliverable:** `client/.stitch/prompts/<ID>.md` for DS-00, APP-01…21 and STF-01…11, written with `enhance-prompt` in the `generate-design` template.
 - **Accept:**
@@ -96,14 +98,16 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
   - The data is fictional.
   - Each prompt lists its fields and validation hints from UI_UX_PLAN.
 - **Verify:** grep the prompts for `#[0-9a-fA-F]{3,6}` and font names; expect none.
+- **Done 2026-10-21:** 14 prompt files (screens grouped where they share a layout); grep clean.
 
-### [ ] ST-6a Generate the DS-00 component sheet
+### [~] ST-6a Generate the DS-00 component sheet
 - **P0 · M · deps:** ST-5
 - **Deliverable:**
   - DS-00 generated with `generate_screen_from_text` (DESKTOP), using the design system id
   - `designs/DS-00.{html,png}` saved through `download_file`
 - **Accept:** the sheet shows buttons (all variants and states), inputs with label, help and error text, select, OTP, badges in every status tone, cards, table, dialog, stepper, empty, error and skeleton.
 - **Verify:** look at the screenshot and record the Stitch output text and suggestions here.
+- **Progress 2026-10-21:** the call timed out but produced two sheets (`designs/DS-00-a`, screen `7fe2c443af1b45ce883a661bbed80411`; `designs/DS-00-b`, screen `23d06928b079470490bb7a47a5d4e0c2`). Variant A covers all 12 sections and is the candidate. Visual audit found invented content (named KYC/bank providers, wrong step labels, invented form options, an Aadhaar reveal chip); a content-only `edit_screens` was sent (timed out; result pending).
 
 ### [ ] ST-8a Owner review: DS-00
 - **P0 · S · deps:** ST-6a

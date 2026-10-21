@@ -1,0 +1,13 @@
+{
+	"projectId": "18017913531452476583",
+	"title": "ELOKA Platform",
+	"designSystem": {
+		"assetId": "a88c4be87ed045d89dcdc3d07e9f73d1",
+		"name": "assets/a88c4be87ed045d89dcdc3d07e9f73d1",
+		"displayName": "ELOKA Platform",
+		"source": "client/.stitch/DESIGN.md (uploaded 2026-10-21; theme corrected with update_design_system: primary #0A0A0A, secondary #11299E, tertiary #5C5C57, neutral #FAFAF7, ROUND_EIGHT, Inter)",
+		"designMdScreen": "projects/18017913531452476583/screens/13257695617890929047"
+	},
+	"lastSyncTime": "2026-10-21T00:00:00+05:30",
+	"screens": {}
+}
