@@ -8,6 +8,23 @@
 		"source": "client/.stitch/DESIGN.md (uploaded 2026-10-21; theme corrected with update_design_system: primary #0A0A0A, secondary #11299E, tertiary #5C5C57, neutral #FAFAF7, ROUND_EIGHT, Inter)",
 		"designMdScreen": "projects/18017913531452476583/screens/13257695617890929047"
 	},
-	"lastSyncTime": "2026-10-21T00:00:00+05:30",
-	"screens": {}
+	"lastSyncTime": "2026-10-21T17:00:00+05:30",
+	"screens": {
+		"DS-00": {
+			"id": "7fe2c443af1b45ce883a661bbed80411",
+			"sourceScreen": "projects/18017913531452476583/screens/7fe2c443af1b45ce883a661bbed80411",
+			"deviceType": "DESKTOP",
+			"width": 2560,
+			"height": 12996,
+			"files": [
+				"designs/DS-00.png",
+				"designs/DS-00.html"
+			],
+			"status": "approved 2026-10-21 (variant A). Sample text names real providers; copy comes from docs/frontend/UI_UX_PLAN.md, not from this sheet."
+		}
+	},
+	"unusedScreens": {
+		"23d06928b079470490bb7a47a5d4e0c2": "DS-00 variant B (not chosen)",
+		"f6e16129511a40fa93afef516df39674": "failed content edit (no screenshot)"
+	}
 }

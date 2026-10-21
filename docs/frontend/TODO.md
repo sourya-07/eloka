@@ -4,7 +4,7 @@
 
 **Statuses:** `[ ]` not started · `[~]` in progress · `[x]` done and verified · `[!]` blocked (the reason is written on the task)
 
-**Counts** (update with every change): **total 78** · `[x]` 7 · `[~]` 1 · `[!]` 0 · `[ ]` 70
+**Counts** (update with every change): **total 78** · `[x]` 9 · `[~]` 0 · `[!]` 0 · `[ ]` 69
 
 ## How to use this file
 
@@ -100,20 +100,21 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
 - **Verify:** grep the prompts for `#[0-9a-fA-F]{3,6}` and font names; expect none.
 - **Done 2026-10-21:** 14 prompt files (screens grouped where they share a layout); grep clean.
 
-### [~] ST-6a Generate the DS-00 component sheet
+### [x] ST-6a Generate the DS-00 component sheet
 - **P0 · M · deps:** ST-5
 - **Deliverable:**
   - DS-00 generated with `generate_screen_from_text` (DESKTOP), using the design system id
   - `designs/DS-00.{html,png}` saved through `download_file`
 - **Accept:** the sheet shows buttons (all variants and states), inputs with label, help and error text, select, OTP, badges in every status tone, cards, table, dialog, stepper, empty, error and skeleton.
 - **Verify:** look at the screenshot and record the Stitch output text and suggestions here.
-- **Progress 2026-10-21:** the call timed out but produced two sheets (`designs/DS-00-a`, screen `7fe2c443af1b45ce883a661bbed80411`; `designs/DS-00-b`, screen `23d06928b079470490bb7a47a5d4e0c2`). Variant A covers all 12 sections and is the candidate. Visual audit found invented content (named KYC/bank providers, wrong step labels, invented form options, an Aadhaar reveal chip); a content-only `edit_screens` was sent (timed out; result pending).
+- **Progress 2026-10-21:** the call timed out but produced two sheets (`designs/DS-00-a`, screen `7fe2c443af1b45ce883a661bbed80411`; `designs/DS-00-b`, screen `23d06928b079470490bb7a47a5d4e0c2`). Variant A covers all 12 sections and is the candidate. Visual audit found invented content (named KYC/bank providers, wrong step labels, invented form options, an Aadhaar reveal chip); a content-only `edit_screens` was sent; it timed out and produced a broken copy, so content fixes are not chased in Stitch. All copy comes from UI_UX_PLAN.md.
 
-### [ ] ST-8a Owner review: DS-00
+### [x] ST-8a Owner review: DS-00
 - **P0 · S · deps:** ST-6a
 - **Deliverable:** the review checklist (UI_UX_PLAN §7.3) filled in, plus fixes made with `edit_screens`.
 - **Accept:** the owner approves DS-00.
 - **Verify:** the approval is noted here with its date.
+- **Done:** owner approved variant A on 2026-10-21 → `client/.stitch/designs/DS-00.{png,html}`.
 
 ### [ ] ST-6b Generate the applicant screens
 - **P0 · L · deps:** ST-8a
