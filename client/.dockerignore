@@ -27,3 +27,4 @@ analyze
 certificates
 coverage
 .DS_Store
+.stitch

@@ -8,7 +8,7 @@
 		"source": "client/.stitch/DESIGN.md (uploaded 2026-10-21; theme corrected with update_design_system: primary #0A0A0A, secondary #11299E, tertiary #5C5C57, neutral #FAFAF7, ROUND_EIGHT, Inter)",
 		"designMdScreen": "projects/18017913531452476583/screens/13257695617890929047"
 	},
-	"lastSyncTime": "2026-10-21T17:00:00+05:30",
+	"lastSyncTime": "2026-10-21T18:30:00+05:30",
 	"screens": {
 		"DS-00": {
 			"id": "7fe2c443af1b45ce883a661bbed80411",
@@ -16,15 +16,80 @@
 			"deviceType": "DESKTOP",
 			"width": 2560,
 			"height": 12996,
-			"files": [
-				"designs/DS-00.png",
-				"designs/DS-00.html"
-			],
+			"files": ["designs/DS-00.png", "designs/DS-00.html"],
 			"status": "approved 2026-10-21 (variant A). Sample text names real providers; copy comes from docs/frontend/UI_UX_PLAN.md, not from this sheet."
+		},
+		"APP-01": {
+			"id": "b29edfbb3879498fb687145eb708a20b",
+			"sourceScreen": "projects/18017913531452476583/screens/b29edfbb3879498fb687145eb708a20b",
+			"files": ["designs/APP-01.png", "designs/APP-01.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-02": {
+			"id": "3f02de95f6d94664b9516e3be8e62610",
+			"sourceScreen": "projects/18017913531452476583/screens/3f02de95f6d94664b9516e3be8e62610",
+			"files": ["designs/APP-02.png", "designs/APP-02.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-03": {
+			"id": "af2b743bf88e4721988d9f3d1d0e5567",
+			"sourceScreen": "projects/18017913531452476583/screens/af2b743bf88e4721988d9f3d1d0e5567",
+			"files": ["designs/APP-03.png", "designs/APP-03.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-04-05": {
+			"id": "9dce07c7240e47079313fe5d97d047f7",
+			"sourceScreen": "projects/18017913531452476583/screens/9dce07c7240e47079313fe5d97d047f7",
+			"files": ["designs/APP-04-05.png", "designs/APP-04-05.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-06": {
+			"id": "460aae2497fe4f47a9e75ef7bfb0b004",
+			"sourceScreen": "projects/18017913531452476583/screens/460aae2497fe4f47a9e75ef7bfb0b004",
+			"files": ["designs/APP-06.png", "designs/APP-06.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-07": {
+			"id": "362d5c8dba7949288923795eb4fc8879",
+			"sourceScreen": "projects/18017913531452476583/screens/362d5c8dba7949288923795eb4fc8879",
+			"files": ["designs/APP-07.png", "designs/APP-07.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-08-10": {
+			"id": "99af10dc97994a6d9e7e2a343cab9929",
+			"sourceScreen": "projects/18017913531452476583/screens/99af10dc97994a6d9e7e2a343cab9929",
+			"files": ["designs/APP-08-10.png", "designs/APP-08-10.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-11-12": {
+			"id": "0b957f418c3b4192aa7adcd507913340",
+			"sourceScreen": "projects/18017913531452476583/screens/0b957f418c3b4192aa7adcd507913340",
+			"files": ["designs/APP-11-12.png", "designs/APP-11-12.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-13": {
+			"id": "d590c9b21ea14f539dec79945346a611",
+			"sourceScreen": "projects/18017913531452476583/screens/d590c9b21ea14f539dec79945346a611",
+			"files": ["designs/APP-13.png", "designs/APP-13.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-14-15": {
+			"id": "a0c2053095b04e90bb731b298b8f1c44",
+			"sourceScreen": "projects/18017913531452476583/screens/a0c2053095b04e90bb731b298b8f1c44",
+			"files": ["designs/APP-14-15.png", "designs/APP-14-15.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-16-21": {
+			"id": "65e2e5582db844b391f42c1a0115f656",
+			"sourceScreen": "projects/18017913531452476583/screens/65e2e5582db844b391f42c1a0115f656",
+			"files": ["designs/APP-16-21.png", "designs/APP-16-21.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
 		}
 	},
 	"unusedScreens": {
 		"23d06928b079470490bb7a47a5d4e0c2": "DS-00 variant B (not chosen)",
-		"f6e16129511a40fa93afef516df39674": "failed content edit (no screenshot)"
+		"f6e16129511a40fa93afef516df39674": "failed content edit (no screenshot)",
+		"32dfcb39479842c5b98ee949b9ad4540": "APP-02 duplicate (timed-out run)",
+		"970fa58268a04230a885c799a5e22c8d": "APP-03 early version without the step list"
 	}
 }

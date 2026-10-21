@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-background text-on-surface antialiased" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ELOKA - Apply for Payments Platform</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-background": "#1a1c1b",
+            "tertiary-fixed-dim": "#c8c6c0",
+            "secondary-fixed": "#dee0ff",
+            "surface-tint": "#5f5e5e",
+            "secondary": "#4053c4",
+            "on-secondary": "#ffffff",
+            "error": "#ba1a1a",
+            "outline": "#747878",
+            "on-secondary-fixed": "#000f5d",
+            "on-primary-container": "#858383",
+            "on-tertiary-fixed-variant": "#474742",
+            "on-tertiary-fixed": "#1b1c18",
+            "tertiary-fixed": "#e4e2dc",
+            "on-surface-variant": "#444748",
+            "on-error": "#ffffff",
+            "tertiary": "#000000",
+            "on-error-container": "#93000a",
+            "on-primary-fixed-variant": "#474646",
+            "secondary-container": "#778afd",
+            "on-surface": "#1a1c1b",
+            "surface-bright": "#f9f9f6",
+            "background": "#f9f9f6",
+            "on-tertiary": "#ffffff",
+            "primary-container": "#1c1b1b",
+            "surface-dim": "#dadad7",
+            "surface-container-high": "#e8e8e5",
+            "primary": "#000000",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed-variant": "#2439ab",
+            "inverse-on-surface": "#f1f1ee",
+            "outline-variant": "#c4c7c7",
+            "secondary-fixed-dim": "#bbc3ff",
+            "on-tertiary-container": "#84847e",
+            "tertiary-container": "#1b1c18",
+            "inverse-surface": "#2f312f",
+            "surface-variant": "#e2e3e0",
+            "primary-fixed": "#e5e2e1",
+            "on-primary-fixed": "#1c1b1b",
+            "surface-container": "#eeeeeb",
+            "surface-container-low": "#f4f4f1",
+            "inverse-primary": "#c9c6c5",
+            "surface": "#f9f9f6",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed-dim": "#c9c6c5",
+            "on-secondary-container": "#001a88",
+            "surface-container-highest": "#e2e3e0",
+            "on-primary": "#ffffff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "12px",
+            "space-4xl": "64px",
+            "gutter": "1rem",
+            "space-3xl": "48px",
+            "margin": "1.5rem",
+            "space-xs": "4px",
+            "space-lg": "16px",
+            "space-xl": "24px",
+            "space-sm": "8px",
+            "space-2xl": "32px"
+          },
+          "fontFamily": {
+            "label": ["Inter"],
+            "display-mobile": ["Inter"],
+            "h3": ["Inter"],
+            "h1": ["Inter"],
+            "display": ["Inter"],
+            "body-sm": ["Inter"],
+            "h2": ["Inter"],
+            "body": ["Inter"]
+          },
+          "fontSize": {
+            "label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "display-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "h3": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "600" }],
+            "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "normal", "fontWeight": "400" }],
+            "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "normal", "fontWeight": "600" }],
+            "body": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-full flex flex-col justify-between bg-surface selection:bg-surface-container-high selection:text-primary">
+<!-- Mobile Viewport Container (~390px centered) -->
+<div class="w-full max-w-[390px] mx-auto min-h-screen flex flex-col justify-between bg-surface">
+<!-- Top Bar -->
+<header class="w-full h-16 px-space-xl flex items-center justify-between bg-surface-container-lowest border-b border-outline-variant shadow-sm shrink-0">
+<div class="flex items-center">
+<span class="font-h2 text-h2 font-semibold text-on-surface tracking-tight">ELOKA</span>
+</div>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface active:translate-y-px transition-colors duration-150" href="#help">
+        Help
+      </a>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-space-xl pt-space-2xl pb-space-xl flex flex-col">
+<!-- Intro Section -->
+<section class="space-y-space-sm mb-space-2xl">
+<h1 class="font-h1 text-h1 text-primary tracking-tight font-bold">
+          Run your own payments platform
+        </h1>
+<p class="font-body text-body text-on-surface-variant">
+          Apply in one sitting. Your progress is saved, so you can come back any time.
+        </p>
+</section>
+<!-- "Keep these ready" Checklist Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-space-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] mb-space-lg">
+<h2 class="font-h3 text-h3 text-primary mb-space-lg">
+          Keep these ready
+        </h2>
+<ul class="divide-y divide-outline-variant/60">
+<!-- Item 1 -->
+<li class="py-space-md first:pt-0 last:pb-0 flex items-start gap-space-md">
+<span class="w-5 h-5 rounded-full bg-surface-container-low border border-outline-variant flex items-center justify-center shrink-0 mt-0.5 text-primary">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+<span class="font-body-sm text-body-sm text-primary leading-tight pt-0.5">
+              Business PAN
+            </span>
+</li>
+<!-- Item 2 -->
+<li class="py-space-md first:pt-0 last:pb-0 flex items-start gap-space-md">
+<span class="w-5 h-5 rounded-full bg-surface-container-low border border-outline-variant flex items-center justify-center shrink-0 mt-0.5 text-primary">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+<span class="font-body-sm text-body-sm text-primary leading-tight pt-0.5">
+              The signatory's Aadhaar-linked mobile for DigiLocker
+            </span>
+</li>
+<!-- Item 3 -->
+<li class="py-space-md first:pt-0 last:pb-0 flex items-start gap-space-md">
+<span class="w-5 h-5 rounded-full bg-surface-container-low border border-outline-variant flex items-center justify-center shrink-0 mt-0.5 text-primary">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+<span class="font-body-sm text-body-sm text-primary leading-tight pt-0.5">
+              Business documents (address proof and registration certificate)
+            </span>
+</li>
+<!-- Item 4 -->
+<li class="py-space-md first:pt-0 last:pb-0 flex items-start gap-space-md">
+<span class="w-5 h-5 rounded-full bg-surface-container-low border border-outline-variant flex items-center justify-center shrink-0 mt-0.5 text-primary">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+<span class="font-body-sm text-body-sm text-primary leading-tight pt-0.5">
+              Bank account proof
+            </span>
+</li>
+<!-- Item 5 -->
+<li class="py-space-md first:pt-0 last:pb-0 flex items-start gap-space-md">
+<span class="w-5 h-5 rounded-full bg-surface-container-low border border-outline-variant flex items-center justify-center shrink-0 mt-0.5 text-primary">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+<span class="font-body-sm text-body-sm text-primary leading-tight pt-0.5">
+              Your logo (optional)
+            </span>
+</li>
+</ul>
+</section>
+<!-- Time Note -->
+<div class="flex items-center gap-space-xs text-on-surface-variant mb-space-2xl px-space-xs">
+<span class="material-symbols-outlined text-outline text-[18px]">schedule</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Takes about 20 minutes.</span>
+</div>
+<!-- Actions Stack -->
+<div class="w-full flex flex-col gap-space-md mt-auto">
+<button class="w-full h-12 bg-primary text-on-primary font-label text-h3 font-medium rounded-lg shadow-sm hover:bg-neutral-900 active:translate-y-px transition duration-100 flex items-center justify-center" type="button">
+          Start application
+        </button>
+<a class="w-full text-center py-2 font-body-sm text-body-sm font-medium text-secondary hover:underline transition-colors duration-150" href="#continue">
+          Continue an existing application
+        </a>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-space-xl px-space-xl flex items-center justify-center gap-space-sm text-outline shrink-0">
+<a class="font-label text-label text-on-surface-variant hover:text-on-surface transition-colors duration-150" href="#privacy">Privacy</a>
+<span class="text-[10px] leading-none text-outline-variant">•</span>
+<a class="font-label text-label text-on-surface-variant hover:text-on-surface transition-colors duration-150" href="#terms">Terms</a>
+</footer>
+</div>
+</body></html>
