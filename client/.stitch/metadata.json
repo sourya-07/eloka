@@ -84,6 +84,24 @@
 			"sourceScreen": "projects/18017913531452476583/screens/65e2e5582db844b391f42c1a0115f656",
 			"files": ["designs/APP-16-21.png", "designs/APP-16-21.html"],
 			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"STF-01": {
+			"id": "fcb278f9f19840909d4b1d377aac4e37",
+			"sourceScreen": "projects/18017913531452476583/screens/fcb278f9f19840909d4b1d377aac4e37",
+			"files": ["designs/STF-01.png", "designs/STF-01.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8c)"
+		},
+		"STF-02": {
+			"id": "73f1ad07884443928448e09476da302e",
+			"sourceScreen": "projects/18017913531452476583/screens/73f1ad07884443928448e09476da302e",
+			"files": ["designs/STF-02.png", "designs/STF-02.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8c)"
+		},
+		"STF-04-11": {
+			"id": "eb81bb553247482aae7c9ed174afb245",
+			"sourceScreen": "projects/18017913531452476583/screens/eb81bb553247482aae7c9ed174afb245",
+			"files": ["designs/STF-04-11.png", "designs/STF-04-11.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8c)"
 		}
 	},
 	"unusedScreens": {
@@ -91,5 +109,8 @@
 		"f6e16129511a40fa93afef516df39674": "failed content edit (no screenshot)",
 		"32dfcb39479842c5b98ee949b9ad4540": "APP-02 duplicate (timed-out run)",
 		"970fa58268a04230a885c799a5e22c8d": "APP-03 early version without the step list"
+	},
+	"pending": {
+		"STF-03": "case view: generation timed out twice; not yet visible in the project"
 	}
 }

@@ -1,0 +1,461 @@
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ELOKA Console - Staff Dialogs</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-fixed": "#1c1b1b",
+            "surface-variant": "#e2e3e0",
+            "surface-dim": "#dadad7",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#eeeeeb",
+            "surface": "#f9f9f6",
+            "on-tertiary-fixed-variant": "#474742",
+            "on-surface-variant": "#444748",
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "secondary": "#4053c4",
+            "tertiary": "#000000",
+            "outline": "#747878",
+            "inverse-primary": "#c9c6c5",
+            "tertiary-container": "#1b1c18",
+            "primary-fixed-dim": "#c9c6c5",
+            "on-error-container": "#93000a",
+            "error": "#ba1a1a",
+            "surface-container-highest": "#e2e3e0",
+            "secondary-fixed-dim": "#bbc3ff",
+            "primary": "#000000",
+            "on-primary-container": "#858383",
+            "surface-container-low": "#f4f4f1",
+            "on-secondary-fixed-variant": "#2439ab",
+            "on-secondary": "#ffffff",
+            "surface-bright": "#f9f9f6",
+            "inverse-surface": "#2f312f",
+            "surface-tint": "#5f5e5e",
+            "on-secondary-fixed": "#000f5d",
+            "on-primary-fixed-variant": "#474646",
+            "secondary-fixed": "#dee0ff",
+            "on-tertiary-container": "#84847e",
+            "background": "#f9f9f6",
+            "tertiary-fixed": "#e4e2dc",
+            "outline-variant": "#c4c7c7",
+            "on-background": "#1a1c1b",
+            "on-surface": "#1a1c1b",
+            "surface-container-high": "#e8e8e5",
+            "on-primary": "#ffffff",
+            "secondary-container": "#778afd",
+            "on-secondary-container": "#001a88",
+            "tertiary-fixed-dim": "#c8c6c0",
+            "primary-fixed": "#e5e2e1",
+            "inverse-on-surface": "#f1f1ee",
+            "primary-container": "#1c1b1b",
+            "on-tertiary-fixed": "#1b1c18",
+            "on-error": "#ffffff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-2xl": "32px",
+            "space-xl": "24px",
+            "space-md": "12px",
+            "space-lg": "16px",
+            "space-3xl": "48px",
+            "margin": "1.5rem",
+            "space-4xl": "64px",
+            "gutter": "1rem",
+            "space-sm": "8px",
+            "space-xs": "4px"
+          },
+          "fontFamily": {
+            "h3": ["Inter"],
+            "label": ["Inter"],
+            "h1": ["Inter"],
+            "display-mobile": ["Inter"],
+            "h2": ["Inter"],
+            "display": ["Inter"],
+            "body-sm": ["Inter"],
+            "body": ["Inter"]
+          },
+          "fontSize": {
+            "h3": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "600" }],
+            "label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "normal", "fontWeight": "600" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "normal", "fontWeight": "400" }],
+            "body": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-[#FAFAF7] text-on-background font-body min-h-screen flex flex-row">
+<!-- SideNavBar -->
+<aside class="flex flex-col justify-between h-full p-4 docked left top-0 bottom-0 h-screen w-60 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant shrink-0">
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3 px-2">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-h3 text-on-surface">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+</div>
+<div>
+<h2 class="text-h2 font-h2 font-semibold tracking-tight text-on-surface dark:text-on-surface">ELOKA Console</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Credit Review Operations</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface dark:hover:text-on-surface transition-colors duration-150 active:translate-y-px" href="#">
+<span class="material-symbols-outlined">rate_review</span>
+<span class="text-body-sm font-body-sm">Review Queue</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface dark:hover:text-on-surface transition-colors duration-150 active:translate-y-px" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-body-sm font-body-sm">Audit Logs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface dark:hover:text-on-surface transition-colors duration-150 active:translate-y-px" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-body-sm font-body-sm">Applicants</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface dark:hover:text-on-surface transition-colors duration-150 active:translate-y-px" href="#">
+<span class="material-symbols-outlined">flag</span>
+<span class="text-body-sm font-body-sm">Risk Flags</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant hover:text-on-surface dark:hover:text-on-surface transition-colors duration-150 active:translate-y-px" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-body-sm font-body-sm">Settings</span>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-3">
+<button class="w-full py-2 px-3 bg-primary text-on-primary rounded-lg text-label font-label font-medium hover:opacity-90 active:translate-y-px transition-all">Export Batch</button>
+<div class="border-t border-outline-variant pt-3 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-body-sm font-body-sm">Documentation</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-body-sm font-body-sm">Sign Out</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between w-full px-6 h-14 bg-surface-container-lowest dark:bg-surface-container-lowest border-b border-outline-variant dark:border-outline-variant shrink-0">
+<div class="flex items-center gap-4">
+<span class="text-h3 font-h3 font-semibold text-on-surface dark:text-on-surface">ELOKA Review Workspace</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-3 py-1.5 bg-surface-container-high rounded-lg text-label font-label text-on-surface hover:bg-surface-variant transition-colors">Approve Selected</button>
+<button class="px-3 py-1.5 border border-outline-variant rounded-lg text-label font-label text-on-surface hover:bg-surface-container transition-colors">Escalate</button>
+<button class="p-2 rounded-lg hover:bg-surface-container transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+</header>
+<!-- Canvas Container -->
+<main class="flex-1 overflow-y-auto p-8 bg-surface-dim/30">
+<div class="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Dialog 1: Review document -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant mb-4">
+<h3 class="text-h3 font-h3 text-on-surface">Review document</h3>
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</div>
+<div class="space-y-4">
+<div class="bg-surface-container-low h-48 rounded-lg flex items-center justify-center relative border border-outline-variant overflow-hidden">
+<img class="absolute inset-w w-full h-full object-cover opacity-80" data-alt="A detailed high-resolution preview of an official corporate address proof document displayed on a clean digital interface. The document features crisp text lines, official stamps, and clear typography set against a minimalist light gray background. Soft neutral lighting accentuates the institutional trustworthiness of the document layout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSjjelpOb0wCO-vzdIaVEuRrtB7k-ZEkiDyp_AZ64yzr5Qb0EvDV23Y1ugIrVpnvnP2UxI5eLwm4EGs4Gki3b6YL-XjyrZ0-4R05PkkqbA1r2FrK-ftc7Q0stUnPGBm9FoiKcI_yapTBkIdgX4Zv3xhHBoneoV49_2GsJDSpBFdTXZ5K-PXZ3Euog65r93sYUXpIKkHndgUD_MtJvGSaDV8RSDvn77cE0I7HWyhnXI0dbiKnY0hIh8HRLrRpmAHp7sue7JFcvecUvi"/>
+<div class="absolute bottom-3 right-3 flex gap-1 bg-surface-container-lowest p-1 rounded-lg border border-outline-variant shadow-sm">
+<button class="p-1 hover:bg-surface-container rounded"><span class="material-symbols-outlined text-sm">zoom_in</span></button>
+<button class="p-1 hover:bg-surface-container rounded"><span class="material-symbols-outlined text-sm">zoom_out</span></button>
+</div>
+</div>
+<div>
+<h4 class="text-label font-label uppercase text-on-surface-variant mb-1">Address proof</h4>
+<p class="text-body-sm font-body-sm text-on-surface">address-proof.pdf · 1.2 MB · uploaded 21 Oct</p>
+</div>
+<div class="space-y-2">
+<label class="text-label font-label text-on-surface">Verify optional note</label>
+<input class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Add verification note..." type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-label font-label text-on-surface">Reject reason</label>
+<select class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm focus:border-primary focus:ring-1 focus:ring-primary">
+<option>Select reason for rejection...</option>
+</select>
+<textarea class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Message details..." rows="2"></textarea>
+</div>
+</div>
+</div>
+<div class="flex gap-3 mt-6 pt-4 border-t border-outline-variant">
+<button class="flex-1 py-2 bg-primary text-on-primary rounded-lg text-label font-label font-medium">Verify</button>
+<button class="flex-1 py-2 border border-outline-variant text-error rounded-lg text-label font-label font-medium hover:bg-error-container/20">Reject</button>
+</div>
+</div>
+<!-- Dialog 2: Bank account check needs a decision -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant mb-4">
+<h3 class="text-h3 font-h3 text-on-surface">Bank account check needs a decision</h3>
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</div>
+<div class="space-y-4">
+<div class="p-3 bg-surface-container-low rounded-lg space-y-1">
+<p class="text-body-sm font-body-sm text-on-surface-variant">Holder name on bank: <span class="font-semibold text-on-surface">SAMPLE TRADERS</span></p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Business name: <span class="font-semibold text-on-surface">Sample Traders Pvt Ltd</span></p>
+</div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high text-label font-label text-on-surface">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span> Name match 71
+              </div>
+<div class="space-y-2">
+<label class="text-label font-label text-on-surface">Required reason</label>
+<select class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm focus:border-primary focus:ring-1 focus:ring-primary">
+<option>Select decision rationale...</option>
+</select>
+</div>
+</div>
+</div>
+<div class="flex gap-3 mt-6 pt-4 border-t border-outline-variant">
+<button class="flex-1 py-2 bg-primary text-on-primary rounded-lg text-label font-label font-medium">Accept</button>
+<button class="flex-1 py-2 border border-outline-variant text-on-surface rounded-lg text-label font-label font-medium hover:bg-surface-container">Reject</button>
+</div>
+</div>
+<!-- Dialog 3: Request changes -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant mb-4">
+<h3 class="text-h3 font-h3 text-on-surface">Request changes</h3>
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</div>
+<div class="space-y-4">
+<div class="grid grid-cols-2 gap-2">
+<label class="flex items-center gap-2 text-body-sm text-on-surface"><input class="rounded border-outline-variant" type="checkbox"/> Business details</label>
+<label class="flex items-center gap-2 text-body-sm text-on-surface"><input class="rounded border-outline-variant" type="checkbox"/> Documents</label>
+<label class="flex items-center gap-2 text-body-sm text-on-surface"><input class="rounded border-outline-variant" type="checkbox"/> Bank account</label>
+<label class="flex items-center gap-2 text-body-sm text-on-surface"><input class="rounded border-outline-variant" type="checkbox"/> White-label setup</label>
+</div>
+<div class="space-y-1">
+<label class="text-label font-label text-on-surface">Reason</label>
+<select class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm">
+<option>Select reason...</option>
+</select>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between">
+<label class="text-label font-label text-on-surface">Message to applicant</label>
+<span class="text-label text-on-surface-variant">0 / 1000</span>
+</div>
+<textarea class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm" rows="2"></textarea>
+</div>
+<div class="space-y-1">
+<label class="text-label font-label text-on-surface">Days to fix</label>
+<input class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm" type="number" value="15"/>
+</div>
+<p class="text-body-sm text-on-surface-variant text-xs">This clears earlier recommendations</p>
+</div>
+</div>
+<div class="flex gap-3 mt-6 pt-4 border-t border-outline-variant">
+<button class="flex-1 py-2 bg-primary text-on-primary rounded-lg text-label font-label font-medium">Send request</button>
+<button class="flex-1 py-2 border border-outline-variant text-on-surface rounded-lg text-label font-label font-medium">Cancel</button>
+</div>
+</div>
+<!-- Dialog 4: Recommend approval -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant mb-4">
+<h3 class="text-h3 font-h3 text-on-surface">Recommend approval</h3>
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</div>
+<div class="space-y-4">
+<div class="space-y-1">
+<label class="text-label font-label text-on-surface">Note field</label>
+<textarea class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm" placeholder="Add approval recommendation notes..." rows="3"></textarea>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">info</span>
+<p class="text-body-sm text-on-surface-variant text-xs">A different approver must make the final decision.</p>
+</div>
+</div>
+</div>
+<div class="flex gap-3 mt-6 pt-4 border-t border-outline-variant">
+<button class="flex-1 py-2 bg-primary text-on-primary rounded-lg text-label font-label font-medium">Recommend</button>
+<button class="flex-1 py-2 border border-outline-variant text-on-surface rounded-lg text-label font-label font-medium">Cancel</button>
+</div>
+</div>
+<!-- Dialog 5: Reject application -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant mb-4">
+<h3 class="text-h3 font-h3 text-on-surface">Reject application</h3>
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</div>
+<div class="space-y-4">
+<div class="p-3 bg-error-container/30 border border-error/30 rounded-lg text-error text-body-sm">
+                You claimed or recommended this case, so another approver must decide.
+              </div>
+<div class="space-y-1">
+<label class="text-label font-label text-on-surface">Reason select</label>
+<select class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm">
+<option>Select rejection reason...</option>
+</select>
+</div>
+<div class="space-y-1">
+<label class="text-label font-label text-on-surface">Message to applicant (shown to them)</label>
+<textarea class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm" rows="2"></textarea>
+</div>
+<div class="pt-2 border-t border-outline-variant space-y-1">
+<label class="text-label font-label text-on-surface">Internal note (staff only)</label>
+<textarea class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm" rows="2"></textarea>
+</div>
+</div>
+</div>
+<div class="flex gap-3 mt-6 pt-4 border-t border-outline-variant">
+<button class="flex-1 py-2 bg-error text-on-error rounded-lg text-label font-label font-medium">Reject</button>
+<button class="flex-1 py-2 border border-outline-variant text-on-surface rounded-lg text-label font-label font-medium">Cancel</button>
+</div>
+</div>
+<!-- Dialog 6: Reveal full value -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant mb-4">
+<h3 class="text-h3 font-h3 text-on-surface">Reveal full value</h3>
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</div>
+<div class="space-y-4">
+<div class="space-y-1">
+<label class="text-label font-label text-on-surface">Field select</label>
+<select class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm">
+<option>PAN</option>
+<option>Account number</option>
+<option>Mobile</option>
+<option>Email</option>
+</select>
+</div>
+<div class="space-y-1">
+<label class="text-label font-label text-on-surface">Required Purpose</label>
+<input class="w-full rounded-lg border border-outline-variant px-3 py-2 text-body-sm" placeholder="Enter purpose for auditing..." type="text"/>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg flex items-center justify-between">
+<span class="text-body-sm text-on-surface-variant">Revealed value</span>
+<span class="px-2 py-1 bg-surface-container-highest rounded font-mono text-body-sm font-semibold text-on-surface">ABCDE1234F</span>
+</div>
+<p class="text-body-sm text-on-surface-variant text-xs">This view is logged. The value is hidden when you close this dialog.</p>
+</div>
+</div>
+<div class="flex gap-3 mt-6 pt-4 border-t border-outline-variant">
+<button class="flex-1 py-2 bg-primary text-on-primary rounded-lg text-label font-label font-medium">Confirm Reveal</button>
+<button class="flex-1 py-2 border border-outline-variant text-on-surface rounded-lg text-label font-label font-medium">Close</button>
+</div>
+</div>
+<!-- Dialog 7: Audit trail panel -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant mb-4">
+<h3 class="text-h3 font-h3 text-on-surface">Audit trail panel</h3>
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</div>
+<div class="space-y-3">
+<div class="flex items-start gap-3 p-2 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-sm text-on-surface-variant mt-0.5">history</span>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label font-label font-semibold text-on-surface">09:15 AM</span>
+<span class="text-body-sm text-on-surface-variant">· System</span>
+</div>
+<p class="text-body-sm text-on-surface">Application submitted successfully</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-2 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-sm text-on-surface-variant mt-0.5">person</span>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label font-label font-semibold text-on-surface">10:30 AM</span>
+<span class="text-body-sm text-on-surface-variant">· Staff Officer A</span>
+</div>
+<p class="text-body-sm text-on-surface">Claimed case for review</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-2 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-sm text-on-surface-variant mt-0.5">description</span>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label font-label font-semibold text-on-surface">11:00 AM</span>
+<span class="text-body-sm text-on-surface-variant">· Staff Officer A</span>
+</div>
+<p class="text-body-sm text-on-surface">Verified address proof document</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-2 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-sm text-on-surface-variant mt-0.5">verified</span>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-label font-label font-semibold text-on-surface">11:45 AM</span>
+<span class="text-body-sm text-on-surface-variant">· Senior Officer</span>
+</div>
+<p class="text-body-sm text-on-surface">Recommended approval</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant flex justify-end">
+<button class="px-4 py-2 border border-outline-variant text-on-surface rounded-lg text-label font-label font-medium">Close</button>
+</div>
+</div>
+<!-- Dialog 8: Three small permission cards -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col justify-between lg:col-span-2">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant mb-4">
+<h3 class="text-h3 font-h3 text-on-surface">Permission States</h3>
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="p-4 bg-surface-container-low border border-outline-variant rounded-lg flex flex-col justify-between">
+<div class="flex items-center gap-2 mb-2 text-amber-600">
+<span class="material-symbols-outlined">lock</span>
+<h4 class="text-label font-label font-semibold">Claim this case to act on it</h4>
+</div>
+<p class="text-body-sm text-on-surface-variant text-xs">You must claim ownership of this application before executing any modifications.</p>
+</div>
+<div class="p-4 bg-error-container/20 border border-error/30 rounded-lg flex flex-col justify-between">
+<div class="flex items-center gap-2 mb-2 text-error">
+<span class="material-symbols-outlined">block</span>
+<h4 class="text-label font-label font-semibold">You don't have permission for this action</h4>
+</div>
+<p class="text-body-sm text-on-surface-variant text-xs">Your current role tier does not include execution rights for this specific workflow.</p>
+</div>
+<div class="p-4 bg-surface-container-high border border-outline-variant rounded-lg flex flex-col justify-between">
+<div class="flex items-center gap-2 mb-2 text-on-surface">
+<span class="material-symbols-outlined">supervisor_account</span>
+<h4 class="text-label font-label font-semibold">Your account isn't enabled for the console</h4>
+</div>
+<p class="text-body-sm text-on-surface-variant text-xs">Please contact your administrator to provision your operational credentials.</p>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant flex justify-end">
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg text-label font-label font-medium">Dismiss All</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
