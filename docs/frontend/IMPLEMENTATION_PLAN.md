@@ -308,3 +308,7 @@ A generated Stitch screen is **a spec, not a feature**.
 - Docs change in the same commit as the code they describe.
 - Run `git log` and `git status` before each task, because other sessions may commit in eloka.
 - One heavy job at a time: build, full Jest run, or dev server.
+- **Keep the pipeline green.** Before every commit, run the CI checks for the folder you touched:
+  - `client/**` → `make ci-client` (Node 20, steps one at a time).
+  - `server/**` → `cd server && ./gradlew test --no-daemon --max-workers=1`.
+- **Watch the Security workflow.** It runs on every push, docs included, and fails when Trivy finds a new fixable HIGH/CRITICAL CVE in an image. After the owner pushes, check `gh run list`. A new base-image CVE in a binary we never run goes into `server/.trivyignore` (or the client one) with a reason and an expiry date. Anything else gets fixed.
