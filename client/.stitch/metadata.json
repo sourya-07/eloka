@@ -114,6 +114,12 @@
 			"sourceScreen": "projects/18017913531452476583/screens/b8f2947bffde406ba875801366becbb6",
 			"files": ["designs/APP-22.png", "designs/APP-22.html"],
 			"status": "generated 2026-10-21, awaiting owner review; owner request: DigiLocker quick path; PNG is a full-length local render of the HTML"
+		},
+		"STF-03": {
+			"id": "b5c3fc23275c4fbe89bcda98bdfa1d92",
+			"sourceScreen": "projects/18017913531452476583/screens/b5c3fc23275c4fbe89bcda98bdfa1d92",
+			"files": ["designs/STF-03.png", "designs/STF-03.html"],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8c). Code must mask the email, drop the invented sidebar items (Analytics, Compliance, Settings) and the 'ID: 8849-B' label, and use the warning tone for Flags."
 		}
 	},
 	"unusedScreens": {
@@ -121,8 +127,5 @@
 		"f6e16129511a40fa93afef516df39674": "failed content edit (no screenshot)",
 		"32dfcb39479842c5b98ee949b9ad4540": "APP-02 duplicate (timed-out run)",
 		"970fa58268a04230a885c799a5e22c8d": "APP-03 early version without the step list"
-	},
-	"pending": {
-		"STF-03": "case view: generation timed out twice; not yet visible in the project"
 	}
 }
