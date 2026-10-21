@@ -4,7 +4,7 @@
 
 **Statuses:** `[ ]` not started · `[~]` in progress · `[x]` done and verified · `[!]` blocked (the reason is written on the task)
 
-**Counts** (update with every change): **total 79** · `[x]` 12 · `[~]` 0 · `[!]` 0 · `[ ]` 67
+**Counts** (update with every change): **total 79** · `[x]` 15 · `[~]` 0 · `[!]` 0 · `[ ]` 64
 
 > **2026-10-21 — DESIGN ONLY for now (owner).** Do not start any code task (CMP, APP, STF, R1, DS-3…DS-5). Only Stitch design tasks (ST-*) continue until the owner says to build. Already committed: DS-1 (`d048c65`) and DS-2 (`2038532`). Unfinished component code (StatusBadge, EmptyState, ErrorState, FormField, PageHeader, SectionCard, KeyValueList, Timeline) is kept in `git stash` ("CMP components WIP"), not in the repo.
 
@@ -118,17 +118,19 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
 - **Verify:** the approval is noted here with its date.
 - **Done:** owner approved variant A on 2026-10-21 → `client/.stitch/designs/DS-00.{png,html}`.
 
-### [ ] ST-6b Generate the applicant screens
+### [x] ST-6b Generate the applicant screens
 - **P0 · L · deps:** ST-8a
 - **Deliverable:** APP-01…21 at MOBILE, plus DESKTOP for APP-02, APP-03, APP-07, APP-11, APP-13 and APP-15. Saved to `designs/`.
 - **Accept:** every screen exists, and every state named in UI_UX_PLAN is shown, either as a separate screen or as a variant.
 - **Verify:** screenshots viewed; `metadata.json` updated.
+- **Done 2026-10-21:** mobile APP-01…APP-21 (grouped canvases), APP-01B and APP-22 (DigiLocker option), and desktop APP-03, APP-07, APP-11, APP-13, APP-15. APP-02 desktop was not generated: the sign-in card is identical at desktop width. Notes on invented content are in `client/.stitch/metadata.json`.
 
-### [ ] ST-6c Generate the staff screens
+### [x] ST-6c Generate the staff screens
 - **P0 · L · deps:** ST-8a
 - **Deliverable:** STF-01…11 at DESKTOP. Saved to `designs/`.
 - **Accept:** as ST-6b.
 - **Verify:** as ST-6b.
+- **Done 2026-10-21:** STF-01, STF-02, STF-03, STF-04…11 (dialog sheet). Invented sidebar items in the Stitch output are not specs.
 
 ### [x] ST-6e Design the DigiLocker quick path (owner request 2026-10-21)
 - **P1 · S · deps:** ST-8a
@@ -154,11 +156,12 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
 - **Accept:** the owner approves.
 - **Verify:** approval date noted.
 
-### [ ] ST-6d Generate the reskin screens, one group at a time
+### [x] ST-6d Generate the reskin screens, one group at a time
 - **P2 · L · deps:** ST-8a, CMP-12
 - **Deliverable:** prompts and designs for R1-01…11. Optionally a `code-to-design` baseline taken from `dev:mock`, which needs FQ-1 approved for puppeteer.
 - **Accept:** one approved design per group before that group is coded.
 - **Verify:** screenshots viewed.
+- **Done 2026-10-21:** a second Stitch design system, "ELOKA Tenant (Connect Blue)" (`assets/3874882092193299071`). Groups R1-01/03, R1-02, R1-04, R1-05, R1-06, R1-07, R1-08 + R1-11, R1-09, R1-10. Content was taken from the current screens (no puppeteer baseline).
 
 ### [ ] ST-8d Owner review: each reskin group
 - **P1 · S · deps:** ST-6d
