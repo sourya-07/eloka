@@ -120,6 +120,15 @@
 			"sourceScreen": "projects/18017913531452476583/screens/b5c3fc23275c4fbe89bcda98bdfa1d92",
 			"files": ["designs/STF-03.png", "designs/STF-03.html"],
 			"status": "generated 2026-10-21, awaiting owner review (ST-8c). Code must mask the email, drop the invented sidebar items (Analytics, Compliance, Settings) and the 'ID: 8849-B' label, and use the warning tone for Flags."
+		},
+		"APP-03-desktop": {
+			"id": "7c81547eb31c4797960e2c35ac0ce768",
+			"sourceScreen": "projects/18017913531452476583/screens/7c81547eb31c4797960e2c35ac0ce768",
+			"files": [
+				"designs/APP-03-desktop.png",
+				"designs/APP-03-desktop.html"
+			],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b); desktop layout with the 13-step rail"
 		}
 	},
 	"unusedScreens": {
