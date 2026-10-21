@@ -129,6 +129,42 @@
 				"designs/APP-03-desktop.html"
 			],
 			"status": "generated 2026-10-21, awaiting owner review (ST-8b); desktop layout with the 13-step rail"
+		},
+		"R1-02": {
+			"id": "2f737c5dd74b4e81b4eada87c572123a",
+			"sourceScreen": "projects/18017913531452476583/screens/2f737c5dd74b4e81b4eada87c572123a",
+			"files": ["designs/R1-02.png", "designs/R1-02.html"],
+			"status": "Reskin design (tenant DS), generated 2026-10-21, awaiting owner review (ST-8d). Sidebar items, badges and helper lines Stitch added are not specs: menus come from constants/SidebarMenu.ts and the menu API; orange (accent) buttons need dark text. The 'ELOKA / Tenant login workspace' header must not appear on a tenant login."
+		},
+		"R1-01-03": {
+			"id": "808a4a83096145a196e8520c0b0860c0",
+			"sourceScreen": "projects/18017913531452476583/screens/808a4a83096145a196e8520c0b0860c0",
+			"files": ["designs/R1-01-03.png", "designs/R1-01-03.html"],
+			"status": "Reskin design (tenant DS), generated 2026-10-21, awaiting owner review (ST-8d). Sidebar items, badges and helper lines Stitch added are not specs: menus come from constants/SidebarMenu.ts and the menu API; orange (accent) buttons need dark text."
+		},
+		"R1-04": {
+			"id": "ab5b9eb709b441298870af0cdb9e356d",
+			"sourceScreen": "projects/18017913531452476583/screens/ab5b9eb709b441298870af0cdb9e356d",
+			"files": ["designs/R1-04.png", "designs/R1-04.html"],
+			"status": "Reskin design (tenant DS), generated 2026-10-21, awaiting owner review (ST-8d). Sidebar items, badges and helper lines Stitch added are not specs: menus come from constants/SidebarMenu.ts and the menu API; orange (accent) buttons need dark text."
+		},
+		"R1-05": {
+			"id": "20851f3ae64544b38ee7a9ae6a947511",
+			"sourceScreen": "projects/18017913531452476583/screens/20851f3ae64544b38ee7a9ae6a947511",
+			"files": ["designs/R1-05.png", "designs/R1-05.html"],
+			"status": "Reskin design (tenant DS), generated 2026-10-21, awaiting owner review (ST-8d). Sidebar items, badges and helper lines Stitch added are not specs: menus come from constants/SidebarMenu.ts and the menu API; orange (accent) buttons need dark text."
+		},
+		"R1-06": {
+			"id": "c50e847fd8fa4fe7be945dba47b401a3",
+			"sourceScreen": "projects/18017913531452476583/screens/c50e847fd8fa4fe7be945dba47b401a3",
+			"files": ["designs/R1-06.png", "designs/R1-06.html"],
+			"status": "Reskin design (tenant DS), generated 2026-10-21, awaiting owner review (ST-8d). Sidebar items, badges and helper lines Stitch added are not specs: menus come from constants/SidebarMenu.ts and the menu API; orange (accent) buttons need dark text."
+		},
+		"R1-07": {
+			"id": "147a7bfa88e949049179aecdfa786b69",
+			"sourceScreen": "projects/18017913531452476583/screens/147a7bfa88e949049179aecdfa786b69",
+			"files": ["designs/R1-07.png", "designs/R1-07.html"],
+			"status": "Reskin design (tenant DS), generated 2026-10-21, awaiting owner review (ST-8d). Sidebar items, badges and helper lines Stitch added are not specs: menus come from constants/SidebarMenu.ts and the menu API; orange (accent) buttons need dark text."
 		}
 	},
 	"unusedScreens": {
@@ -136,5 +172,11 @@
 		"f6e16129511a40fa93afef516df39674": "failed content edit (no screenshot)",
 		"32dfcb39479842c5b98ee949b9ad4540": "APP-02 duplicate (timed-out run)",
 		"970fa58268a04230a885c799a5e22c8d": "APP-03 early version without the step list"
+	},
+	"tenantDesignSystem": {
+		"assetId": "3874882092193299071",
+		"name": "assets/3874882092193299071",
+		"displayName": "ELOKA Tenant (Connect Blue)",
+		"note": "default tenant preset (primary #11299E, accent #FE9F00) for the Release 1 reskin designs"
 	}
 }
