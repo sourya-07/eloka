@@ -1,339 +1,359 @@
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Business Details - ELOKA</title>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<title>ELOKA - Business details</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "on-error-container": "#93000a",
-              "surface-container": "#eeeeeb",
-              "on-surface": "#1a1c1b",
-              "on-secondary-fixed": "#000f5d",
-              "on-surface-variant": "#444748",
-              "surface-container-high": "#e8e8e5",
-              "error-container": "#ffdad6",
-              "surface-dim": "#dadad7",
-              "surface-container-highest": "#e2e3e0",
-              "error": "#ba1a1a",
-              "secondary-fixed-dim": "#bbc3ff",
-              "on-secondary": "#ffffff",
-              "surface-bright": "#f9f9f6",
-              "outline-variant": "#c4c7c7",
-              "on-secondary-fixed-variant": "#2439ab",
-              "inverse-on-surface": "#f1f1ee",
-              "background": "#f9f9f6",
-              "inverse-surface": "#2f312f",
-              "on-secondary-container": "#001a88",
-              "on-primary-fixed": "#1c1b1b",
-              "tertiary": "#000000",
-              "surface-variant": "#e2e3e0",
-              "surface-container-lowest": "#ffffff",
-              "on-tertiary": "#ffffff",
-              "on-primary-container": "#858383",
-              "on-tertiary-container": "#84847e",
-              "primary-container": "#1c1b1b",
-              "tertiary-container": "#1b1c18",
-              "surface-tint": "#5f5e5e",
-              "on-tertiary-fixed": "#1b1c18",
-              "outline": "#747878",
-              "on-primary-fixed-variant": "#474646",
-              "on-error": "#ffffff",
-              "primary-fixed-dim": "#c9c6c5",
-              "inverse-primary": "#c9c6c5",
-              "on-tertiary-fixed-variant": "#474742",
-              "surface": "#f9f9f6",
-              "on-primary": "#ffffff",
-              "tertiary-fixed": "#e4e2dc",
-              "secondary-fixed": "#dee0ff",
-              "primary-fixed": "#e5e2e1",
-              "on-background": "#1a1c1b",
-              "primary": "#000000",
-              "secondary-container": "#778afd",
-              "secondary": "#4053c4",
-              "tertiary-fixed-dim": "#c8c6c0",
-              "surface-container-low": "#f4f4f1",
-              "connect-blue": "#11299E"
-            },
-            borderRadius: {
-              DEFAULT: "0.25rem",
-              lg: "0.5rem",
-              xl: "0.75rem",
-              full: "9999px"
-            },
-            spacing: {
-              "space-xs": "4px",
-              "space-lg": "16px",
-              "space-sm": "8px",
-              "space-3xl": "48px",
-              "space-md": "12px",
-              "gutter": "1rem",
-              "space-xl": "24px",
-              "space-4xl": "64px",
-              "margin": "1.5rem",
-              "space-2xl": "32px"
-            },
-            fontFamily: {
-              h3: ["Inter"],
-              "display-mobile": ["Inter"],
-              "body-sm": ["Inter"],
-              label: ["Inter"],
-              h1: ["Inter"],
-              h2: ["Inter"],
-              display: ["Inter"],
-              body: ["Inter"]
-            },
-            fontSize: {
-              h3: ["16px", { lineHeight: "24px", letterSpacing: "normal", fontWeight: "600" }],
-              "display-mobile": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "700" }],
-              "body-sm": ["14px", { lineHeight: "20px", letterSpacing: "normal", fontWeight: "400" }],
-              label: ["12px", { lineHeight: "16px", letterSpacing: "0.01em", fontWeight: "500" }],
-              h1: ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "600" }],
-              h2: ["20px", { lineHeight: "28px", letterSpacing: "normal", fontWeight: "600" }],
-              display: ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }],
-              body: ["16px", { lineHeight: "24px", letterSpacing: "normal", fontWeight: "400" }]
-            }
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#c4c7c7",
+            "error-container": "#ffdad6",
+            "on-primary-container": "#858383",
+            "on-background": "#1a1c1b",
+            "surface-dim": "#dadad7",
+            "on-primary-fixed-variant": "#474646",
+            "tertiary": "#000000",
+            "secondary-container": "#778afd",
+            "secondary-fixed": "#dee0ff",
+            "on-error-container": "#93000a",
+            "on-tertiary-container": "#84847e",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#e8e8e5",
+            "surface": "#f9f9f6",
+            "inverse-on-surface": "#f1f1ee",
+            "on-secondary-container": "#001a88",
+            "on-error": "#ffffff",
+            "on-tertiary-fixed": "#1b1c18",
+            "secondary-fixed-dim": "#bbc3ff",
+            "inverse-primary": "#c9c6c5",
+            "on-surface": "#1a1c1b",
+            "on-secondary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-container": "#1b1c18",
+            "on-primary": "#ffffff",
+            "surface-container": "#eeeeeb",
+            "on-secondary-fixed-variant": "#2439ab",
+            "tertiary-fixed": "#e4e2dc",
+            "background": "#f9f9f6",
+            "primary-fixed-dim": "#c9c6c5",
+            "secondary": "#4053c4",
+            "on-secondary-fixed": "#000f5d",
+            "error": "#ba1a1a",
+            "on-primary-fixed": "#1c1b1b",
+            "tertiary-fixed-dim": "#c8c6c0",
+            "surface-variant": "#e2e3e0",
+            "surface-tint": "#5f5e5e",
+            "primary-fixed": "#e5e2e1",
+            "inverse-surface": "#2f312f",
+            "primary": "#000000",
+            "primary-container": "#1c1b1b",
+            "on-tertiary-fixed-variant": "#474742",
+            "outline": "#747878",
+            "on-surface-variant": "#444748",
+            "surface-container-highest": "#e2e3e0",
+            "surface-bright": "#f9f9f6",
+            "surface-container-low": "#f4f4f1"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "8px",
+            "space-4xl": "64px",
+            "gutter": "1rem",
+            "space-md": "12px",
+            "space-2xl": "32px",
+            "space-xs": "4px",
+            "space-xl": "24px",
+            "margin": "1.5rem",
+            "space-lg": "16px",
+            "space-3xl": "48px"
+          },
+          "fontFamily": {
+            "h3": ["Inter"],
+            "display-mobile": ["Inter"],
+            "display": ["Inter"],
+            "h1": ["Inter"],
+            "h2": ["Inter"],
+            "body-sm": ["Inter"],
+            "label": ["Inter"],
+            "body": ["Inter"]
+          },
+          "fontSize": {
+            "h3": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "600" }],
+            "display-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "normal", "fontWeight": "600" }],
+            "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "normal", "fontWeight": "400" }],
+            "label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "body": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "400" }]
           }
         }
       }
-    </script>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
     }
-  </style>
+  </script>
 </head>
-<body class="bg-surface text-on-surface font-body antialiased selection:bg-primary selection:text-on-primary"><header class="sticky top-0 z-50 bg-surface flex justify-between items-center w-full px-8 h-16 border-b border-outline-variant/30">
-<span class="text-h1 font-h1 text-primary">ELOKA</span>
-<button class="text-body-sm font-semibold text-connect-blue">Help</button>
+<body class="bg-[#FAFAF7] text-on-background font-body min-h-screen antialiased selection:bg-primary selection:text-on-primary">
+<!-- Top App Bar -->
+<header class="bg-surface dark:bg-surface shadow-sm sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-space-xl max-w-[1400px] mx-auto h-16">
+<div class="font-h1 text-h1 text-primary dark:text-inverse-primary font-bold tracking-tight">ELOKA</div>
+<div class="flex items-center gap-space-xl">
+<a class="text-on-surface-variant hover:text-primary transition-all duration-200 font-body-sm font-medium" href="#">Help</a>
+<a class="text-on-surface-variant hover:text-primary transition-all duration-200 font-body-sm font-medium" href="#">Sign out</a>
+</div>
+</div>
 </header>
-<div class="max-w-7xl mx-auto flex min-h-[calc(100vh-4rem)]">
-<aside class="w-[280px] border-r border-outline-variant/30 p-6 flex flex-col justify-between shrink-0">
+<div class="flex max-w-[1400px] mx-auto min-h-[calc(100vh-4rem)]">
+<!-- Left Step Rail (280px) -->
+<aside class="w-[280px] shrink-0 bg-surface-container-low dark:bg-surface-container-low border-r border-surface-variant flex flex-col justify-between p-space-lg h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto">
 <div>
-<h2 class="text-h3 font-h3 text-on-surface mb-6">Your application</h2>
-<nav class="space-y-2">
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant">
-<span class="material-symbols-outlined text-emerald-600 text-xl">check_circle</span>
-<span class="text-body-sm">1. Mobile verification</span>
+<div class="flex items-center justify-between mb-space-lg">
+<h2 class="font-h3 text-h3 text-primary">Your application</h2>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant">
-<span class="material-symbols-outlined text-emerald-600 text-xl">check_circle</span>
-<span class="text-body-sm">2. Consent</span>
+<div class="mb-space-lg">
+<span class="inline-flex items-center px-space-sm py-space-xs rounded-full bg-surface-container-high text-on-surface-variant font-label text-label">onb_7Q2K9X</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant">
-<span class="material-symbols-outlined text-emerald-600 text-xl">check_circle</span>
-<span class="text-body-sm">3. Program</span>
+<nav class="space-y-1">
+<!-- Step 1 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm">
+<span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+<span class="">Mobile verification</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant">
-<span class="material-symbols-outlined text-emerald-600 text-xl">check_circle</span>
-<span class="text-body-sm">4. Business PAN</span>
+<!-- Step 2 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm">
+<span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+<span class="">Consent</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg bg-surface-container font-semibold text-connect-blue">
-<span class="material-symbols-outlined text-xl">radio_button_checked</span>
-<span class="text-body-sm">5. Business details</span>
+<!-- Step 3 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm">
+<span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+<span class="">Program</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant opacity-60">
-<span class="material-symbols-outlined text-xl">lock</span>
-<span class="text-body-sm">6. Email</span>
+<!-- Step 4 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm">
+<span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+<span class="">Business PAN</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant opacity-60">
-<span class="material-symbols-outlined text-xl">lock</span>
-<span class="text-body-sm">7. Signatory KYC</span>
+<!-- Step 5: Active -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg bg-[#11299E] text-white font-body-sm font-bold shadow-sm">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">radio_button_checked</span>
+<span class="">Business details</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant opacity-60">
-<span class="material-symbols-outlined text-xl">lock</span>
-<span class="text-body-sm">8. Live photo</span>
+<!-- Step 6 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm opacity-70">
+<span class="material-symbols-outlined text-sm">radio_button_unchecked</span>
+<span class="">Email</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant opacity-60">
-<span class="material-symbols-outlined text-xl">lock</span>
-<span class="text-body-sm">9. Documents</span>
+<!-- Step 7 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm opacity-70">
+<span class="material-symbols-outlined text-sm">radio_button_unchecked</span>
+<span class="">Signatory KYC</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant opacity-60">
-<span class="material-symbols-outlined text-xl">lock</span>
-<span class="text-body-sm">10. Bank account</span>
+<!-- Step 8 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm opacity-70">
+<span class="material-symbols-outlined text-sm">radio_button_unchecked</span>
+<span class="">Live photo</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant opacity-60">
-<span class="material-symbols-outlined text-xl">lock</span>
-<span class="text-body-sm">11. White-label setup</span>
+<!-- Step 9 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm opacity-70">
+<span class="material-symbols-outlined text-sm">radio_button_unchecked</span>
+<span class="">Documents</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant opacity-60">
-<span class="material-symbols-outlined text-xl">lock</span>
-<span class="text-body-sm">12. Declaration</span>
+<!-- Step 10 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm opacity-70">
+<span class="material-symbols-outlined text-sm">radio_button_unchecked</span>
+<span class="">Bank account</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 rounded-lg text-on-surface-variant opacity-60">
-<span class="material-symbols-outlined text-xl">lock</span>
-<span class="text-body-sm">13. Agreement</span>
+<!-- Step 11 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm opacity-70">
+<span class="material-symbols-outlined text-sm">radio_button_unchecked</span>
+<span class="">White-label setup</span>
+</div>
+<!-- Step 12 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm opacity-40">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span class="">Declaration</span>
+</div>
+<!-- Step 13 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-body-sm opacity-40">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span class="">Agreement</span>
 </div>
 </nav>
 </div>
-<div class="mt-8">
-<div class="flex justify-between text-label text-on-surface-variant mb-1">
-<span>Progress</span>
-<span>38%</span>
-</div>
-<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
-<div class="bg-primary h-full rounded-full" style="width: 38.4%;"></div>
-</div>
+<div class="text-xs text-on-surface-variant pt-space-md border-t border-surface-variant">
+        Need assistance? <a class="underline text-primary font-medium" href="#">Contact support</a>
 </div>
 </aside>
-<main class="flex-1 max-w-[720px] mx-auto px-12 py-8 pb-28">
-<div class="mb-6">
-<h1 class="text-display text-on-surface mb-1">Business details</h1>
-<p class="text-body-sm text-on-surface-variant">We've filled in what we already know.</p>
+<!-- Main Form Column (720px centered in remaining space) -->
+<main class="flex-1 flex justify-center py-space-2xl px-space-xl bg-[#FAFAF7]">
+<div class="w-full max-w-[720px] space-y-space-xl">
+<!-- Progress Header -->
+<div class="space-y-space-sm">
+<div class="flex justify-between items-center text-body-sm font-medium text-on-surface-variant">
+<span class="">Step 5 of 13</span>
+<span class="">38% completed</span>
 </div>
-<form class="space-y-6">
-<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-<h2 class="text-h2 font-h2 text-on-surface mb-4">Business</h2>
-<div class="space-y-4">
-<div class="grid grid-cols-2 gap-4">
-<div>
-<div class="flex justify-between items-center mb-1">
-<label class="text-label font-medium text-on-surface-variant">Business name</label>
-<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-surface-container text-on-surface-variant">From your PAN</span>
-</div>
-<div class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface font-medium">
-SAMPLE TRADERS PRIVATE LIMITED
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 38%;"></div>
 </div>
 </div>
 <div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">Company type</label>
-<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface focus:border-connect-blue focus:ring-1 focus:ring-connect-blue">
-<option>Private Limited</option>
+<h1 class="font-display text-display text-primary tracking-tight">Business details</h1>
+<p class="text-body text-on-surface-variant mt-space-xs">We've filled in what we already know.</p>
+</div>
+<form class="space-y-space-xl">
+<!-- Card 1: Business -->
+<div class="bg-white rounded-xl border border-[#E5E5E0] p-space-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] space-y-space-lg">
+<h3 class="font-h2 text-h2 text-primary border-b border-surface-variant pb-space-md">Business</h3>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">Business name</label>
+<div class="relative flex items-center">
+<input class="w-full bg-surface-container-low border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:outline-none cursor-default" readonly="" type="text" value="SAMPLE TRADERS PRIVATE LIMITED">
+<span class="absolute right-3 inline-flex items-center px-space-sm py-space-xs rounded-full bg-surface-container-high text-on-surface-variant font-label text-label">From your PAN</span>
+</div>
+</div>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">Company type</label>
+<select class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all">
+<option selected="">Private Limited</option>
 <option>Public Limited</option>
+<option>LLP</option>
 <option>Partnership</option>
 <option>Sole Proprietorship</option>
 </select>
 </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">GSTIN <span class="text-on-surface-variant font-normal">(optional)</span></label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all uppercase" placeholder="e.g. 29AAAAA0000A1Z5" type="text">
 </div>
-<div class="grid grid-cols-2 gap-4">
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">GSTIN (optional)</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="e.g. 27AAAAA0000A1Z5" type="text"/>
-</div>
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">CIN (optional)</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="e.g. U12345MH2023PTC123456" type="text"/>
-</div>
-</div>
-</div>
-</section>
-<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-<h2 class="text-h2 font-h2 text-on-surface mb-4">You</h2>
-<div class="space-y-4">
-<div class="grid grid-cols-2 gap-4">
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">Authorised signatory name</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" type="text" value="Ravi Sample"/>
-</div>
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">Alternate mobile (optional)</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="+91 98765 43210" type="tel"/>
-</div>
-</div>
-<div>
-<div class="flex justify-between items-center mb-1">
-<label class="text-label font-medium text-on-surface-variant">Mobile</label>
-<div class="flex items-center space-x-1.5">
-<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Verified</span>
-<span class="text-[11px] text-on-surface-variant">From sign-in</span>
-</div>
-</div>
-<div class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface font-medium flex items-center justify-between">
-<span>+91 XXXXXX3210</span>
-<span class="material-symbols-outlined text-emerald-600 text-lg">check_circle</span>
-</div>
-</div>
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">Upload signature</label>
-<div class="border-2 border-dashed border-outline-variant rounded-xl p-6 text-center hover:border-connect-blue transition-colors cursor-pointer bg-surface-container-low">
-<span class="material-symbols-outlined text-3xl text-on-surface-variant mb-2">cloud_upload</span>
-<p class="text-body-sm font-semibold text-on-surface">Click to upload signature</p>
-<p class="text-label text-on-surface-variant mt-1">JPG, PNG or PDF, up to 10 MB</p>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">CIN <span class="text-on-surface-variant font-normal">(optional)</span></label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all uppercase" placeholder="e.g. U12345MH2023PTC123456" type="text">
 </div>
 </div>
 </div>
-</section>
-<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-<h2 class="text-h2 font-h2 text-on-surface mb-4">Home address</h2>
-<div class="space-y-4">
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">Address line 1</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="Flat / House no., Building, Street" type="text"/>
+<!-- Card 2: You -->
+<div class="bg-white rounded-xl border border-[#E5E5E0] p-space-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] space-y-space-lg">
+<h3 class="font-h2 text-h2 text-primary border-b border-surface-variant pb-space-md">You</h3>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">Authorised signatory name</label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all" type="text" value="Ravi Sample">
 </div>
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">Address line 2 (optional)</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="Apartment, suite, unit, etc." type="text"/>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">Mobile</label>
+<div class="relative flex items-center">
+<input class="w-full bg-surface-container-low border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:outline-none cursor-default" readonly="" type="text" value="+91 XXXXXX3210">
+<div class="absolute right-3 flex items-center gap-space-xs">
+<span class="inline-flex items-center px-space-sm py-space-xs rounded-full bg-emerald-100 text-emerald-800 font-label text-label">Verified</span>
+<span class="text-xs text-on-surface-variant ml-space-xs">From sign-in</span>
 </div>
-<div class="grid grid-cols-2 gap-4">
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">District</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="District" type="text"/>
 </div>
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">State</label>
-<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface focus:border-connect-blue focus:ring-1 focus:ring-connect-blue">
-<option>Select State</option>
-<option>Maharashtra</option>
+</div>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">Alternate mobile <span class="text-on-surface-variant font-normal">(optional)</span></label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all" placeholder="+91 9876543210" type="tel">
+</div>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">Upload signature</label>
+<div class="border-2 border-dashed border-[#85857F] rounded-xl p-space-2xl text-center hover:border-primary transition-colors cursor-pointer bg-surface-container-low/50">
+<span class="material-symbols-outlined text-3xl text-on-surface-variant mb-space-xs">cloud_upload</span>
+<p class="font-body-sm font-medium text-primary">Click to upload or drag and drop</p>
+<p class="text-xs text-on-surface-variant mt-space-xs">JPG, PNG or PDF, up to 10 MB</p>
+</div>
+</div>
+</div>
+<!-- Card 3: Home address -->
+<div class="bg-white rounded-xl border border-[#E5E5E0] p-space-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] space-y-space-lg">
+<h3 class="font-h2 text-h2 text-primary border-b border-surface-variant pb-space-md">Home address</h3>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">Address line 1</label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all" placeholder="Flat, House no., Building, Company, Apartment" type="text">
+</div>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">Address line 2 <span class="text-on-surface-variant font-normal">(optional)</span></label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all" placeholder="Area, Colony, Street, Sector, Village" type="text">
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">District</label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all" placeholder="e.g. Bangalore Urban" type="text">
+</div>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">State</label>
+<select class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all">
+<option disabled="" selected="" value="">Select state</option>
 <option>Karnataka</option>
+<option>Maharashtra</option>
 <option>Delhi</option>
 <option>Tamil Nadu</option>
+<option>Telangana</option>
 </select>
 </div>
 </div>
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">Pincode</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" maxlength="6" placeholder="400001" type="text"/>
+<div class="space-y-space-sm max-w-[50%]">
+<label class="block font-body-sm font-medium text-on-surface">Pincode</label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all" maxlength="6" placeholder="560001" type="text">
 </div>
 </div>
-</section>
-<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-<h2 class="text-h2 font-h2 text-on-surface mb-3">Business address</h2>
-<div class="flex items-center space-x-3 mb-4 p-2.5 bg-surface-container-low rounded-lg border border-outline-variant">
-<input class="w-5 h-5 rounded border-outline text-connect-blue focus:ring-connect-blue cursor-pointer" id="same_address" type="checkbox"/>
-<label class="text-body-sm font-medium text-on-surface cursor-pointer select-none" for="same_address">Same as home address</label>
+<!-- Card 4: Business address -->
+<div class="bg-white rounded-xl border border-[#E5E5E0] p-space-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)] space-y-space-lg">
+<h3 class="font-h2 text-h2 text-primary border-b border-surface-variant pb-space-md">Business address</h3>
+<div class="flex items-center gap-space-sm">
+<input class="w-4 h-4 text-primary border-outline rounded focus:ring-primary" id="same_as_home" type="checkbox">
+<label class="font-body-sm font-medium text-on-surface select-none cursor-pointer" for="same_as_home">Same as home address</label>
 </div>
-<div class="space-y-4">
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">Address line 1</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="Flat / House no., Building, Street" type="text"/>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">Address line 1</label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all" placeholder="Flat, House no., Building, Company, Apartment" type="text">
 </div>
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">Address line 2 (optional)</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="Apartment, suite, unit, etc." type="text"/>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">Address line 2 <span class="text-on-surface-variant font-normal">(optional)</span></label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all" placeholder="Area, Colony, Street, Sector, Village" type="text">
 </div>
-<div class="grid grid-cols-2 gap-4">
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">District</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="District" type="text"/>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">District</label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all" placeholder="e.g. Bangalore Urban" type="text">
 </div>
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">State</label>
-<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface focus:border-connect-blue focus:ring-1 focus:ring-connect-blue">
-<option>Select State</option>
-<option>Maharashtra</option>
+<div class="space-y-space-sm">
+<label class="block font-body-sm font-medium text-on-surface">State</label>
+<select class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all">
+<option disabled="" selected="" value="">Select state</option>
 <option>Karnataka</option>
+<option>Maharashtra</option>
 <option>Delhi</option>
 <option>Tamil Nadu</option>
+<option>Telangana</option>
 </select>
 </div>
 </div>
-<div>
-<label class="block text-label font-medium text-on-surface-variant mb-1">Pincode</label>
-<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" maxlength="6" placeholder="400001" type="text"/>
+<div class="space-y-space-sm max-w-[50%]">
+<label class="block font-body-sm font-medium text-on-surface">Pincode</label>
+<input class="w-full bg-white border border-[#85857F] rounded-lg px-space-lg py-space-md text-body text-on-surface focus:ring-2 focus:ring-[#4053c4] focus:border-[#4053c4] outline-none transition-all" maxlength="6" placeholder="560001" type="text">
 </div>
 </div>
-</section>
-<div class="pt-4">
-<button class="w-full bg-primary text-on-primary py-3.5 px-4 rounded-lg font-h3 text-h3 shadow-sm hover:opacity-95 active:scale-[0.98] transition-all duration-200" type="submit">
-Save and continue
-</button>
+<!-- Bottom Action Bar -->
+<div class="flex justify-end pt-space-md">
+<button class="bg-[#0A0A0A] hover:bg-black text-white font-body-sm font-semibold px-space-2xl py-space-md rounded-lg shadow-sm active:translate-y-[1px] transition-all duration-200" type="submit">
+              Save and continue
+            </button>
 </div>
 </form>
+</div>
 </main>
-</div></body></html>
+</div>
+
+
+</body></html>

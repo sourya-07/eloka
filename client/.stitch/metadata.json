@@ -65,13 +65,13 @@
 			"status": "Business details, phone: name from PAN, mobile from sign-in (read-only), home address, business address with 'Same as home address'. Revised 2026-10-22 for the owner's rules (mobile is page 2 of both paths, no time estimates, home + business address, nothing asked twice). Awaiting owner review (ST-8b)."
 		},
 		"APP-07-desktop": {
-			"id": "b28ab62271cd477bb33b1c608807acdc",
-			"sourceScreen": "projects/18017913531452476583/screens/b28ab62271cd477bb33b1c608807acdc",
+			"id": "553ce425a4544143a02062cb22962af5",
+			"sourceScreen": "projects/18017913531452476583/screens/553ce425a4544143a02062cb22962af5",
 			"files": [
 				"designs/APP-07-desktop.png",
 				"designs/APP-07-desktop.html"
 			],
-			"status": "Desktop business details, 2026-10-22: 13-step rail, name from PAN, mobile from sign-in, home + business address with 'Same as home address'. Awaiting owner review (ST-8b). LOCAL FIX 2026-10-22: the committed HTML/PNG were corrected by hand (Stitch edits did not save) and re-rendered with headless Chrome, so the Stitch copy is behind; the repo file is the spec. (Fixed: sample name Ravi Sample; signature JPG, PNG or PDF up to 10 MB.)"
+			"status": "Created in Stitch by the owner from the hand-off prompts (2026-10-22) and checked against the spec. Awaiting owner review (ST-8b). Only copy with every field right (home + business address, mobile from sign-in, name from PAN, 10 MB)."
 		},
 		"APP-08-10": {
 			"id": "99af10dc97994a6d9e7e2a343cab9929",
@@ -167,10 +167,10 @@
 			"status": "Regenerated 2026-10-22 (ST-7): no '+ New application' button, no sidebar subtitle, status and flag pill tones fixed. Awaiting owner review (ST-8c). The empty-state helper line is Stitch's, not a spec."
 		},
 		"STF-04-11": {
-			"id": "eb81bb553247482aae7c9ed174afb245",
-			"sourceScreen": "projects/18017913531452476583/screens/eb81bb553247482aae7c9ed174afb245",
+			"id": "f22cc552069b4721af0041ccdef8e81d",
+			"sourceScreen": "projects/18017913531452476583/screens/f22cc552069b4721af0041ccdef8e81d",
 			"files": ["designs/STF-04-11.png", "designs/STF-04-11.html"],
-			"status": "generated 2026-10-21, awaiting owner review (ST-8c)"
+			"status": "Full staff dialog sheet (document review, verification decision, corrections, recommend, approve / reject / hold, PII reveal, audit trail, permission cards). Switched 2026-10-22 from eb81bb55, which was cut off and had invented sidebar items. Awaiting owner review (ST-8c)."
 		},
 		"STF-03": {
 			"id": "d8bfc4011cdf4b478a75bbe5225123da",
@@ -260,13 +260,13 @@
 			"status": "Desktop page 1, 2026-10-22: the two path cards side by side with 'Faster' and step counts, no time estimate. Awaiting owner review (ST-8b). LOCAL FIX 2026-10-22: the committed HTML/PNG were corrected by hand (Stitch edits did not save) and re-rendered with headless Chrome, so the Stitch copy is behind; the repo file is the spec."
 		},
 		"APP-22-desktop": {
-			"id": "72c20f5a4ccf469a8c815916d0e1efc1",
-			"sourceScreen": "projects/18017913531452476583/screens/72c20f5a4ccf469a8c815916d0e1efc1",
+			"id": "4da91b4a3fe6453086f759af6dd18cd9",
+			"sourceScreen": "projects/18017913531452476583/screens/4da91b4a3fe6453086f759af6dd18cd9",
 			"files": [
 				"designs/APP-22-desktop.png",
 				"designs/APP-22-desktop.html"
 			],
-			"status": "Desktop DigiLocker 'Check your details', 2026-10-22: 6-step rail, home address from DigiLocker, business address only if not found, mobile from sign-in. Awaiting owner review (ST-8b). LOCAL FIX 2026-10-22: the committed HTML/PNG were corrected by hand (Stitch edits did not save) and re-rendered with headless Chrome, so the Stitch copy is behind; the repo file is the spec."
+			"status": "Created in Stitch by the owner from the hand-off prompts (2026-10-22) and checked against the spec. Awaiting owner review (ST-8b). Repo copy edited: header 'Tenant Onboarding' → 'ELOKA', removed Dashboard / Support / Exit."
 		},
 		"APP-04-desktop": {
 			"id": "f363233694024397b311d9bf46981899",
@@ -326,64 +326,64 @@
 			"status": "Generated 2026-10-22 by converting the existing screen. Awaiting owner review (ST-8d). Phone query center with tickets as cards. Not specs: ticket ids, names and the bottom-bar tabs (they come from the app)."
 		},
 		"APP-09B": {
-			"id": null,
-			"sourceScreen": null,
+			"id": "1999928d2d294cf49f3b79b08cbb1816",
+			"sourceScreen": "projects/18017913531452476583/screens/1999928d2d294cf49f3b79b08cbb1816",
 			"files": ["designs/APP-09B.png", "designs/APP-09B.html"],
-			"status": "Phone. Manual signatory KYC (owner request 2026-10-22). Built locally from the APP-09-desktop Stitch HTML (Stitch kept timing out) and rendered with headless Chrome; no Stitch screen id. Awaiting owner review (ST-8b). Backend gap FQ-19. Not specs: the rail's '13 Steps Remaining' and 'Resume Later'; file names and the reviewer note are samples."
+			"status": "Created in Stitch by the owner from the hand-off prompts (2026-10-22) and checked against the spec. Awaiting owner review (ST-8b). Manual signatory KYC, phone. Backend gap FQ-19."
 		},
 		"APP-09B-desktop": {
-			"id": null,
-			"sourceScreen": null,
+			"id": "5cb2747650af4c5fbefaff384d77a4ac",
+			"sourceScreen": "projects/18017913531452476583/screens/5cb2747650af4c5fbefaff384d77a4ac",
 			"files": [
 				"designs/APP-09B-desktop.png",
 				"designs/APP-09B-desktop.html"
 			],
-			"status": "Desktop. Manual signatory KYC (owner request 2026-10-22). Built locally from the APP-09-desktop Stitch HTML (Stitch kept timing out) and rendered with headless Chrome; no Stitch screen id. Awaiting owner review (ST-8b). Backend gap FQ-19. Not specs: the rail's '13 Steps Remaining' and 'Resume Later'; file names and the reviewer note are samples."
+			"status": "Created in Stitch by the owner from the hand-off prompts (2026-10-22) and checked against the spec. Awaiting owner review (ST-8b). Repo copy edited: removed the invented company footer. Backend gap FQ-19."
 		},
 		"APP-06-desktop": {
-			"id": null,
-			"sourceScreen": null,
+			"id": "34dcd1f8b39d4cf8a674d20ce787c57e",
+			"sourceScreen": "projects/18017913531452476583/screens/34dcd1f8b39d4cf8a674d20ce787c57e",
 			"files": [
 				"designs/APP-06-desktop.png",
 				"designs/APP-06-desktop.html"
 			],
-			"status": "Desktop business PAN with checking, verified and error states. Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8b)."
+			"status": "Created in Stitch by the owner from the hand-off prompts (2026-10-22) and checked against the spec. Awaiting owner review (ST-8b). Repo copy edited: removed 'NSDL / Income Tax integration', 'SPEC VIEW', the '< 3 seconds' estimate and the error codes."
 		},
 		"APP-12-desktop": {
-			"id": null,
-			"sourceScreen": null,
+			"id": "c06234ba5c3d4d7faa65cfb913cf120d",
+			"sourceScreen": "projects/18017913531452476583/screens/c06234ba5c3d4d7faa65cfb913cf120d",
 			"files": [
 				"designs/APP-12-desktop.png",
 				"designs/APP-12-desktop.html"
 			],
-			"status": "Desktop bank account (IFSC only, account number once). Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8b)."
+			"status": "Created in Stitch by the owner from the hand-off prompts (2026-10-22) and checked against the spec. Awaiting owner review (ST-8b). Repo copy edited: removed the invented 'Expected legal entity…' line."
 		},
 		"APP-14-desktop": {
-			"id": null,
-			"sourceScreen": null,
+			"id": "91325cba0b9348d79052a7c73482d6a7",
+			"sourceScreen": "projects/18017913531452476583/screens/91325cba0b9348d79052a7c73482d6a7",
 			"files": [
 				"designs/APP-14-desktop.png",
 				"designs/APP-14-desktop.html"
 			],
-			"status": "Desktop review + declaration with home and business address. Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8b)."
+			"status": "Created in Stitch by the owner from the hand-off prompts (2026-10-22) and checked against the spec. Awaiting owner review (ST-8b)."
 		},
 		"R1-04-phone": {
-			"id": null,
-			"sourceScreen": null,
+			"id": "525ad62f054e4aebb8bef64e133dbf93",
+			"sourceScreen": "projects/18017913531452476583/screens/525ad62f054e4aebb8bef64e133dbf93",
 			"files": ["designs/R1-04-phone.png", "designs/R1-04-phone.html"],
-			"status": "Phone admin dashboard (sidebar hidden, bottom navigation). Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8d)."
+			"status": "Created in Stitch by the owner from the hand-off prompts (2026-10-22) and checked against the spec. Awaiting owner review (ST-8d)."
 		},
 		"R1-05-phone": {
-			"id": null,
-			"sourceScreen": null,
+			"id": "63746a8d8e8f4ee89e9618714ab06dfa",
+			"sourceScreen": "projects/18017913531452476583/screens/63746a8d8e8f4ee89e9618714ab06dfa",
 			"files": ["designs/R1-05-phone.png", "designs/R1-05-phone.html"],
-			"status": "Phone My Network. Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8d). The table scrolls sideways here; the build shows each agent as a card on phones."
+			"status": "Created in Stitch by the owner from the hand-off prompts (2026-10-22) and checked against the spec. Awaiting owner review (ST-8d). Agents shown as cards."
 		},
 		"R1-06-phone": {
-			"id": null,
-			"sourceScreen": null,
+			"id": "1805dc74beb34c908e2b149d03453375",
+			"sourceScreen": "projects/18017913531452476583/screens/1805dc74beb34c908e2b149d03453375",
 			"files": ["designs/R1-06-phone.png", "designs/R1-06-phone.html"],
-			"status": "Phone transaction history. Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8d). The table scrolls sideways here; the build shows each transaction as a card on phones."
+			"status": "Created in Stitch by the owner from the hand-off prompts (2026-10-22) and checked against the spec. Awaiting owner review (ST-8d). Transactions shown as cards."
 		},
 		"R1-07-phone": {
 			"id": null,

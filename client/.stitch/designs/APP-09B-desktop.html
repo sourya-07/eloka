@@ -1,271 +1,263 @@
 <!DOCTYPE html>
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<title>APP-09 Signatory KYC (desktop)</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          "colors": {
-            "on-background": "#1a1c1b",
-            "surface-container-lowest": "#ffffff",
-            "on-primary-fixed": "#1c1b1b",
-            "secondary": "#4053c4",
-            "on-tertiary-container": "#84847e",
-            "primary": "#000000",
-            "on-tertiary-fixed-variant": "#474742",
-            "on-tertiary-fixed": "#1b1c18",
-            "secondary-fixed": "#dee0ff",
-            "on-surface-variant": "#444748",
-            "on-secondary-fixed-variant": "#2439ab",
-            "outline": "#747878",
-            "inverse-primary": "#c9c6c5",
-            "error": "#ba1a1a",
-            "surface-tint": "#5f5e5e",
-            "on-primary-fixed-variant": "#474646",
-            "inverse-on-surface": "#f1f1ee",
-            "surface-container": "#eeeeeb",
-            "tertiary": "#000000",
-            "on-secondary": "#ffffff",
-            "primary-container": "#1c1b1b",
-            "on-secondary-fixed": "#000f5d",
-            "surface": "#f9f9f6",
-            "on-tertiary": "#ffffff",
-            "error-container": "#ffdad6",
-            "on-secondary-container": "#001a88",
-            "tertiary-fixed": "#e4e2dc",
-            "outline-variant": "#c4c7c7",
-            "background": "#f9f9f6",
-            "on-error": "#ffffff",
-            "secondary-fixed-dim": "#bbc3ff",
-            "secondary-container": "#778afd",
-            "surface-variant": "#e2e3e0",
-            "primary-fixed-dim": "#c9c6c5",
-            "tertiary-fixed-dim": "#c8c6c0",
-            "tertiary-container": "#1b1c18",
-            "surface-container-highest": "#e2e3e0",
-            "primary-fixed": "#e5e2e1",
-            "on-surface": "#1a1c1b",
-            "on-primary": "#ffffff",
-            "surface-bright": "#f9f9f6",
-            "on-primary-container": "#858383",
-            "inverse-surface": "#2f312f",
-            "surface-dim": "#dadad7",
-            "surface-container-low": "#f4f4f1",
-            "surface-container-high": "#e8e8e5",
-            "on-error-container": "#93000a"
-          },
-          "borderRadius": {
-            "DEFAULT": "0.25rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          },
-          "spacing": {
-            "space-xs": "4px",
-            "space-xl": "24px",
-            "space-lg": "16px",
-            "space-sm": "8px",
-            "space-md": "12px",
-            "space-2xl": "32px",
-            "space-4xl": "64px",
-            "margin": "1.5rem",
-            "space-3xl": "48px",
-            "gutter": "1rem"
-          },
-          "fontFamily": {
-            "h3": ["Inter"],
-            "label": ["Inter"],
-            "body": ["Inter"],
-            "h2": ["Inter"],
-            "h1": ["Inter"],
-            "display-mobile": ["Inter"],
-            "display": ["Inter"],
-            "body-sm": ["Inter"]
-          },
-          "fontSize": {
-            "h3": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "600" }],
-            "label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }],
-            "body": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "400" }],
-            "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "normal", "fontWeight": "600" }],
-            "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
-            "display-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
-            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-            "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "normal", "fontWeight": "400" }]
-          }
-        }
-      }
-    }
-  </script>
-</head>
-<body class="bg-background text-on-background font-body min-h-screen flex flex-col">
-<!-- TopAppBar -->
-<header class="bg-surface shadow-sm sticky top-0 z-50">
-<div class="flex justify-between items-center w-full px-6 py-4 max-w-[1400px] mx-auto">
-<span class="text-h1 font-h1 font-bold text-primary tracking-tight">ELOKA</span>
-<div class="flex items-center gap-6"><a class="text-on-surface-variant font-label text-sm" href="#">Help</a><a class="text-on-surface-variant font-label text-sm" href="#">Sign out</a></div>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-container-lowest":"#ffffff","primary-container":"#1c1b1b","background":"#f9f9f6","on-surface":"#1a1c1b","primary":"#000000","on-tertiary-container":"#84847e","on-error-container":"#93000a","on-secondary":"#ffffff","on-background":"#1a1c1b","surface-dim":"#dadad7","surface-container-high":"#e8e8e5","secondary-container":"#778afd","on-primary":"#ffffff","secondary-fixed":"#dee0ff","on-tertiary":"#ffffff","on-secondary-fixed":"#000f5d","surface":"#f9f9f6","tertiary-fixed":"#e4e2dc","tertiary":"#000000","on-tertiary-fixed":"#1b1c18","tertiary-fixed-dim":"#c8c6c0","on-surface-variant":"#444748","surface-bright":"#f9f9f6","surface-container-low":"#f4f4f1","on-secondary-fixed-variant":"#2439ab","error-container":"#ffdad6","surface-tint":"#5f5e5e","primary-fixed-dim":"#c9c6c5","surface-container":"#eeeeeb","tertiary-container":"#1b1c18","on-primary-fixed-variant":"#474646","inverse-surface":"#2f312f","inverse-primary":"#c9c6c5","error":"#ba1a1a","secondary-fixed-dim":"#bbc3ff","surface-variant":"#e2e3e0","primary-fixed":"#e5e2e1","outline":"#747878","inverse-on-surface":"#f1f1ee","on-tertiary-fixed-variant":"#474742","surface-container-highest":"#e2e3e0","on-secondary-container":"#001a88","on-primary-container":"#858383","outline-variant":"#c4c7c7","on-primary-fixed":"#1c1b1b","on-error":"#ffffff","secondary":"#4053c4"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"margin":"1.5rem","space-xs":"4px","space-md":"12px","space-xl":"24px","space-lg":"16px","space-sm":"8px","gutter":"1rem","space-4xl":"64px","space-3xl":"48px","space-2xl":"32px"},"fontFamily":{"display":["Inter"],"h3":["Inter"],"body-sm":["Inter"],"label":["Inter"],"h1":["Inter"],"display-mobile":["Inter"],"h2":["Inter"],"body":["Inter"]},"fontSize":{"display":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"700"}],"h3":["16px",{"lineHeight":"24px","letterSpacing":"normal","fontWeight":"600"}],"body-sm":["14px",{"lineHeight":"20px","letterSpacing":"normal","fontWeight":"400"}],"label":["12px",{"lineHeight":"16px","letterSpacing":"0.01em","fontWeight":"500"}],"h1":["24px",{"lineHeight":"32px","letterSpacing":"-0.01em","fontWeight":"600"}],"display-mobile":["24px",{"lineHeight":"32px","letterSpacing":"-0.01em","fontWeight":"700"}],"h2":["20px",{"lineHeight":"28px","letterSpacing":"normal","fontWeight":"600"}],"body":["16px",{"lineHeight":"24px","letterSpacing":"normal","fontWeight":"400"}]}}}}</script></head><body class="bg-surface font-body text-on-surface antialiased min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between"><div class="flex items-center gap-space-lg"><span class="font-h1 text-h1 tracking-tight font-semibold text-primary select-none">ELOKA</span><span class="hidden sm:inline-block h-4 w-px bg-outline-variant"></span><span class="hidden sm:inline-block font-label text-label uppercase tracking-widest text-on-surface-variant">Onboarding</span></div><div class="flex items-center gap-space-xl"><nav class="flex items-center gap-space-lg" data-active-classes="text-on-surface font-semibold"><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="help" href="#">Help</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="sign-out" href="#">Sign out</a></nav><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-[calc(100vh-64px)] flex flex-col justify-between"><div class="max-w-7xl mx-auto px-6 lg:px-12 py-space-2xl w-full"><div class="flex flex-col w-full">
+<!-- Desktop Layout Container -->
+<div class="flex justify-center w-full">
+<div class="w-full max-w-[1080px] flex items-start gap-space-2xl">
+<!-- 1. LEFT RAIL (280px width, sticky progress tracker) -->
+<aside class="w-[280px] shrink-0 sticky top-20 flex flex-col gap-space-lg">
+<!-- Rail Header & Application Reference Card -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-h3 text-h3 text-primary">Your application</span>
+<span class="font-label text-label px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-mono">onb_7Q2K9X</span>
 </div>
-</header>
-<div class="flex flex-1 w-full max-w-[1400px] mx-auto">
-<!-- SideNavBar -->
-<aside class="hidden md:flex flex-col justify-between w-[280px] p-6 shrink-0 bg-surface-container-low dark:bg-inverse-surface border-r border-outline-variant sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto">
-<div>
-<div class="mb-6">
-<h2 class="text-h2 font-h2 font-semibold text-primary dark:text-inverse-primary">Application Process</h2>
-<p class="text-body-sm text-on-surface-variant mt-1">13 Steps Remaining</p>
+<div class="flex flex-col gap-1.5 mt-space-xs">
+<div class="flex items-center justify-between font-label text-label text-on-surface-variant">
+<span>Step 7 of 13</span>
+<span class="font-semibold text-primary">54% completed</span>
 </div>
-<nav class="flex flex-col gap-1">
-<!-- 1. Mobile verification -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-sm transition-colors">
-<span class="material-symbols-outlined text-base">person</span>
-<span class="font-medium">1. Mobile verification</span>
-<span class="material-symbols-outlined ml-auto text-sm text-green-600">check</span>
+<!-- Thin Progress Track -->
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 54%;"></div>
 </div>
-<!-- 2. Consent -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-sm transition-colors">
-<span class="material-symbols-outlined text-base">contact_page</span>
-<span class="font-medium">2. Consent</span>
-<span class="material-symbols-outlined ml-auto text-sm text-green-600">check</span>
 </div>
-<!-- 3. Program -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-sm transition-colors">
-<span class="material-symbols-outlined text-base">work</span>
-<span class="font-medium">3. Program</span>
-<span class="material-symbols-outlined ml-auto text-sm text-green-600">check</span>
 </div>
-<!-- 4. Business PAN -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-sm transition-colors">
-<span class="material-symbols-outlined text-base">account_balance</span>
-<span class="font-medium">4. Business PAN</span>
-<span class="material-symbols-outlined ml-auto text-sm text-green-600">check</span>
+<!-- 13 Steps List -->
+<nav class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-0.5">
+<!-- Step 1 (Completed) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-secondary">
+<span class="material-symbols-outlined text-[18px] text-secondary">check_circle</span>
+<span class="font-body-sm text-body-sm font-medium text-secondary">Mobile verification</span>
 </div>
-<!-- 5. Business details -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-sm transition-colors">
-<span class="material-symbols-outlined text-base">badge</span>
-<span class="font-medium">5. Business details</span>
-<span class="material-symbols-outlined ml-auto text-sm text-green-600">check</span>
+<!-- Step 2 (Completed) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-secondary">
+<span class="material-symbols-outlined text-[18px] text-secondary">check_circle</span>
+<span class="font-body-sm text-body-sm font-medium text-secondary">Consent</span>
 </div>
-<!-- 6. Email -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-sm transition-colors">
-<span class="material-symbols-outlined text-base">home</span>
-<span class="font-medium">6. Email</span>
-<span class="material-symbols-outlined ml-auto text-sm text-green-600">check</span>
+<!-- Step 3 (Completed) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-secondary">
+<span class="material-symbols-outlined text-[18px] text-secondary">check_circle</span>
+<span class="font-body-sm text-body-sm font-medium text-secondary">Program</span>
 </div>
-<!-- 7. Signatory KYC (Active) -->
-<div class="flex items-center gap-3 px-3 py-2.5 bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary font-semibold rounded-lg text-sm transition-colors" style="color: #11299E;">
-<span class="material-symbols-outlined text-base">receipt_long</span>
-<span>7. Signatory KYC</span>
+<!-- Step 4 (Completed) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-secondary">
+<span class="material-symbols-outlined text-[18px] text-secondary">check_circle</span>
+<span class="font-body-sm text-body-sm font-medium text-secondary">Business PAN</span>
 </div>
-<!-- 8. Live photo -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-sm transition-colors">
-<span class="material-symbols-outlined text-base">folder_shared</span>
-<span class="font-medium">8. Live photo</span>
+<!-- Step 5 (Completed) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-secondary">
+<span class="material-symbols-outlined text-[18px] text-secondary">check_circle</span>
+<span class="font-body-sm text-body-sm font-medium text-secondary">Business details</span>
 </div>
-<!-- 9. Documents -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-sm transition-colors">
-<span class="material-symbols-outlined text-base">group</span>
-<span class="font-medium">9. Documents</span>
+<!-- Step 6 (Completed) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-secondary">
+<span class="material-symbols-outlined text-[18px] text-secondary">check_circle</span>
+<span class="font-body-sm text-body-sm font-medium text-secondary">Email</span>
 </div>
-<!-- 10. Bank account -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-sm transition-colors">
-<span class="material-symbols-outlined text-base">verified_user</span>
-<span class="font-medium">10. Bank account</span>
+<!-- Step 7 (Active / Current Step) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg bg-secondary-fixed text-on-secondary-fixed font-semibold">
+<span class="material-symbols-outlined text-[18px] text-secondary" style="font-variation-settings: 'FILL' 1;">radio_button_checked</span>
+<span class="font-body-sm text-body-sm font-semibold text-secondary">Signatory KYC</span>
 </div>
-<!-- 11. White-label setup -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-sm transition-colors">
-<span class="material-symbols-outlined text-base">description</span>
-<span class="font-medium">11. White-label setup</span>
+<!-- Step 8 (Uncompleted) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-outline">radio_button_unchecked</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Live photo</span>
 </div>
-<!-- 12. Declaration -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant opacity-60 rounded-lg text-sm">
-<span class="material-symbols-outlined text-base">rate_review</span>
-<span class="font-medium">12. Declaration</span>
-<span class="material-symbols-outlined ml-auto text-xs">lock</span>
+<!-- Step 9 (Uncompleted) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-outline">radio_button_unchecked</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Documents</span>
 </div>
-<!-- 13. Agreement -->
-<div class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant opacity-60 rounded-lg text-sm">
-<span class="material-symbols-outlined text-base">send</span>
-<span class="font-medium">13. Agreement</span>
-<span class="material-symbols-outlined ml-auto text-xs">lock</span>
+<!-- Step 10 (Uncompleted) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-outline">radio_button_unchecked</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Bank account</span>
+</div>
+<!-- Step 11 (Uncompleted) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-outline">radio_button_unchecked</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">White-label setup</span>
+</div>
+<!-- Step 12 (Locked) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant opacity-70">
+<span class="material-symbols-outlined text-[18px] text-outline">lock</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Declaration</span>
+</div>
+<!-- Step 13 (Locked) -->
+<div class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant opacity-70">
+<span class="material-symbols-outlined text-[18px] text-outline">lock</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Agreement</span>
 </div>
 </nav>
-</div>
-<div class="pt-6 border-t border-outline-variant">
-<button class="w-full py-2 text-center text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors">Resume Later</button>
+<!-- Left Rail Support Link -->
+<div class="px-space-sm py-2 font-body-sm text-body-sm text-on-surface-variant">
+          Need assistance? <a class="text-primary font-medium underline underline-offset-4 hover:text-secondary" href="#">Contact support</a>
 </div>
 </aside>
-<!-- Main Content Column -->
-<main class="flex-1 flex justify-center items-start p-4 md:p-8 bg-surface">
-<div class="w-full max-w-[720px] flex flex-col gap-6">
-<!-- Header Info -->
-<div class="flex flex-col gap-2">
-<div class="flex justify-between items-center text-sm text-on-surface-variant font-label">
-<span>Step 7 of 13</span>
-<span>54% completed</span>
+<!-- 2. MAIN CONTENT COLUMN (720px width) -->
+<section class="w-full max-w-[720px] flex flex-col">
+<!-- Back Link Navigation -->
+<a class="inline-flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors mb-space-sm" href="#">
+<span>←</span> <span>Back</span>
+</a>
+<!-- Header Titles -->
+<span class="font-label text-label uppercase tracking-wider text-on-surface-variant font-semibold">Step 7 of 13</span>
+<h1 class="font-h1 text-h1 text-primary tracking-tight mt-1 mb-1">Verify the signatory</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-xl">Choose how to confirm the signatory's identity.</p>
+<!-- Two Choice Cards Side by Side -->
+<div class="grid grid-cols-2 gap-space-md mb-space-xl">
+<!-- Card A: DigiLocker -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm cursor-pointer flex flex-col justify-between transition-all hover:bg-surface-container-low group">
+<div class="flex items-start justify-between">
+<span class="font-body font-medium text-primary">Verify with DigiLocker</span>
+<span class="material-symbols-outlined text-outline text-[20px] group-hover:text-primary">radio_button_unchecked</span>
 </div>
-<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
-<div class="bg-primary h-full rounded-full" style="width: 54%;"></div>
+<p class="font-label text-label text-on-surface-variant mt-2 leading-relaxed">Faster. We fetch the name and the last 4 digits of the Aadhaar.</p>
 </div>
+<!-- Card B: Upload ID Documents (SELECTED) -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-md cursor-pointer flex flex-col justify-between bg-gradient-to-b from-secondary-fixed/20 to-surface-container-lowest">
+<div class="flex items-start justify-between">
+<span class="font-body font-semibold text-primary">Upload ID documents</span>
+<span class="material-symbols-outlined text-secondary text-[20px]" style="font-variation-settings: 'FILL' 1;">radio_button_checked</span>
 </div>
-<!-- Titles -->
-<div class="flex flex-col gap-1">
-<h1 class="text-h1 font-h1 text-on-background">Verify the signatory</h1>
-<p class="text-body text-on-surface-variant">Choose how to confirm the signatory's identity.</p>
-</div>
-<!-- Choice cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="border border-outline-variant rounded-xl p-5 bg-surface-container-lowest flex gap-3 items-start">
-<span class="w-5 h-5 mt-0.5 rounded-full border-2 border-outline shrink-0"></span>
-<div class="flex flex-col gap-1"><p class="text-body font-semibold text-on-background">Verify with DigiLocker</p><p class="text-body-sm text-on-surface-variant">Faster. We fetch the name and the last 4 digits of the Aadhaar.</p></div>
-</div>
-<div class="border-2 border-[#11299E] rounded-xl p-5 bg-surface-container-lowest flex gap-3 items-start">
-<span class="w-5 h-5 mt-0.5 rounded-full border-2 border-[#11299E] flex items-center justify-center shrink-0"><span class="w-2.5 h-2.5 rounded-full bg-[#11299E]"></span></span>
-<div class="flex flex-col gap-1"><p class="text-body font-semibold text-on-background">Upload ID documents</p><p class="text-body-sm text-on-surface-variant">Our team checks them by hand.</p></div>
-</div>
-</div>
-<!-- Upload form -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 md:p-8 shadow-sm flex flex-col gap-5">
-<div class="flex flex-col gap-2">
-<label class="text-body-sm font-semibold text-on-background" for="idtype">ID type</label>
-<div id="idtype" class="border border-[#85857F] rounded-lg px-4 py-3 flex justify-between items-center text-body text-on-background bg-surface-container-lowest">Aadhaar card<span class="material-symbols-outlined text-on-surface-variant">expand_more</span></div>
-<p class="text-xs text-on-surface-variant">Also accepted: Passport, Voter ID, Driving licence.</p>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="flex flex-col gap-2">
-<p class="text-body-sm font-semibold text-on-background">Front</p>
-<div class="border-2 border-dashed border-outline-variant rounded-lg p-5 flex flex-col items-center gap-1 text-center bg-surface-container-low"><span class="material-symbols-outlined text-on-surface-variant">upload_file</span><p class="text-body-sm text-on-background">Tap to upload</p><p class="text-xs text-on-surface-variant">JPG, PNG or PDF, up to 10 MB</p></div>
-</div>
-<div class="flex flex-col gap-2">
-<p class="text-body-sm font-semibold text-on-background">Back</p>
-<div class="border-2 border-dashed border-outline-variant rounded-lg p-5 flex flex-col items-center gap-1 text-center bg-surface-container-low"><span class="material-symbols-outlined text-on-surface-variant">upload_file</span><p class="text-body-sm text-on-background">Tap to upload</p><p class="text-xs text-on-surface-variant">JPG, PNG or PDF, up to 10 MB</p></div>
+<p class="font-label text-label text-on-surface-variant mt-2 leading-relaxed">Our team checks them by hand.</p>
 </div>
 </div>
-<div class="flex gap-2 items-start p-3 rounded-lg bg-[#FFF7E6] text-[#8A5300] text-body-sm"><span class="material-symbols-outlined text-base">info</span><span>Cover the first 8 digits of the Aadhaar number before uploading. We send back cards that show the full number.</span></div>
-<div class="flex flex-col gap-2">
-<p class="text-body-sm font-semibold text-on-background">Signatory PAN card</p>
-<div class="border-2 border-dashed border-outline-variant rounded-lg p-5 flex flex-col items-center gap-1 text-center bg-surface-container-low"><span class="material-symbols-outlined text-on-surface-variant">upload_file</span><p class="text-body-sm text-on-background">Tap to upload</p><p class="text-xs text-on-surface-variant">JPG, PNG or PDF, up to 10 MB</p></div>
+<!-- Main Form Card -->
+<div class="bg-surface-container-lowest p-space-2xl rounded-xl shadow-sm mb-space-2xl flex flex-col">
+<!-- Field: ID Type Select -->
+<div class="flex flex-col mb-space-xl">
+<label class="font-label text-label font-medium text-on-surface-variant mb-1.5" for="id-type">ID type</label>
+<div class="relative w-full">
+<div class="w-full bg-surface-container-lowest text-primary font-body-sm text-body-sm px-space-md py-2.5 rounded-lg flex items-center justify-between cursor-pointer shadow-sm">
+<span>Aadhaar card</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">expand_more</span>
 </div>
-<p class="text-body-sm text-on-surface-variant">Our team checks these by hand. We'll tell you if anything is unclear.</p>
-<div class="pt-4 border-t border-outline-variant flex justify-end"><button class="bg-primary text-on-primary px-6 py-3 rounded-lg font-label text-sm font-semibold w-full md:w-auto">Submit for review</button></div>
 </div>
-<!-- States -->
-<div class="flex flex-col gap-3 mt-2">
-<h2 class="text-h3 font-h3 text-on-background">After you submit</h2>
-<div class="border border-outline-variant rounded-lg p-4 flex items-center gap-3 bg-surface-container-lowest"><span class="material-symbols-outlined text-on-surface-variant">description</span><div class="flex-1 min-w-0"><p class="text-body-sm text-on-background truncate">aadhaar-front.jpg</p><p class="text-xs text-on-surface-variant">Front · 1.1 MB</p></div><span class="text-xs px-2.5 py-1 rounded-full bg-[#FFF7E6] text-[#8A5300] font-medium">Waiting for review</span></div>
-<div class="border border-outline-variant rounded-lg p-4 flex items-center gap-3 bg-surface-container-lowest"><span class="material-symbols-outlined text-on-surface-variant">description</span><div class="flex-1 min-w-0"><p class="text-body-sm text-on-background truncate">aadhaar-back.jpg</p><p class="text-xs text-on-surface-variant">Back · 0.9 MB</p></div><span class="text-xs px-2.5 py-1 rounded-full bg-[#FFF7E6] text-[#8A5300] font-medium">Waiting for review</span></div>
-<div class="border border-[#E5B4B4] rounded-lg p-4 flex flex-col gap-2 bg-[#FEF2F2]">
-<div class="flex items-center gap-3"><span class="material-symbols-outlined text-[#991B1B]">description</span><p class="flex-1 text-body-sm text-on-background">pan-card.jpg</p><span class="text-xs px-2.5 py-1 rounded-full bg-white text-[#991B1B] font-medium">Rejected</span></div>
-<p class="text-body-sm text-[#991B1B]">Reviewer note: The PAN number is not readable. Upload a clearer photo.</p>
-<button class="self-start border border-[#991B1B] text-[#991B1B] px-4 py-2 rounded-lg text-sm font-semibold">Replace</button>
+<span class="font-label text-label text-on-surface-variant mt-1.5">Also accepted: Passport, Voter ID, Driving licence.</span>
+</div>
+<!-- Front and Back Upload Tiles (Side by side) -->
+<div class="grid grid-cols-2 gap-space-md mb-space-lg">
+<!-- Tile 1 (Front) -->
+<div class="flex flex-col">
+<span class="font-label text-label font-medium text-primary mb-1">Front</span>
+<div class="bg-surface-container-low rounded-xl p-space-lg text-center flex flex-col items-center justify-center min-h-[140px] cursor-pointer hover:bg-surface-container transition-colors shadow-inner">
+<span class="material-symbols-outlined text-[28px] text-on-surface-variant mb-1">cloud_upload</span>
+<span class="font-body-sm text-body-sm font-medium text-primary">Tap to upload</span>
+<span class="font-label text-label text-on-surface-variant mt-0.5">JPG, PNG or PDF, up to 10 MB</span>
+</div>
+</div>
+<!-- Tile 2 (Back) -->
+<div class="flex flex-col">
+<span class="font-label text-label font-medium text-primary mb-1">Back</span>
+<div class="bg-surface-container-low rounded-xl p-space-lg text-center flex flex-col items-center justify-center min-h-[140px] cursor-pointer hover:bg-surface-container transition-colors shadow-inner">
+<span class="material-symbols-outlined text-[28px] text-on-surface-variant mb-1">cloud_upload</span>
+<span class="font-body-sm text-body-sm font-medium text-primary">Tap to upload</span>
+<span class="font-label text-label text-on-surface-variant mt-0.5">JPG, PNG or PDF, up to 10 MB</span>
 </div>
 </div>
 </div>
-</main>
+<!-- Cream Note Banner (Aadhaar redaction warning) -->
+<div class="bg-surface-container-high text-on-surface rounded-lg p-space-md mb-space-xl flex items-start gap-space-sm font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-secondary shrink-0 text-[20px]">info</span>
+<span class="font-label text-label leading-relaxed">Cover the first 8 digits of the Aadhaar number before uploading. We send back cards that show the full number.</span>
 </div>
-</body></html>
+<!-- Signatory PAN Card Section -->
+<div class="flex flex-col mb-space-lg">
+<span class="font-body-sm text-body-sm font-medium text-primary mb-2">Signatory PAN card</span>
+<div class="bg-surface-container-low rounded-xl p-space-lg text-center flex flex-col items-center justify-center min-h-[120px] cursor-pointer hover:bg-surface-container transition-colors shadow-inner">
+<span class="material-symbols-outlined text-[28px] text-on-surface-variant mb-1">cloud_upload</span>
+<span class="font-body-sm text-body-sm font-medium text-primary">Tap to upload</span>
+<span class="font-label text-label text-on-surface-variant mt-0.5">JPG, PNG or PDF, up to 10 MB</span>
+</div>
+</div>
+<!-- Hand-Check Assurance Line -->
+<div class="flex items-center gap-space-sm font-label text-label text-on-surface-variant mb-space-xl">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified_user</span>
+<span>Our team checks these by hand. We'll tell you if anything is unclear.</span>
+</div>
+<!-- Primary Action Button -->
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary h-12 rounded-lg font-body-sm font-medium text-body-sm transition-all active:translate-y-[1px] flex items-center justify-center shadow-sm" type="button">
+            Submit for review
+          </button>
+</div>
+<!-- Section: After You Submit -->
+<div class="flex flex-col gap-space-sm mb-space-2xl">
+<div class="flex items-center justify-between pb-1">
+<h2 class="font-h2 text-h2 text-primary">After you submit</h2>
+<span class="font-label text-label text-on-surface-variant">Audit preview</span>
+</div>
+<!-- Audit File Preview Rows -->
+<div class="flex flex-col gap-space-sm">
+<!-- Row 1: Aadhaar Front -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">image</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-medium text-primary">aadhaar-front.jpg</span>
+<span class="font-label text-label text-on-surface-variant">Uploaded just now</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label text-label font-medium">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>Waiting for review</span>
+</div>
+</div>
+<!-- Row 2: Aadhaar Back -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">image</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-medium text-primary">aadhaar-back.jpg</span>
+<span class="font-label text-label text-on-surface-variant">Uploaded just now</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label text-label font-medium">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>Waiting for review</span>
+</div>
+</div>
+<!-- Row 3: PAN Card (Rejected / Needs Action) -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-error-container text-error flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">description</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-medium text-primary">pan-card.jpg</span>
+<span class="font-label text-label text-error font-medium">Requires action</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-container text-on-error-container font-label text-label font-medium">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>Rejected</span>
+</div>
+</div>
+<!-- Rejection Details Container -->
+<div class="bg-error-container/40 p-space-md rounded-lg flex items-center justify-between gap-space-md">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-error text-[18px] shrink-0 mt-0.5">error</span>
+<p class="font-label text-label text-on-surface leading-relaxed">
+                    Reviewer note: The PAN number is not readable. Upload a clearer photo.
+                  </p>
+</div>
+<button class="bg-surface-container-lowest hover:bg-surface-container-low text-primary px-3 py-1.5 rounded-lg font-label text-label font-medium transition-colors shrink-0 shadow-sm" type="button">
+                  Replace
+                </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div></div></main></body></html>
