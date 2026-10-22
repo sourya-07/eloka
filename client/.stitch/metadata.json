@@ -65,13 +65,13 @@
 			"status": "Business details, phone: name from PAN, mobile from sign-in (read-only), home address, business address with 'Same as home address'. Revised 2026-10-22 for the owner's rules (mobile is page 2 of both paths, no time estimates, home + business address, nothing asked twice). Awaiting owner review (ST-8b)."
 		},
 		"APP-07-desktop": {
-			"id": "c3f54a8108984d1ab82a44940e61438f",
-			"sourceScreen": "projects/18017913531452476583/screens/c3f54a8108984d1ab82a44940e61438f",
+			"id": "b28ab62271cd477bb33b1c608807acdc",
+			"sourceScreen": "projects/18017913531452476583/screens/b28ab62271cd477bb33b1c608807acdc",
 			"files": [
 				"designs/APP-07-desktop.png",
 				"designs/APP-07-desktop.html"
 			],
-			"status": "Desktop applicant layout, generated 2026-10-21, awaiting owner review (ST-8b). OUTDATED 2026-10-22: layout reference only; the fields follow APP-07 (phone): home + business address, mobile from sign-in, name from PAN."
+			"status": "Desktop business details, 2026-10-22: 13-step rail, name from PAN, mobile from sign-in, home + business address with 'Same as home address'. Awaiting owner review (ST-8b). Not specs: the sample name 'Rahul Sharma' (use RAVI SAMPLE) and the signature limits 'SVG, PNG, JPG, max 2MB' (spec: JPG, PNG or PDF up to 10 MB)."
 		},
 		"APP-08-10": {
 			"id": "99af10dc97994a6d9e7e2a343cab9929",
@@ -249,6 +249,24 @@
 				"designs/R1-theme-check.html"
 			],
 			"status": "Theme check 2026-10-22: the agent home in a second tenant brand (teal #0F766E, amber accent) to show white-label theming. Awaiting owner review (ST-8d). Not specs: 'Today's volume', commission and settlement lines, 'Terminal Online', agent id, version label; the dates (2023) are sample only."
+		},
+		"APP-01-desktop": {
+			"id": "07ea3cd792fb4e40bcfccb009fdec70c",
+			"sourceScreen": "projects/18017913531452476583/screens/07ea3cd792fb4e40bcfccb009fdec70c",
+			"files": [
+				"designs/APP-01-desktop.png",
+				"designs/APP-01-desktop.html"
+			],
+			"status": "Desktop page 1, 2026-10-22: the two path cards side by side, no time estimate. Awaiting owner review (ST-8b). Stitch dropped the 'Faster' pill and the step counts; the build shows them as on the phone screen."
+		},
+		"APP-22-desktop": {
+			"id": "72c20f5a4ccf469a8c815916d0e1efc1",
+			"sourceScreen": "projects/18017913531452476583/screens/72c20f5a4ccf469a8c815916d0e1efc1",
+			"files": [
+				"designs/APP-22-desktop.png",
+				"designs/APP-22-desktop.html"
+			],
+			"status": "Desktop DigiLocker 'Check your details', 2026-10-22: home address from DigiLocker, business address only if not found, mobile from sign-in. Awaiting owner review (ST-8b). Not spec: the left rail lists the page's cards; it must list the 6 steps (Mobile number, DigiLocker, Check details, Bank account, Platform setup, Declaration and agreement) as in APP-22."
 		}
 	},
 	"unusedScreens": {
