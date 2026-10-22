@@ -390,6 +390,42 @@
 			"sourceScreen": null,
 			"files": ["designs/R1-07-phone.png", "designs/R1-07-phone.html"],
 			"status": "Phone profile. Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8d)."
+		},
+		"APP-01-manual": {
+			"id": null,
+			"sourceScreen": null,
+			"files": [
+				"designs/APP-01-manual.png",
+				"designs/APP-01-manual.html"
+			],
+			"status": "Page 1 with 'Apply step by step' selected. Step-by-step variant made locally on 2026-10-22 from the APP-01 Stitch HTML (owner: the step-by-step walkthrough must show 'Apply step by step' selected); rendered with headless Chrome, no Stitch id. Awaiting owner review (ST-8b)."
+		},
+		"APP-01-manual-desktop": {
+			"id": null,
+			"sourceScreen": null,
+			"files": [
+				"designs/APP-01-manual-desktop.png",
+				"designs/APP-01-manual-desktop.html"
+			],
+			"status": "Page 1 desktop with 'Apply step by step' selected. Step-by-step variant made locally on 2026-10-22 from the APP-01-desktop Stitch HTML (owner: the step-by-step walkthrough must show 'Apply step by step' selected); rendered with headless Chrome, no Stitch id. Awaiting owner review (ST-8b)."
+		},
+		"APP-02-manual": {
+			"id": null,
+			"sourceScreen": null,
+			"files": [
+				"designs/APP-02-manual.png",
+				"designs/APP-02-manual.html"
+			],
+			"status": "Page 2 with the chip 'Applying step by step'. Step-by-step variant made locally on 2026-10-22 from the APP-02 Stitch HTML (owner: the step-by-step walkthrough must show 'Apply step by step' selected); rendered with headless Chrome, no Stitch id. Awaiting owner review (ST-8b)."
+		},
+		"APP-02-manual-desktop": {
+			"id": null,
+			"sourceScreen": null,
+			"files": [
+				"designs/APP-02-manual-desktop.png",
+				"designs/APP-02-manual-desktop.html"
+			],
+			"status": "Page 2 desktop with the chip 'Applying step by step'. Step-by-step variant made locally on 2026-10-22 from the APP-02-desktop Stitch HTML (owner: the step-by-step walkthrough must show 'Apply step by step' selected); rendered with headless Chrome, no Stitch id. Awaiting owner review (ST-8b)."
 		}
 	},
 	"unusedScreens": {
