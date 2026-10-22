@@ -36,12 +36,5 @@
 | FQ-13 | `purposes[]` for consent is free-form (the tests use `"KYC"`) | Use a fixed list from constants pending compliance (OQ-C5) | Compliance |
 | FQ-14 | S21 audit is served at `/v1/admin/applications/{id}/audit`, while the spec says `/v1/admin/audit?entity_type=&entity_id=` | Use the implemented path | Backend (doc fix) |
 | FQ-16 | **DigiLocker-only path (owner request 2026-10-21).** The backend requires all 13 steps and has no "path" field. A DigiLocker-only path needs answers to four questions: (1) can business PAN, business details and documents be taken from DigiLocker data instead of PAN verification (A12), the business-details form and uploads; (2) which documents DigiLocker can supply for each entity type (an incorporation certificate is not always in the signatory's DigiLocker); (3) is a live photo still needed; (4) does compliance (OQ-C1, OQ-C5) accept DigiLocker as the only KYC source. | Designs only (APP-01B, APP-22). No build until answered. | Product + compliance + backend |
-
-## Assumptions in use (replace when answered)
-
-| ID | Assumption |
-|---|---|
-| FA-1 | Applicants mostly use phones, so applicant screens are mobile-first. Staff use desktops, so staff screens are desktop-first and only usable read-only on tablets. |
-| FA-2 | Approved Stitch designs (HTML + PNG) are committed under `client/.stitch/designs/` as the visual spec. They are small, but if they get large we switch to keeping only PNGs. |
-| FA-3 | Staff sign-in uses Google Identity through the existing `@react-oauth/google`. The client id comes from env and the server checks the domain. |
-| FA-4 | Applicant tokens live in sessionStorage (like the main app), not cookies. ADR-0005 deviation noted in P7. |
+| FQ-17 | **Home address (owner request 2026-10-22).** The owner wants both a home and a business address. The backend stores one address only (`BusinessDetailsInput.addressLine1…pincode`, the business address), and the DigiLocker result carries only the name and masked Aadhaar (`VerificationApi.KycResult`), not an address. Needed: a home-address field on the application, and the address from the DigiLocker (Aadhaar) result. | Designs show the home address (APP-07 typed, APP-22 "From DigiLocker"). No build until the backend has the fields. | Backend + compliance |
+| FQ-18 | **Bank from IFSC (owner rule: nothing asked twice, 2026-10-22).** A17 wants `bank_code` and `bank_id` as well as the IFSC, and the old design asked for the bank in a separate picker plus the account number twice. The new design asks only IFSC + account number once. Needed: derive `bank_code` / `bank_id` from the IFSC (A19 list or an IFSC lookup), or make them optional on A17. | Designs only (APP-12). | Backend |

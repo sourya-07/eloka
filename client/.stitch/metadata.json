@@ -20,22 +20,31 @@
 			"status": "approved 2026-10-21 (variant A). Sample text names real providers; copy comes from docs/frontend/UI_UX_PLAN.md, not from this sheet."
 		},
 		"APP-01": {
-			"id": "b29edfbb3879498fb687145eb708a20b",
-			"sourceScreen": "projects/18017913531452476583/screens/b29edfbb3879498fb687145eb708a20b",
+			"id": "f87a4ea093f54200891c3eef01e15832",
+			"sourceScreen": "projects/18017913531452476583/screens/f87a4ea093f54200891c3eef01e15832",
 			"files": ["designs/APP-01.png", "designs/APP-01.html"],
-			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+			"status": "Page 1: entry + choose how to apply (replaces APP-01B). Revised 2026-10-22 for the owner's rules (mobile is page 2 of both paths, no time estimates, home + business address, nothing asked twice). Awaiting owner review (ST-8b). Stitch dropped the '6 steps' / '13 steps' lines; the build shows them."
 		},
 		"APP-02": {
-			"id": "3f02de95f6d94664b9516e3be8e62610",
-			"sourceScreen": "projects/18017913531452476583/screens/3f02de95f6d94664b9516e3be8e62610",
+			"id": "76d48a7341804488a3801ea400756566",
+			"sourceScreen": "projects/18017913531452476583/screens/76d48a7341804488a3801ea400756566",
 			"files": ["designs/APP-02.png", "designs/APP-02.html"],
-			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+			"status": "Page 2 of both paths: the partner's mobile + OTP, with the chosen-path chip. Revised 2026-10-22 for the owner's rules (mobile is page 2 of both paths, no time estimates, home + business address, nothing asked twice). Awaiting owner review (ST-8b). The '(Error Variant)' label is Stitch's, not a spec."
 		},
 		"APP-03": {
 			"id": "af2b743bf88e4721988d9f3d1d0e5567",
 			"sourceScreen": "projects/18017913531452476583/screens/af2b743bf88e4721988d9f3d1d0e5567",
 			"files": ["designs/APP-03.png", "designs/APP-03.html"],
 			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-03-desktop": {
+			"id": "7c81547eb31c4797960e2c35ac0ce768",
+			"sourceScreen": "projects/18017913531452476583/screens/7c81547eb31c4797960e2c35ac0ce768",
+			"files": [
+				"designs/APP-03-desktop.png",
+				"designs/APP-03-desktop.html"
+			],
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b); desktop layout with the 13-step rail"
 		},
 		"APP-04-05": {
 			"id": "9dce07c7240e47079313fe5d97d047f7",
@@ -50,10 +59,19 @@
 			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
 		},
 		"APP-07": {
-			"id": "362d5c8dba7949288923795eb4fc8879",
-			"sourceScreen": "projects/18017913531452476583/screens/362d5c8dba7949288923795eb4fc8879",
+			"id": "f4325fb355dd4b8aa8833f300a917915",
+			"sourceScreen": "projects/18017913531452476583/screens/f4325fb355dd4b8aa8833f300a917915",
 			"files": ["designs/APP-07.png", "designs/APP-07.html"],
-			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+			"status": "Business details, phone: name from PAN, mobile from sign-in (read-only), home address, business address with 'Same as home address'. Revised 2026-10-22 for the owner's rules (mobile is page 2 of both paths, no time estimates, home + business address, nothing asked twice). Awaiting owner review (ST-8b)."
+		},
+		"APP-07-desktop": {
+			"id": "c3f54a8108984d1ab82a44940e61438f",
+			"sourceScreen": "projects/18017913531452476583/screens/c3f54a8108984d1ab82a44940e61438f",
+			"files": [
+				"designs/APP-07-desktop.png",
+				"designs/APP-07-desktop.html"
+			],
+			"status": "Desktop applicant layout, generated 2026-10-21, awaiting owner review (ST-8b). OUTDATED 2026-10-22: layout reference only; the fields follow APP-07 (phone): home + business address, mobile from sign-in, name from PAN."
 		},
 		"APP-08-10": {
 			"id": "99af10dc97994a6d9e7e2a343cab9929",
@@ -65,7 +83,22 @@
 			"id": "0b957f418c3b4192aa7adcd507913340",
 			"sourceScreen": "projects/18017913531452476583/screens/0b957f418c3b4192aa7adcd507913340",
 			"files": ["designs/APP-11-12.png", "designs/APP-11-12.html"],
-			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b) SUPERSEDED IN PART 2026-10-22: the 'PAN card' optional tile is not a spec (PAN is already verified) and the bank frame is replaced by APP-12."
+		},
+		"APP-11-desktop": {
+			"id": "d93180db5ebd49e4b1e2d372c107eca1",
+			"sourceScreen": "projects/18017913531452476583/screens/d93180db5ebd49e4b1e2d372c107eca1",
+			"files": [
+				"designs/APP-11-desktop.png",
+				"designs/APP-11-desktop.html"
+			],
+			"status": "Desktop applicant layout, generated 2026-10-21, awaiting owner review (ST-8b). 2026-10-22: the 'PAN card' optional tile is not a spec."
+		},
+		"APP-12": {
+			"id": "b7d7966ea4174bda9ba305bfc2c46efe",
+			"sourceScreen": "projects/18017913531452476583/screens/b7d7966ea4174bda9ba305bfc2c46efe",
+			"files": ["designs/APP-12.png", "designs/APP-12.html"],
+			"status": "Bank account, phone: IFSC only (bank shown from it), account number once, no confirm field. Revised 2026-10-22 for the owner's rules (mobile is page 2 of both paths, no time estimates, home + business address, nothing asked twice). Awaiting owner review (ST-8b). The '77% completed' label is Stitch's."
 		},
 		"APP-13": {
 			"id": "361dfa817f574afb8a75488977503574",
@@ -82,17 +115,38 @@
 			],
 			"status": "Desktop layout (form + sticky preview), generated 2026-10-21, awaiting owner review (ST-8b)"
 		},
+		"APP-14": {
+			"id": "efa69ea760104abb8c0ac34a77eeede4",
+			"sourceScreen": "projects/18017913531452476583/screens/efa69ea760104abb8c0ac34a77eeede4",
+			"files": ["designs/APP-14.png", "designs/APP-14.html"],
+			"status": "Review + declaration, phone, with Home address and Business address cards. Revised 2026-10-22 for the owner's rules (mobile is page 2 of both paths, no time estimates, home + business address, nothing asked twice). Awaiting owner review (ST-8b)."
+		},
 		"APP-14-15": {
 			"id": "a0c2053095b04e90bb731b298b8f1c44",
 			"sourceScreen": "projects/18017913531452476583/screens/a0c2053095b04e90bb731b298b8f1c44",
 			"files": ["designs/APP-14-15.png", "designs/APP-14-15.html"],
-			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+			"status": "generated 2026-10-21, awaiting owner review (ST-8b) 2026-10-22: the review frame is replaced by APP-14; the agreement frame still applies."
+		},
+		"APP-15-desktop": {
+			"id": "f5ea38e748b145e79106e9353d4d0f0f",
+			"sourceScreen": "projects/18017913531452476583/screens/f5ea38e748b145e79106e9353d4d0f0f",
+			"files": [
+				"designs/APP-15-desktop.png",
+				"designs/APP-15-desktop.html"
+			],
+			"status": "Regenerated 2026-10-22 (ST-7): the rail shows the 13 real steps; the PDF preview is placeholder lines (the real text is the server PDF). Awaiting owner review (ST-8b). 'ELOKA v3.4.2' and 'Page 1 of 4' are Stitch's, not specs."
 		},
 		"APP-16-21": {
 			"id": "65e2e5582db844b391f42c1a0115f656",
 			"sourceScreen": "projects/18017913531452476583/screens/65e2e5582db844b391f42c1a0115f656",
 			"files": ["designs/APP-16-21.png", "designs/APP-16-21.html"],
 			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+		},
+		"APP-22": {
+			"id": "d7498148f3f1449fb625a1e209df9711",
+			"sourceScreen": "projects/18017913531452476583/screens/d7498148f3f1449fb625a1e209df9711",
+			"files": ["designs/APP-22.png", "designs/APP-22.html"],
+			"status": "DigiLocker quick path: home address from DigiLocker, business address only if not found, mobile from sign-in. Revised 2026-10-22 for the owner's rules (mobile is page 2 of both paths, no time estimates, home + business address, nothing asked twice). Awaiting owner review (ST-8b)."
 		},
 		"STF-01": {
 			"id": "fcb278f9f19840909d4b1d377aac4e37",
@@ -112,32 +166,11 @@
 			"files": ["designs/STF-04-11.png", "designs/STF-04-11.html"],
 			"status": "generated 2026-10-21, awaiting owner review (ST-8c)"
 		},
-		"APP-01B": {
-			"id": "9e6b04e73e2d42d786e53a7cd24f45e9",
-			"sourceScreen": "projects/18017913531452476583/screens/9e6b04e73e2d42d786e53a7cd24f45e9",
-			"files": ["designs/APP-01B.png", "designs/APP-01B.html"],
-			"status": "generated 2026-10-21, awaiting owner review; owner request: choose DigiLocker or step-by-step"
-		},
-		"APP-22": {
-			"id": "b8f2947bffde406ba875801366becbb6",
-			"sourceScreen": "projects/18017913531452476583/screens/b8f2947bffde406ba875801366becbb6",
-			"files": ["designs/APP-22.png", "designs/APP-22.html"],
-			"status": "generated 2026-10-21, awaiting owner review; owner request: DigiLocker quick path; PNG is a full-length local render of the HTML"
-		},
 		"STF-03": {
 			"id": "d8bfc4011cdf4b478a75bbe5225123da",
 			"sourceScreen": "projects/18017913531452476583/screens/d8bfc4011cdf4b478a75bbe5225123da",
 			"files": ["designs/STF-03.png", "designs/STF-03.html"],
 			"status": "Refined 2026-10-22 (ST-7): sidebar has only Queue and Assigned to me, email masked, Flags card in the warning tone, invented ID label removed. Awaiting owner review (ST-8c)."
-		},
-		"APP-03-desktop": {
-			"id": "7c81547eb31c4797960e2c35ac0ce768",
-			"sourceScreen": "projects/18017913531452476583/screens/7c81547eb31c4797960e2c35ac0ce768",
-			"files": [
-				"designs/APP-03-desktop.png",
-				"designs/APP-03-desktop.html"
-			],
-			"status": "generated 2026-10-21, awaiting owner review (ST-8b); desktop layout with the 13-step rail"
 		},
 		"R1-02": {
 			"id": "4e41a21afe8a43f08857ef260124d50f",
@@ -192,33 +225,6 @@
 			"sourceScreen": "projects/18017913531452476583/screens/cb5bc84ef5424485a2cb396ed1e26d90",
 			"files": ["designs/R1-08-11.png", "designs/R1-08-11.html"],
 			"status": "Reskin design (tenant DS), generated 2026-10-21, awaiting owner review (ST-8d). Sidebar items, badges and helper lines Stitch added are not specs."
-		},
-		"APP-07-desktop": {
-			"id": "c3f54a8108984d1ab82a44940e61438f",
-			"sourceScreen": "projects/18017913531452476583/screens/c3f54a8108984d1ab82a44940e61438f",
-			"files": [
-				"designs/APP-07-desktop.png",
-				"designs/APP-07-desktop.html"
-			],
-			"status": "Desktop applicant layout, generated 2026-10-21, awaiting owner review (ST-8b)."
-		},
-		"APP-11-desktop": {
-			"id": "d93180db5ebd49e4b1e2d372c107eca1",
-			"sourceScreen": "projects/18017913531452476583/screens/d93180db5ebd49e4b1e2d372c107eca1",
-			"files": [
-				"designs/APP-11-desktop.png",
-				"designs/APP-11-desktop.html"
-			],
-			"status": "Desktop applicant layout, generated 2026-10-21, awaiting owner review (ST-8b)."
-		},
-		"APP-15-desktop": {
-			"id": "f5ea38e748b145e79106e9353d4d0f0f",
-			"sourceScreen": "projects/18017913531452476583/screens/f5ea38e748b145e79106e9353d4d0f0f",
-			"files": [
-				"designs/APP-15-desktop.png",
-				"designs/APP-15-desktop.html"
-			],
-			"status": "Regenerated 2026-10-22 (ST-7): the rail shows the 13 real steps; the PDF preview is placeholder lines (the real text is the server PDF). Awaiting owner review (ST-8b). 'ELOKA v3.4.2' and 'Page 1 of 4' are Stitch's, not specs."
 		}
 	},
 	"unusedScreens": {

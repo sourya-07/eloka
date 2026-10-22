@@ -33,7 +33,7 @@ The real app is Next.js + Chakra UI. Stitch output is a **visual spec only** and
 
 ## 4. Live Sitemap
 - [ ] DS-00 Component sheet
-- [ ] APP-01 Entry · [ ] APP-02 Mobile + OTP · [ ] APP-01B Choose path (DigiLocker or step by step) · [ ] APP-03 Hub
+- [ ] APP-01 Entry + choose path (page 1) · [ ] APP-02 Mobile + OTP (page 2, both paths) · [ ] APP-03 Hub
 - [ ] APP-04 Consent · [ ] APP-05 Program · [ ] APP-06 Business PAN · [ ] APP-07 Business details
 - [ ] APP-08 Email · [ ] APP-09 Signatory KYC · [ ] APP-10 Live photo · [ ] APP-11 Documents
 - [ ] APP-12 Bank account · [ ] APP-13 White-label setup · [ ] APP-14 Review + declaration · [ ] APP-15 Agreement + e-sign
@@ -63,3 +63,5 @@ Stay strictly inside the product requirements in `docs/frontend/UI_UX_PLAN.md`:
 - Never invent screens, steps, fields, metrics or features that have no backend endpoint. Provisioning, go-live and custom domains are **not** built.
 - Use fictional sample data only, for example "Sample Traders Pvt Ltd" and PAN shown masked as XXXXX1234X.
 - Every screen must show its loading, empty, error, pending and success treatment, either inline or as a variant.
+- Never ask for the same thing twice (owner, 2026-10-22): the mobile comes from sign-in, the business name from the PAN, the bank from the IFSC, the home address from DigiLocker on that path; "Same as home address" for the business address.
+- No time estimates ("minutes") anywhere (owner, 2026-10-22).

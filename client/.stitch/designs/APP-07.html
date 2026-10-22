@@ -1,387 +1,291 @@
-<!DOCTYPE html>
-<html lang="en" class="light">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>APP-07 Business details</title>
-  <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "surface": "#FAFAF7",
-            "surface-dim": "#E9E8E2",
-            "surface-bright": "#FFFFFF",
-            "surface-container-lowest": "#FFFFFF",
-            "surface-container-low": "#F4F3EE",
-            "surface-container": "#EFEEE8",
-            "surface-container-high": "#E9E8E2",
-            "surface-container-highest": "#E5E5E0",
-            "on-surface": "#0A0A0A",
-            "on-surface-variant": "#5C5C57",
-            "outline": "#85857F",
-            "outline-variant": "#E5E5E0",
-            "primary": "#0A0A0A",
-            "on-primary": "#FFFFFF",
-            "primary-container": "#1F1F1F",
-            "secondary": "#11299E",
-            "secondary-container": "#E8ECFA",
-            "on-secondary-container": "#091968",
-            "error": "#991B1B",
-            "error-container": "#FEF2F2",
-            "on-error-container": "#991B1B",
-            "info": "#1E40AF",
-            "info-container": "#EFF6FF",
-            "info-border": "#BFDBFE"
-          },
-          borderRadius: {
-            "sm": "6px",
-            "DEFAULT": "10px",
-            "md": "10px",
-            "lg": "14px",
-            "xl": "18px",
-            "full": "9999px"
-          },
-          fontFamily: {
-            sans: ["Inter", "sans-serif"]
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Business Details - ELOKA</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-error-container": "#93000a",
+              "surface-container": "#eeeeeb",
+              "on-surface": "#1a1c1b",
+              "on-secondary-fixed": "#000f5d",
+              "on-surface-variant": "#444748",
+              "surface-container-high": "#e8e8e5",
+              "error-container": "#ffdad6",
+              "surface-dim": "#dadad7",
+              "surface-container-highest": "#e2e3e0",
+              "error": "#ba1a1a",
+              "secondary-fixed-dim": "#bbc3ff",
+              "on-secondary": "#ffffff",
+              "surface-bright": "#f9f9f6",
+              "outline-variant": "#c4c7c7",
+              "on-secondary-fixed-variant": "#2439ab",
+              "inverse-on-surface": "#f1f1ee",
+              "background": "#f9f9f6",
+              "inverse-surface": "#2f312f",
+              "on-secondary-container": "#001a88",
+              "on-primary-fixed": "#1c1b1b",
+              "tertiary": "#000000",
+              "surface-variant": "#e2e3e0",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "on-primary-container": "#858383",
+              "on-tertiary-container": "#84847e",
+              "primary-container": "#1c1b1b",
+              "tertiary-container": "#1b1c18",
+              "surface-tint": "#5f5e5e",
+              "on-tertiary-fixed": "#1b1c18",
+              "outline": "#747878",
+              "on-primary-fixed-variant": "#474646",
+              "on-error": "#ffffff",
+              "primary-fixed-dim": "#c9c6c5",
+              "inverse-primary": "#c9c6c5",
+              "on-tertiary-fixed-variant": "#474742",
+              "surface": "#f9f9f6",
+              "on-primary": "#ffffff",
+              "tertiary-fixed": "#e4e2dc",
+              "secondary-fixed": "#dee0ff",
+              "primary-fixed": "#e5e2e1",
+              "on-background": "#1a1c1b",
+              "primary": "#000000",
+              "secondary-container": "#778afd",
+              "secondary": "#4053c4",
+              "tertiary-fixed-dim": "#c8c6c0",
+              "surface-container-low": "#f4f4f1",
+              "connect-blue": "#11299E"
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px"
+            },
+            spacing: {
+              "space-xs": "4px",
+              "space-lg": "16px",
+              "space-sm": "8px",
+              "space-3xl": "48px",
+              "space-md": "12px",
+              "gutter": "1rem",
+              "space-xl": "24px",
+              "space-4xl": "64px",
+              "margin": "1.5rem",
+              "space-2xl": "32px"
+            },
+            fontFamily: {
+              h3: ["Inter"],
+              "display-mobile": ["Inter"],
+              "body-sm": ["Inter"],
+              label: ["Inter"],
+              h1: ["Inter"],
+              h2: ["Inter"],
+              display: ["Inter"],
+              body: ["Inter"]
+            },
+            fontSize: {
+              h3: ["16px", { lineHeight: "24px", letterSpacing: "normal", fontWeight: "600" }],
+              "display-mobile": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "700" }],
+              "body-sm": ["14px", { lineHeight: "20px", letterSpacing: "normal", fontWeight: "400" }],
+              label: ["12px", { lineHeight: "16px", letterSpacing: "0.01em", fontWeight: "500" }],
+              h1: ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "600" }],
+              h2: ["20px", { lineHeight: "28px", letterSpacing: "normal", fontWeight: "600" }],
+              display: ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }],
+              body: ["16px", { lineHeight: "24px", letterSpacing: "normal", fontWeight: "400" }]
+            }
           }
         }
       }
-    }
-  </script>
-  <style>
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
-      font-size: 18px;
-      display: inline-block;
-      vertical-align: middle;
-      line-height: 1;
-    }
-    .material-symbols-outlined.fill {
-      font-variation-settings: 'FILL' 1;
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
     }
   </style>
-</head>
-<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col justify-between selection:bg-secondary-container selection:text-on-secondary-container font-sans">
-
-  <!-- Desktop Presentation Frame (Constrains to mobile viewport width) -->
-  <div class="w-full max-w-[420px] mx-auto min-h-screen bg-surface flex flex-col relative shadow-sm border-x border-outline-variant/60">
-
-    <!-- Top App Bar -->
-    <header class="w-full bg-surface-bright border-b border-outline-variant px-5 py-3.5 flex items-center justify-between sticky top-0 z-30">
-      <span class="text-[20px] font-semibold text-on-surface tracking-tight leading-none">ELOKA</span>
-      <button type="button" class="text-[14px] text-secondary hover:underline font-medium inline-flex items-center gap-1">
-        Help
-      </button>
-    </header>
-
-    <!-- Main Content Area with Bottom Padding for Sticky CTA -->
-    <main class="flex-1 px-4 pt-4 pb-28 flex flex-col gap-4">
-
-      <!-- Back Link & Saved Indicator -->
-      <div class="flex items-center justify-between">
-        <a href="#" class="inline-flex items-center gap-1 text-[14px] text-on-surface-variant hover:text-on-surface transition-colors">
-          <span class="material-symbols-outlined text-[16px]">arrow_back</span>
-          <span>Application</span>
-        </a>
-        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface text-[12px] font-medium">
-          <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-          <span>Saved</span>
-        </div>
-      </div>
-
-      <!-- Step Progress Header -->
-      <div class="flex flex-col gap-1.5">
-        <div class="flex items-center justify-between text-[12px] text-on-surface-variant font-medium">
-          <span class="text-on-surface font-semibold">Step 5 of 13</span>
-          <span>38%</span>
-        </div>
-        <!-- Progress Bar (5 of 13 is ~38.5%) -->
-        <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
-          <div class="h-full bg-primary rounded-full transition-all duration-300" style="width: 38.46%;"></div>
-        </div>
-      </div>
-
-      <!-- Step Title -->
-      <div class="pt-1">
-        <h1 class="text-[24px] font-semibold text-on-surface tracking-tight leading-8">Business details</h1>
-      </div>
-
-      <!-- Requirement 5: Info Notice Note at top of form -->
-      <div class="w-full p-3.5 rounded-[10px] bg-info-container border border-info-border flex items-start gap-2.5">
-        <span class="material-symbols-outlined text-info shrink-0 text-[18px] mt-0.5" style="font-variation-settings: 'FILL' 1;">info</span>
-        <p class="text-[14px] text-on-surface leading-snug">
-          Your business name differs from the PAN record. Our team will check this.
-        </p>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- CARD 1: Business                                                  -->
-      <!-- ================================================================= -->
-      <section class="w-full bg-surface-bright rounded-[14px] border border-outline-variant p-4 shadow-[0_1px_2px_rgba(10,10,10,0.04)] flex flex-col gap-4">
-        <h2 class="text-[16px] font-semibold text-on-surface border-b border-surface-container pb-2">Business</h2>
-
-        <!-- Business name -->
-        <div class="flex flex-col gap-1.5">
-          <label for="business_name" class="text-[12px] font-medium text-on-surface">
-            Business name
-          </label>
-          <input
-            id="business_name"
-            name="business_name"
-            type="text"
-            value="Sample Traders Private Limited"
-            class="w-full h-12 px-3.5 rounded-[10px] bg-surface-bright border border-outline text-[16px] text-on-surface placeholder:text-on-surface-variant/60 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors"
-          />
-        </div>
-
-        <!-- Company type -->
-        <div class="flex flex-col gap-1.5">
-          <label for="company_type" class="text-[12px] font-medium text-on-surface">
-            Company type
-          </label>
-          <input
-            id="company_type"
-            name="company_type"
-            type="text"
-            value="Private Limited Company"
-            class="w-full h-12 px-3.5 rounded-[10px] bg-surface-bright border border-outline text-[16px] text-on-surface placeholder:text-on-surface-variant/60 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors"
-          />
-        </div>
-
-        <!-- GSTIN (optional) -->
-        <div class="flex flex-col gap-1.5">
-          <label for="gstin" class="text-[12px] font-medium text-on-surface">
-            GSTIN (optional)
-          </label>
-          <input
-            id="gstin"
-            name="gstin"
-            type="text"
-            placeholder="27AABCU9603R1ZX"
-            class="w-full h-12 px-3.5 rounded-[10px] bg-surface-bright border border-outline text-[16px] text-on-surface placeholder:text-on-surface-variant/50 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors uppercase font-mono tracking-wide"
-          />
-        </div>
-
-        <!-- CIN (optional) -->
-        <div class="flex flex-col gap-1.5">
-          <label for="cin" class="text-[12px] font-medium text-on-surface">
-            CIN (optional)
-          </label>
-          <input
-            id="cin"
-            name="cin"
-            type="text"
-            placeholder="U00000MH2020PTC000000"
-            class="w-full h-12 px-3.5 rounded-[10px] bg-surface-bright border border-outline text-[16px] text-on-surface placeholder:text-on-surface-variant/50 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors uppercase font-mono tracking-wide"
-          />
-        </div>
-      </section>
-
-      <!-- ================================================================= -->
-      <!-- CARD 2: Signatory and contact                                     -->
-      <!-- ================================================================= -->
-      <section class="w-full bg-surface-bright rounded-[14px] border border-outline-variant p-4 shadow-[0_1px_2px_rgba(10,10,10,0.04)] flex flex-col gap-4">
-        <h2 class="text-[16px] font-semibold text-on-surface border-b border-surface-container pb-2">Signatory and contact</h2>
-
-        <!-- Authorised signatory name -->
-        <div class="flex flex-col gap-1.5">
-          <label for="signatory_name" class="text-[12px] font-medium text-on-surface">
-            Authorised signatory name
-          </label>
-          <input
-            id="signatory_name"
-            name="signatory_name"
-            type="text"
-            value="Ravi Sample"
-            class="w-full h-12 px-3.5 rounded-[10px] bg-surface-bright border border-outline text-[16px] text-on-surface placeholder:text-on-surface-variant/60 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors"
-          />
-        </div>
-
-        <!-- Contact mobile with +91 prefix -->
-        <div class="flex flex-col gap-1.5">
-          <label for="contact_mobile" class="text-[12px] font-medium text-on-surface">
-            Contact mobile
-          </label>
-          <div class="flex w-full h-12 rounded-[10px] border border-outline bg-surface-bright overflow-hidden focus-within:border-secondary focus-within:ring-2 focus-within:ring-secondary/20 transition-colors">
-            <span class="px-3.5 bg-surface-container-low text-on-surface-variant text-[16px] font-medium flex items-center justify-center border-r border-outline/40 select-none">
-              +91
-            </span>
-            <input
-              id="contact_mobile"
-              name="contact_mobile"
-              type="tel"
-              value="98765 43210"
-              class="flex-1 px-3.5 bg-transparent border-0 text-[16px] text-on-surface placeholder:text-on-surface-variant/60 focus:ring-0 outline-none"
-            />
-          </div>
-        </div>
-
-        <!-- Alternate mobile (optional) -->
-        <div class="flex flex-col gap-1.5">
-          <label for="alt_mobile" class="text-[12px] font-medium text-on-surface">
-            Alternate mobile (optional)
-          </label>
-          <input
-            id="alt_mobile"
-            name="alt_mobile"
-            type="tel"
-            placeholder="Mobile number"
-            class="w-full h-12 px-3.5 rounded-[10px] bg-surface-bright border border-outline text-[16px] text-on-surface placeholder:text-on-surface-variant/50 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors"
-          />
-        </div>
-
-        <!-- Signature Upload Area -->
-        <div class="flex flex-col gap-2 pt-1">
-          <div class="w-full p-4 rounded-[10px] border border-dashed border-outline bg-surface-container-low/60 hover:bg-surface-container-low transition-colors flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer">
-            <span class="material-symbols-outlined text-on-surface-variant text-[22px]">draw</span>
-            <span class="text-[14px] text-on-surface font-medium leading-snug">
-              Upload signature — JPG, PNG or PDF, up to 10 MB
-            </span>
-          </div>
-
-          <!-- Uploaded-file row -->
-          <div class="w-full p-3 rounded-[10px] bg-surface-container-lowest border border-outline-variant flex items-center justify-between shadow-xs">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <span class="material-symbols-outlined text-secondary text-[20px] shrink-0">draft</span>
-              <div class="flex flex-col min-w-0">
-                <span class="text-[14px] font-medium text-on-surface truncate">signature.png</span>
-                <span class="text-[12px] text-on-surface-variant">120 KB</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-3 shrink-0 text-[14px]">
-              <button type="button" class="text-secondary hover:underline font-medium">Replace</button>
-              <span class="text-outline-variant">·</span>
-              <button type="button" class="text-error hover:underline font-medium">Remove</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================================================================= -->
-      <!-- CARD 3: Address                                                   -->
-      <!-- ================================================================= -->
-      <section class="w-full bg-surface-bright rounded-[14px] border border-outline-variant p-4 shadow-[0_1px_2px_rgba(10,10,10,0.04)] flex flex-col gap-4">
-        <h2 class="text-[16px] font-semibold text-on-surface border-b border-surface-container pb-2">Address</h2>
-
-        <!-- Address line 1 -->
-        <div class="flex flex-col gap-1.5">
-          <label for="address_1" class="text-[12px] font-medium text-on-surface">
-            Address line 1
-          </label>
-          <input
-            id="address_1"
-            name="address_1"
-            type="text"
-            value="104, Trade Centre, Bandra Kurla Complex"
-            class="w-full h-12 px-3.5 rounded-[10px] bg-surface-bright border border-outline text-[16px] text-on-surface placeholder:text-on-surface-variant/60 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors"
-          />
-        </div>
-
-        <!-- Address line 2 (optional) -->
-        <div class="flex flex-col gap-1.5">
-          <label for="address_2" class="text-[12px] font-medium text-on-surface">
-            Address line 2 (optional)
-          </label>
-          <input
-            id="address_2"
-            name="address_2"
-            type="text"
-            value="Bandra East"
-            class="w-full h-12 px-3.5 rounded-[10px] bg-surface-bright border border-outline text-[16px] text-on-surface placeholder:text-on-surface-variant/50 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors"
-          />
-        </div>
-
-        <!-- District -->
-        <div class="flex flex-col gap-1.5">
-          <label for="district" class="text-[12px] font-medium text-on-surface">
-            District
-          </label>
-          <input
-            id="district"
-            name="district"
-            type="text"
-            value="Mumbai Suburban"
-            class="w-full h-12 px-3.5 rounded-[10px] bg-surface-bright border border-outline text-[16px] text-on-surface placeholder:text-on-surface-variant/60 focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors"
-          />
-        </div>
-
-        <!-- State (dropdown) -->
-        <div class="flex flex-col gap-1.5">
-          <label for="state" class="text-[12px] font-medium text-on-surface">
-            State
-          </label>
-          <div class="relative w-full">
-            <select
-              id="state"
-              name="state"
-              class="w-full h-12 px-3.5 pr-10 rounded-[10px] bg-surface-bright border border-outline text-[16px] text-on-surface focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none transition-colors appearance-none cursor-pointer"
-            >
-              <option value="Maharashtra" selected>Maharashtra</option>
-              <option value="Delhi">Delhi</option>
-              <option value="Karnataka">Karnataka</option>
-              <option value="Tamil Nadu">Tamil Nadu</option>
-              <option value="Gujarat">Gujarat</option>
-            </select>
-            <span class="material-symbols-outlined pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">
-              expand_more
-            </span>
-          </div>
-        </div>
-
-        <!-- Pincode (in Error State per Requirement 4) -->
-        <div class="flex flex-col gap-1.5">
-          <label for="pincode" class="text-[12px] font-medium text-on-surface">
-            Pincode
-          </label>
-          <input
-            id="pincode"
-            name="pincode"
-            type="text"
-            value="4000"
-            maxlength="6"
-            class="w-full h-12 px-3.5 rounded-[10px] bg-surface-bright border border-error text-[16px] text-on-surface focus:border-error focus:ring-2 focus:ring-error/20 outline-none transition-colors"
-          />
-          <!-- Error Message with Oxblood styling -->
-          <div class="flex items-center gap-1.5 text-error text-[14px] mt-0.5">
-            <span class="material-symbols-outlined text-[16px] shrink-0" style="font-variation-settings: 'FILL' 1;">error</span>
-            <span>Enter a valid 6-digit pincode</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Footer Minimal Utility Links -->
-      <footer class="pt-2 pb-4 flex items-center justify-center gap-3 text-on-surface-variant text-[12px]">
-        <a href="#" class="hover:text-on-surface transition-colors">Privacy</a>
-        <span>·</span>
-        <a href="#" class="hover:text-on-surface transition-colors">Terms</a>
-        <span>·</span>
-        <a href="#" class="hover:text-on-surface transition-colors">Security</a>
-      </footer>
-
-    </main>
-
-    <!-- Sticky Bottom Bar with Primary Action -->
-    <div class="fixed bottom-0 left-0 right-0 z-40 bg-surface-bright/95 backdrop-blur-sm border-t border-outline-variant p-4 flex justify-center">
-      <div class="w-full max-w-[420px]">
-        <button
-          type="button"
-          class="w-full h-12 rounded-[10px] bg-primary text-on-primary text-[16px] font-semibold flex items-center justify-center active:translate-y-px transition-all duration-100 shadow-sm hover:bg-primary-container"
-        >
-          Save and continue
-        </button>
-      </div>
-    </div>
-
-  </div>
-
-</body>
-</html>
+  </head>
+<body class="bg-surface text-on-surface font-body antialiased selection:bg-primary selection:text-on-primary">
+<!-- Top Bar -->
+<header class="sticky top-0 z-50 bg-surface flex justify-between items-center w-full px-4 h-14">
+<span class="text-h1 font-h1 text-primary">ELOKA</span>
+<button class="text-body-sm font-semibold text-connect-blue">Help</button>
+</header>
+<!-- Sub Header & Progress -->
+<div class="px-4 pt-2 pb-4 bg-surface">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center space-x-2">
+<button class="p-1 -ml-1 text-on-surface rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined text-xl">arrow_back</span>
+</button>
+<span class="text-label text-on-surface-variant font-medium">Step 5 of 13</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 38.4%;"></div>
+</div>
+</div>
+<!-- Main Content Container -->
+<main class="max-w-xl mx-auto px-4 pb-28 pt-2">
+<!-- Page Title Section -->
+<div class="mb-6">
+<h1 class="text-display-mobile text-on-surface mb-1">Business details</h1>
+<p class="text-body-sm text-on-surface-variant">We've filled in what we already know.</p>
+</div>
+<form class="space-y-6">
+<!-- Card 1: Business -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+<h2 class="text-h2 font-h2 text-on-surface mb-4">Business</h2>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="text-label font-medium text-on-surface-variant">Business name</label>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-surface-container text-on-surface-variant">From your PAN</span>
+</div>
+<div class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface font-medium">
+                            SAMPLE TRADERS PRIVATE LIMITED
+                        </div>
+</div>
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">Company type</label>
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface focus:border-connect-blue focus:ring-1 focus:ring-connect-blue">
+<option>Private Limited</option>
+<option>Public Limited</option>
+<option>Partnership</option>
+<option>Sole Proprietorship</option>
+</select>
+</div>
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">GSTIN (optional)</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="e.g. 27AAAAA0000A1Z5" type="text"/>
+</div>
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">CIN (optional)</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="e.g. U12345MH2023PTC123456" type="text"/>
+</div>
+</div>
+</section>
+<!-- Card 2: You -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+<h2 class="text-h2 font-h2 text-on-surface mb-4">You</h2>
+<div class="space-y-4">
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">Authorised signatory name</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" type="text" value="Rahul Sharma"/>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="text-label font-medium text-on-surface-variant">Mobile</label>
+<div class="flex items-center space-x-1.5">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Verified</span>
+<span class="text-[11px] text-on-surface-variant">From sign-in</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface font-medium flex items-center justify-between">
+<span>+91 XXXXXX3210</span>
+<span class="material-symbols-outlined text-emerald-600 text-lg">check_circle</span>
+</div>
+</div>
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">Alternate mobile (optional)</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="+91 98765 43210" type="tel"/>
+</div>
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">Upload signature</label>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-6 text-center hover:border-connect-blue transition-colors cursor-pointer bg-surface-container-low">
+<span class="material-symbols-outlined text-3xl text-on-surface-variant mb-2">cloud_upload</span>
+<p class="text-body-sm font-semibold text-on-surface">Click to upload signature</p>
+<p class="text-label text-on-surface-variant mt-1">SVG, PNG, or JPG (max. 2MB)</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Card 3: Home address -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+<h2 class="text-h2 font-h2 text-on-surface mb-4">Home address</h2>
+<div class="space-y-4">
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">Address line 1</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="Flat / House no., Building, Street" type="text"/>
+</div>
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">Address line 2 (optional)</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="Apartment, suite, unit, etc." type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">District</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="District" type="text"/>
+</div>
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">State</label>
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface focus:border-connect-blue focus:ring-1 focus:ring-connect-blue">
+<option>Select State</option>
+<option>Maharashtra</option>
+<option>Karnataka</option>
+<option>Delhi</option>
+<option>Tamil Nadu</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">Pincode</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" maxlength="6" placeholder="400001" type="text"/>
+</div>
+</div>
+</section>
+<!-- Card 4: Business address -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+<h2 class="text-h2 font-h2 text-on-surface mb-3">Business address</h2>
+<!-- Checkbox -->
+<div class="flex items-center space-x-3 mb-4 p-2.5 bg-surface-container-low rounded-lg border border-outline-variant">
+<input class="w-5 h-5 rounded border-outline text-connect-blue focus:ring-connect-blue cursor-pointer" id="same_address" type="checkbox"/>
+<label class="text-body-sm font-medium text-on-surface cursor-pointer select-none" for="same_address">Same as home address</label>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">Address line 1</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="Flat / House no., Building, Street" type="text"/>
+</div>
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">Address line 2 (optional)</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="Apartment, suite, unit, etc." type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">District</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" placeholder="District" type="text"/>
+</div>
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">State</label>
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface focus:border-connect-blue focus:ring-1 focus:ring-connect-blue">
+<option>Select State</option>
+<option>Maharashtra</option>
+<option>Karnataka</option>
+<option>Delhi</option>
+<option>Tamil Nadu</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block text-label font-medium text-on-surface-variant mb-1">Pincode</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2.5 text-body text-on-surface placeholder:text-outline focus:border-connect-blue focus:ring-1 focus:ring-connect-blue" maxlength="6" placeholder="400001" type="text"/>
+</div>
+</div>
+</section>
+</form>
+</main>
+<!-- Sticky Bottom Action Button -->
+<div class="fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-md p-4 border-t border-outline-variant/30 z-40">
+<div class="max-w-xl mx-auto">
+<button class="w-full bg-primary text-on-primary py-3.5 px-4 rounded-lg font-h3 text-h3 shadow-sm hover:opacity-95 active:scale-[0.98] transition-all duration-200" type="submit">
+                Save and continue
+            </button>
+</div>
+</div>
+</body></html>

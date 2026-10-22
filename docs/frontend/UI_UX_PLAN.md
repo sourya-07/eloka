@@ -182,23 +182,26 @@ Applicant-facing labels use plain words, for example "Waiting for review" for `S
 - **Every write sends** `If-Match` and `Idempotency-Key`.
 - **APIs** are named with their A-ids.
 
-### APP-01 Entry
-- **Purpose:** explain what onboarding needs, then start.
+### APP-01 Entry and choose how to apply (page 1; revised 2026-10-22, owner)
+- **Purpose:** page 1 for everyone. The applicant picks a path here, and page 2 for **both** paths is the mobile number (APP-02). This replaces the separate APP-01B page.
 - **Content:**
-  - one-sentence value line
-  - checklist of what to keep ready: business PAN, signatory's Aadhaar-linked mobile (DigiLocker), business documents, bank proof, logo (optional)
-  - expected time
-- **Actions:** primary "Start application" (→ APP-02); secondary "Continue an application" (→ APP-02).
-- **Validation:** none.
+  - one-sentence line: "Your progress is saved, so you can come back any time."
+  - two radio cards: "Apply with DigiLocker" (6 steps: APP-22) and "Apply step by step" (13 steps: APP-03…APP-15). DigiLocker is preselected.
+  - checklist of what to keep ready: business PAN, your Aadhaar-linked mobile (for DigiLocker), bank account details, logo (optional)
+  - **no time estimate** (owner, 2026-10-22: "Takes about 20 minutes" removed; step counts only)
+- **Actions:** primary "Continue" (→ APP-02 with the chosen path); secondary "Continue an existing application" (→ APP-02).
+- **Validation:** none. The chosen path is kept client-side until sign-in (the backend has no path field, FQ-16).
 - **Accept:** no marketing stats; works at 375 px; one primary CTA.
 
 ### APP-02 Mobile and OTP (A1, A2)
+- **Position:** page 2 of both paths. The number belongs to the partner who is applying. It is the only place the mobile is typed: later steps show it read-only ("From sign-in") and send it where the API needs it (`contact_person_cell` in APP-07).
+- **Content:** a chip with the chosen path ("Applying with DigiLocker · Change").
 - **Fields:**
   - mobile: 10 digits, `^[6-9]\d{9}$`, `inputmode=numeric`
   - OTP: 6 digits, `otp_length` from A1
 - **Transitions:**
   - A1 `202` → OTP view, with the resend timer from `resend_after`
-  - A2 `200`, new application → APP-04
+  - A2 `200`, new application → APP-04 (step by step) or APP-22 (DigiLocker)
   - A2 `200` with `resumed: true` → APP-03
 - **Errors:**
 
@@ -212,13 +215,8 @@ Applicant-facing labels use plain words, for example "Waiting for review" for `S
 - **Session:** tokens stored in `la_*` keys.
 - **Accept:** paste fills the OTP; resend is disabled until the timer ends; never says whether a mobile is known (A1 answers the same either way).
 
-### APP-01B Choose how to apply (owner request 2026-10-21)
-- **Purpose:** after the mobile OTP, the applicant picks one of two paths.
-- **Option A, "Apply with DigiLocker" (faster):** DigiLocker supplies the signatory's identity (Aadhaar last 4 digits only), the PAN details and any documents it holds. The applicant then adds only the bank account, the platform setup, and the declaration plus agreement. The card shows "about 8 minutes · 6 steps".
-- **Option B, "Apply step by step":** the full 13-step flow (APP-04…APP-15).
-- **Actions:** "Continue"; "What is DigiLocker?" (help).
-- **Rules:** the applicant can switch to step by step at any time, and anything fetched from DigiLocker is kept.
-- **Note:** the backend has no DigiLocker-only path today (see [OPEN_QUESTIONS.md](./OPEN_QUESTIONS.md) FQ-16), so this is a design only.
+### APP-01B Choose how to apply (merged into APP-01, 2026-10-22)
+The owner asked for the mobile number to be page 2 of both paths, so the choice moved onto page 1 (APP-01). There is no separate APP-01B page any more.
 
 ### APP-22 DigiLocker quick path (owner request 2026-10-21)
 A 6-step flow:
@@ -229,9 +227,16 @@ A 6-step flow:
 5. Platform setup
 6. Declaration and agreement
 
+Step 1 is the shared APP-02 page (mobile + OTP).
+
 Frames:
-- **Connect DigiLocker:** shows what will be fetched, a consent checkbox, then a redirect. Also a pending state, and an error state with retry and "Apply step by step instead".
-- **Check your details:** fetched data in summary cards (signatory, business PAN, business details, documents), each with "Edit". Each document shows "Fetched" or "Not found"; a missing document gets "Upload".
+- **Connect DigiLocker:** shows what will be fetched (name, **home address**, Aadhaar last 4, PAN details, documents), a consent checkbox, then a redirect. Also a pending state, and an error state with retry and "Apply step by step instead".
+- **Check your details:** fetched data in summary cards:
+  - "You": name, masked Aadhaar, mobile ("From sign-in", not asked again)
+  - "Home address": read-only, "From DigiLocker" (backend gap FQ-17)
+  - "Business": name from PAN, PAN, company type
+  - "Business address": asked **only if DigiLocker has none**, with "Same as home address"
+  - "Documents fetched": each "Fetched" or "Not found"; a missing document gets "Upload"
 - **Almost done:** a hub with the 6-step list, the next step, and "Switch to step-by-step application".
 
 **Acceptance:**
@@ -287,12 +292,13 @@ Frames:
 
 | Field | Rule (server `StepData`) | Required |
 |---|---|---|
-| Business name `name` | `^[-a-zA-Z0-9 ,./:&']{2,100}$` | yes |
+| Business name `name` | pre-filled from the PAN result (`name_as_per_pan`, APP-06), shown read-only with "From your PAN" | sent automatically |
 | Company type `company_type` | 1–40 characters | yes |
 | Authorised signatory `authorized_signatory_name` | `^(?:[A-Za-z]+\.? ){0,2}[A-Za-z]+$` | yes |
-| Contact mobile `contact_person_cell` | `^[6-9]\d{9}$` | yes |
+| Contact mobile `contact_person_cell` | not typed: the verified sign-in mobile (APP-02), shown read-only with "Verified · From sign-in" | sent automatically |
 | Alternate mobile `alternate_mobile` | `^[6-9]\d{9}$` | no |
-| Address line 1 `current_address_line1` | 10–200 | yes |
+| **Home address** (line 1, line 2, district, state, pincode) | same rules as below | yes. **No backend field yet (FQ-17).** |
+| Business address line 1 `current_address_line1` | 10–200 | yes, unless "Same as home address" (then the home address is sent) |
 | Address line 2 `current_address_line2` | 1–200 | no |
 | District `current_address_district` | 2–100 | yes |
 | State `current_address_state` | from A20 list | yes |
@@ -302,7 +308,7 @@ Frames:
 | Signature `signature_document_id` | upload, type `SIGNATURE`, JPEG / PNG / PDF ≤ 10 MB | yes |
 
 - **Notices:** if `name_matches_pan:false` comes back, show an info note: "Your business name differs from the PAN record. Our team will check this." The step still completes.
-- **Accept:** fields are grouped into "Business", "Signatory and contact" and "Address"; tab order follows the visual order.
+- **Accept:** fields are grouped into "Business", "You", "Home address" and "Business address"; "Same as home address" hides the business fields and copies the home address; tab order follows the visual order.
 
 ### APP-08 Email verification (A13, A14)
 - **Flow:**
@@ -337,7 +343,7 @@ Frames:
 | Partnership | `ADDRESS_PROOF`, `PARTNERSHIP_DEED` |
 | Sole Proprietorship | `ADDRESS_PROOF` |
 
-The list comes from the server-side `required-documents` config (FQ-10: expose it to the client). Optional uploads: `PAN_CARD`, `GST_CERTIFICATE`, `BOARD_RESOLUTION`, `OTHER`.
+The list comes from the server-side `required-documents` config (FQ-10: expose it to the client). Optional uploads: `GST_CERTIFICATE`, `BOARD_RESOLUTION`, `OTHER`. No `PAN_CARD` tile: the PAN is already verified in APP-06 (owner rule, 2026-10-22: never collect the same thing twice).
 
 - **Each document is a `DocumentTile`:**
   - upload, replace (any type except `OTHER` replaces the old file) and remove (A25 soft delete)
@@ -348,9 +354,8 @@ The list comes from the server-side `required-documents` config (FQ-10: expose i
 
 ### APP-12 Bank account (A17, A18, A19; re-auth)
 - **Fields:**
-  - bank, searchable select from A19 (`bank_code`, `bank_id`)
-  - IFSC `^[A-Z]{4}0[A-Z0-9]{6}$`, uppercase
-  - account number `^\d{9,18}$`, entered twice to confirm, masked
+  - IFSC `^[A-Z]{4}0[A-Z0-9]{6}$`, uppercase. The bank and branch are shown read-only once it is valid; `bank_code` / `bank_id` come from the IFSC, not from a separate bank picker (FQ-18).
+  - account number `^\d{9,18}$`, entered **once**, masked. No confirm field: the penny-drop returns the holder name, which confirms the account.
   - proof upload, type `BANK_PROOF`
 - **Flow:** submit → re-auth dialog (APP-19) → A17.
 - **Results:**
@@ -371,7 +376,7 @@ The list comes from the server-side `required-documents` config (FQ-10: expose i
 - **Accept:** the preview updates without lag; availability results are announced to screen readers (`aria-live=polite`).
 
 ### APP-14 Review summary and declaration (`DECLARATION`)
-- **Content:** one `SectionCard` per completed step, using `KeyValueList` with masked values, plus an "Edit" link. A note warns that editing invalidates the declaration and agreement.
+- **Content:** one `SectionCard` per completed step, using `KeyValueList` with masked values, plus an "Edit" link: Business, You (signatory, mobile, email, masked Aadhaar), Home address, Business address ("Same as home address" when ticked), Documents, Bank account, Platform. A note warns that editing invalidates the declaration and agreement.
 - **Declaration:** text and version (source in FQ-9), a checkbox, then A8 (`declaration_version`, `accepted: true`).
 - **Errors:** `409 PREREQUISITE_INCOMPLETE` → list `missing_steps` with links.
 - **Accept:** nothing editable inline; every section is reachable by keyboard.
@@ -562,7 +567,7 @@ The list comes from the server-side `required-documents` config (FQ-10: expose i
 | DS-00 | Design system | — | DS-1, CMP-1…14 | ST-6a / ST-8a |
 | APP-01 | Journey step 0 | — | APP-C | ST-6b |
 | APP-02 | `MOBILE_VERIFICATION` | A1, A2 | APP-C | ST-6b |
-| APP-01B | Choose application path (owner request) | none yet (FQ-16) | — | ST-6e |
+| APP-01B | merged into APP-01 (2026-10-22) | — | — | — |
 | APP-22 | DigiLocker quick path (owner request) | none yet (FQ-16); reuses A15/A16, A17, A26, A27–A29 | — | ST-6e |
 | APP-03 | Snapshot / resume | A5 | APP-D | ST-6b |
 | APP-04 | `CONSENT` | A8 | APP-E | ST-6b |
