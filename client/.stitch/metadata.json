@@ -285,6 +285,45 @@
 				"designs/APP-09-desktop.html"
 			],
 			"status": "Desktop signatory KYC with DigiLocker (step 7), 2026-10-22. Awaiting owner review (ST-8b). Not specs: 'Need assistance?' link; the manual option is APP-09B."
+		},
+		"APP-16-desktop": {
+			"id": "c44f3a32dd504967b2bc5c0fd910a738",
+			"sourceScreen": "projects/18017913531452476583/screens/c44f3a32dd504967b2bc5c0fd910a738",
+			"files": [
+				"designs/APP-16-desktop.png",
+				"designs/APP-16-desktop.html"
+			],
+			"status": "Generated 2026-10-22 by converting the existing screen. Awaiting owner review (ST-8b). Desktop 'Application submitted / under review'. Not spec: the activity timeline entries are Stitch's; the build shows the real audit events."
+		},
+		"R1-01-03-phone": {
+			"id": "7ae7b173a64f478db4f5c61ede3243e3",
+			"sourceScreen": "projects/18017913531452476583/screens/7ae7b173a64f478db4f5c61ede3243e3",
+			"files": [
+				"designs/R1-01-03-phone.png",
+				"designs/R1-01-03-phone.html"
+			],
+			"status": "Generated 2026-10-22 by converting the existing screen. Awaiting owner review (ST-8d). Phone agent home with bottom navigation. Not specs: earning numbers, the service tiles beyond the menu API, the notification count."
+		},
+		"R1-02-phone": {
+			"id": "d59d08f3f7e247939ba82396ceb84363",
+			"sourceScreen": "projects/18017913531452476583/screens/d59d08f3f7e247939ba82396ceb84363",
+			"files": ["designs/R1-02-phone.png", "designs/R1-02-phone.html"],
+			"status": "Generated 2026-10-22 by converting the existing screen. Awaiting owner review (ST-8d). Phone tenant login + OTP."
+		},
+		"R1-08-11-phone": {
+			"id": "bcf58066307e4da38e74cb2afce13395",
+			"sourceScreen": "projects/18017913531452476583/screens/bcf58066307e4da38e74cb2afce13395",
+			"files": [
+				"designs/R1-08-11-phone.png",
+				"designs/R1-08-11-phone.html"
+			],
+			"status": "Generated 2026-10-22 by converting the existing screen. Awaiting owner review (ST-8d). Phone business settings with shared empty/error/404 states. Not spec: the settings list comes from the app's menus."
+		},
+		"R1-10-phone": {
+			"id": "e469e77b74ad467c8f87e90379d768fc",
+			"sourceScreen": "projects/18017913531452476583/screens/e469e77b74ad467c8f87e90379d768fc",
+			"files": ["designs/R1-10-phone.png", "designs/R1-10-phone.html"],
+			"status": "Generated 2026-10-22 by converting the existing screen. Awaiting owner review (ST-8d). Phone query center with tickets as cards. Not specs: ticket ids, names and the bottom-bar tabs (they come from the app)."
 		}
 	},
 	"unusedScreens": {
