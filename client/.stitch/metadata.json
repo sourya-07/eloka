@@ -92,10 +92,10 @@
 			"status": "generated 2026-10-21, awaiting owner review (ST-8c)"
 		},
 		"STF-02": {
-			"id": "73f1ad07884443928448e09476da302e",
-			"sourceScreen": "projects/18017913531452476583/screens/73f1ad07884443928448e09476da302e",
+			"id": "6ff2a4bd5c5d49a8a931f0ef1b020898",
+			"sourceScreen": "projects/18017913531452476583/screens/6ff2a4bd5c5d49a8a931f0ef1b020898",
 			"files": ["designs/STF-02.png", "designs/STF-02.html"],
-			"status": "generated 2026-10-21, awaiting owner review (ST-8c)"
+			"status": "Regenerated 2026-10-22 (ST-7): no '+ New application' button, no sidebar subtitle, status and flag pill tones fixed. Awaiting owner review (ST-8c). The empty-state helper line is Stitch's, not a spec."
 		},
 		"STF-04-11": {
 			"id": "eb81bb553247482aae7c9ed174afb245",
@@ -116,10 +116,10 @@
 			"status": "generated 2026-10-21, awaiting owner review; owner request: DigiLocker quick path; PNG is a full-length local render of the HTML"
 		},
 		"STF-03": {
-			"id": "b5c3fc23275c4fbe89bcda98bdfa1d92",
-			"sourceScreen": "projects/18017913531452476583/screens/b5c3fc23275c4fbe89bcda98bdfa1d92",
+			"id": "d8bfc4011cdf4b478a75bbe5225123da",
+			"sourceScreen": "projects/18017913531452476583/screens/d8bfc4011cdf4b478a75bbe5225123da",
 			"files": ["designs/STF-03.png", "designs/STF-03.html"],
-			"status": "generated 2026-10-21, awaiting owner review (ST-8c). Code must mask the email, drop the invented sidebar items (Analytics, Compliance, Settings) and the 'ID: 8849-B' label, and use the warning tone for Flags."
+			"status": "Refined 2026-10-22 (ST-7): sidebar has only Queue and Assigned to me, email masked, Flags card in the warning tone, invented ID label removed. Awaiting owner review (ST-8c)."
 		},
 		"APP-03-desktop": {
 			"id": "7c81547eb31c4797960e2c35ac0ce768",
@@ -131,16 +131,16 @@
 			"status": "generated 2026-10-21, awaiting owner review (ST-8b); desktop layout with the 13-step rail"
 		},
 		"R1-02": {
-			"id": "2f737c5dd74b4e81b4eada87c572123a",
-			"sourceScreen": "projects/18017913531452476583/screens/2f737c5dd74b4e81b4eada87c572123a",
+			"id": "4e41a21afe8a43f08857ef260124d50f",
+			"sourceScreen": "projects/18017913531452476583/screens/4e41a21afe8a43f08857ef260124d50f",
 			"files": ["designs/R1-02.png", "designs/R1-02.html"],
-			"status": "Reskin design (tenant DS), generated 2026-10-21, awaiting owner review (ST-8d). Sidebar items, badges and helper lines Stitch added are not specs: menus come from constants/SidebarMenu.ts and the menu API; orange (accent) buttons need dark text. The 'ELOKA / Tenant login workspace' header must not appear on a tenant login."
+			"status": "Reskin design (tenant DS), refined 2026-10-22 (ST-7): the 'ELOKA / Tenant login workspace' header is gone and the label is sentence case. Awaiting owner review (ST-8d). 'Secured by <org name>' depends on FQ-8."
 		},
 		"R1-01-03": {
-			"id": "808a4a83096145a196e8520c0b0860c0",
-			"sourceScreen": "projects/18017913531452476583/screens/808a4a83096145a196e8520c0b0860c0",
+			"id": "78480c3fafa445579798b04849919517",
+			"sourceScreen": "projects/18017913531452476583/screens/78480c3fafa445579798b04849919517",
 			"files": ["designs/R1-01-03.png", "designs/R1-01-03.html"],
-			"status": "Reskin design (tenant DS), generated 2026-10-21, awaiting owner review (ST-8d). Sidebar items, badges and helper lines Stitch added are not specs: menus come from constants/SidebarMenu.ts and the menu API; orange (accent) buttons need dark text."
+			"status": "Reskin design (tenant DS), refined 2026-10-22 (ST-7): orange (accent) buttons now have dark text. Awaiting owner review (ST-8d). Sidebar items, badges and helper lines Stitch added are not specs: menus come from constants/SidebarMenu.ts and the menu API."
 		},
 		"R1-04": {
 			"id": "ab5b9eb709b441298870af0cdb9e356d",
@@ -203,13 +203,13 @@
 			"status": "Desktop applicant layout, generated 2026-10-21, awaiting owner review (ST-8b)."
 		},
 		"APP-15-desktop": {
-			"id": "93f7cf77a6e8431b96211a3524ebf23f",
-			"sourceScreen": "projects/18017913531452476583/screens/93f7cf77a6e8431b96211a3524ebf23f",
+			"id": "f5ea38e748b145e79106e9353d4d0f0f",
+			"sourceScreen": "projects/18017913531452476583/screens/f5ea38e748b145e79106e9353d4d0f0f",
 			"files": [
 				"designs/APP-15-desktop.png",
 				"designs/APP-15-desktop.html"
 			],
-			"status": "Desktop applicant layout, generated 2026-10-21, awaiting owner review (ST-8b). Layout only: the step rail labels and the agreement text are invented; the rail uses the 13 StepKey steps and the agreement text is the server PDF."
+			"status": "Regenerated 2026-10-22 (ST-7): the rail shows the 13 real steps; the PDF preview is placeholder lines (the real text is the server PDF). Awaiting owner review (ST-8b). 'ELOKA v3.4.2' and 'Page 1 of 4' are Stitch's, not specs."
 		}
 	},
 	"unusedScreens": {

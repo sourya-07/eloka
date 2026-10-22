@@ -4,9 +4,9 @@
 <meta charset="utf-8"/>
 <title>Case View - ELOKA Staff Console</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
@@ -113,32 +113,10 @@
 <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">shield_locked</span>
 <div class="flex flex-col">
 <span class="font-h2 text-h2 text-primary">ELOKA Staff</span>
-<span class="font-label text-label text-on-surface-variant">Institutional Verification</span>
 </div>
 </div>
 <!-- Navigation Tabs -->
-<nav class="flex flex-col gap-space-xs">
-<a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#">
-<span class="material-symbols-outlined text-xl">queue</span>
-<span class="font-h3 text-h3">Queue</span>
-</a>
-<a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg bg-secondary-fixed text-on-secondary-fixed font-h3 transition-all" href="#">
-<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">assignment</span>
-<span class="font-h3 text-h3">Assigned to me</span>
-</a>
-<a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#">
-<span class="material-symbols-outlined text-xl">analytics</span>
-<span class="font-h3 text-h3">Analytics</span>
-</a>
-<a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#">
-<span class="material-symbols-outlined text-xl">security</span>
-<span class="font-h3 text-h3">Compliance</span>
-</a>
-<a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#">
-<span class="material-symbols-outlined text-xl">settings</span>
-<span class="font-h3 text-h3">Settings</span>
-</a>
-</nav>
+<nav class="flex flex-col gap-space-xs"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#"><span class="material-symbols-outlined text-xl">queue</span><span class="font-h3 text-h3">Queue</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg bg-secondary-fixed text-on-secondary-fixed font-h3 transition-all" href="#"><span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">assignment</span><span class="font-h3 text-h3">Assigned to me</span></a></nav>
 </div>
 <!-- Sidebar Footer -->
 <div class="flex flex-col gap-space-md pt-space-md border-t border-outline-variant">
@@ -146,7 +124,6 @@
 <div class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-h3 text-body-sm">AS</div>
 <div class="flex flex-col overflow-hidden">
 <span class="font-body-sm text-body-sm text-on-surface font-semibold truncate">Asha Sample</span>
-<span class="font-label text-label text-on-surface-variant truncate">Reviewer</span>
 </div>
 </div>
 <a class="flex items-center gap-space-sm text-on-surface-variant hover:text-error transition-all font-body-sm" href="#">
@@ -182,11 +159,8 @@
 <!-- Left Fluid Content Area -->
 <div class="flex-1 flex flex-col gap-space-2xl min-w-0">
 <!-- 1. Flags Card -->
-<div class="bg-error-container/40 border border-error/30 rounded-xl p-space-xl flex flex-col gap-space-md shadow-sm">
-<div class="flex items-center gap-space-sm text-error">
-<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">warning</span>
-<h2 class="font-h2 text-h2 text-error">Flags Detected</h2>
-</div>
+<div class="border rounded-xl p-space-xl flex flex-col gap-space-md shadow-sm bg-amber-50 border-amber-200">
+<div class="flex items-center gap-space-sm text-error"><span class="material-symbols-outlined text-xl text-amber-800" style="font-variation-settings: 'FILL' 1;">warning</span><h2 class="font-h2 text-h2 text-amber-900">Flags</h2></div>
 <div class="flex flex-col gap-space-sm">
 <div class="flex items-center gap-space-md bg-surface p-space-md rounded-lg border border-error/20">
 <span class="material-symbols-outlined text-error text-lg">error</span>
@@ -199,11 +173,8 @@
 </div>
 </div>
 <!-- 2. Business Profile Card -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-xl flex flex-col gap-space-xl shadow-sm">
-<div class="flex items-center justify-between">
-<h2 class="font-h2 text-h2 text-primary">Business profile</h2>
-<span class="text-label text-on-surface-variant">ID: 8849-B</span>
-</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-xl flex flex-col gap-space-xl shadow-sm bg-amber-50 border-amber-200">
+<div class="flex items-center justify-between"><h2 class="font-h2 text-h2 text-primary">Business profile</h2></div>
 <div class="grid grid-cols-2 gap-space-xl">
 <div class="flex flex-col gap-space-xs">
 <span class="font-label text-label text-on-surface-variant">Business name</span>
@@ -223,7 +194,7 @@
 </div>
 <div class="flex flex-col gap-space-xs">
 <span class="font-label text-label text-on-surface-variant">Email</span>
-<span class="font-body text-body text-on-surface font-medium">contact@sampletraders.in</span>
+<span class="font-body text-body text-on-surface font-medium">c••••@sampletraders.in</span>
 </div>
 <div class="flex flex-col gap-space-xs">
 <span class="font-label text-label text-on-surface-variant">PAN</span>
@@ -235,7 +206,7 @@
 </div>
 </div>
 <!-- 3. Verifications Table -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-xl flex flex-col gap-space-lg shadow-sm">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-xl flex flex-col gap-space-lg shadow-sm bg-amber-50 border-amber-200">
 <h2 class="font-h2 text-h2 text-primary">Verifications</h2>
 <div class="overflow-x-auto">
 <table class="w-full text-left border-collapse">
@@ -298,7 +269,7 @@
 </div>
 </div>
 <!-- 4. Documents Card -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-xl flex flex-col gap-space-lg shadow-sm">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-xl flex flex-col gap-space-lg shadow-sm bg-amber-50 border-amber-200">
 <h2 class="font-h2 text-h2 text-primary">Documents</h2>
 <div class="flex flex-col gap-space-md">
 <!-- Doc 1 -->
@@ -343,14 +314,11 @@
 </div>
 <!-- Right Column: Sticky Decision Card (320px) -->
 <div class="w-[320px] sticky top-[100px] flex flex-col gap-space-lg">
-<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-xl flex flex-col gap-space-xl shadow-md">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-xl flex flex-col gap-space-xl shadow-md bg-amber-50 border-amber-200">
 <h2 class="font-h2 text-h2 text-primary">Decision</h2>
 <!-- Warning Box -->
 <div class="bg-amber-50 border border-amber-200 rounded-lg p-space-md flex flex-col gap-space-xs text-amber-900">
-<div class="flex items-center gap-space-xs font-h3 text-body-sm">
-<span class="material-symbols-outlined text-base">info</span>
-<span>Can't approve yet</span>
-</div>
+<div class="flex items-center gap-space-xs font-h3 text-body-sm"><span class="material-symbols-outlined text-xl text-amber-800" style="font-variation-settings: 'FILL' 1;">warning</span><h2 class="font-h2 text-h2 text-amber-900">Can't approve yet</h2></div>
 <ul class="list-disc list-inside text-body-sm flex flex-col gap-1 text-amber-800">
 <li>1 document not verified</li>
 <li>Bank account needs a decision</li>

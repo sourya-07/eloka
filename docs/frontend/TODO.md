@@ -143,6 +143,7 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
 - **Deliverable:** fixes with `edit_screens`; `generate_variants` (REFINE) only where the layout is in doubt.
 - **Accept:** every checklist failure from ST-8b and ST-8c is resolved.
 - **Verify:** fresh downloads replace the old files.
+- **Progress (2026-10-22):** first pass done on our own checklist, before the owner reviews. STF-02 and APP-15-desktop were regenerated, because `edit_screens` returned DOM-only changes that never reached the saved HTML. STF-03, R1-01-03 and R1-02 were edited. New ids are in `.stitch/metadata.json`. Stays open until the ST-8b/c/d findings are fixed.
 
 ### [ ] ST-8b Owner review: applicant screens
 - **P0 · S · deps:** ST-6b

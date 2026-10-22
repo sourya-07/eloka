@@ -1,7 +1,8 @@
-<html class="h-full" lang="en"><head>
+<!DOCTYPE html>
+
+<html lang="en"><head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>ELOKA - Applicant Portal</title>
+<title>APP-15 Agreement and e-sign, desktop (final)</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -12,53 +13,53 @@
       theme: {
         extend: {
           "colors": {
-            "surface-tint": "#5f5e5e",
-            "surface-container-low": "#f4f4f1",
-            "on-background": "#1a1c1b",
-            "on-tertiary": "#ffffff",
-            "tertiary": "#000000",
             "primary-fixed-dim": "#c9c6c5",
+            "on-tertiary": "#ffffff",
+            "error": "#ba1a1a",
+            "surface-container": "#eeeeeb",
+            "tertiary-container": "#1b1c18",
+            "on-primary-fixed-variant": "#474646",
+            "surface-container-low": "#f4f4f1",
+            "secondary-fixed": "#dee0ff",
+            "on-surface": "#1a1c1b",
+            "secondary": "#11299E",
+            "primary-fixed": "#e5e2e1",
+            "on-surface-variant": "#444748",
+            "inverse-primary": "#c9c6c5",
+            "surface": "#f9f9f6",
+            "surface-variant": "#e2e3e0",
+            "on-secondary-fixed-variant": "#2439ab",
+            "on-secondary-fixed": "#000f5d",
+            "on-tertiary-fixed-variant": "#474742",
+            "on-tertiary-container": "#84847e",
+            "on-primary": "#ffffff",
+            "secondary-container": "#778afd",
+            "on-error-container": "#93000a",
+            "on-primary-fixed": "#1c1b1b",
+            "inverse-surface": "#2f312f",
+            "surface-tint": "#5f5e5e",
             "error-container": "#ffdad6",
             "on-secondary": "#ffffff",
-            "surface-container": "#eeeeeb",
-            "inverse-surface": "#2f312f",
-            "error": "#ba1a1a",
-            "on-surface-variant": "#444748",
-            "on-primary-fixed-variant": "#474646",
-            "tertiary-container": "#1b1c18",
-            "on-secondary-fixed-variant": "#2439ab",
             "surface-dim": "#dadad7",
-            "inverse-on-surface": "#f1f1ee",
-            "on-secondary-container": "#001a88",
-            "outline-variant": "#c4c7c7",
-            "on-surface": "#1a1c1b",
-            "secondary-fixed-dim": "#bbc3ff",
-            "on-primary": "#ffffff",
-            "tertiary-fixed-dim": "#c8c6c0",
-            "on-tertiary-fixed": "#1b1c18",
-            "surface-variant": "#e2e3e0",
-            "on-tertiary-container": "#84847e",
-            "inverse-primary": "#c9c6c5",
-            "background": "#f9f9f6",
-            "surface": "#f9f9f6",
-            "on-primary-fixed": "#1c1b1b",
-            "tertiary-fixed": "#e4e2dc",
-            "primary": "#000000",
-            "primary-fixed": "#e5e2e1",
-            "on-primary-container": "#858383",
-            "surface-container-lowest": "#ffffff",
-            "secondary-container": "#778afd",
+            "surface-bright": "#f9f9f6",
             "surface-container-highest": "#e2e3e0",
             "primary-container": "#1c1b1b",
-            "on-error": "#ffffff",
-            "on-tertiary-fixed-variant": "#474742",
-            "secondary": "#4053c4",
             "surface-container-high": "#e8e8e5",
-            "on-error-container": "#93000a",
+            "on-primary-container": "#858383",
+            "on-tertiary-fixed": "#1b1c18",
+            "background": "#f9f9f6",
+            "tertiary": "#000000",
+            "outline-variant": "#c4c7c7",
             "outline": "#747878",
-            "surface-bright": "#f9f9f6",
-            "secondary-fixed": "#dee0ff",
-            "on-secondary-fixed": "#000f5d"
+            "tertiary-fixed-dim": "#c8c6c0",
+            "inverse-on-surface": "#f1f1ee",
+            "tertiary-fixed": "#e4e2dc",
+            "on-secondary-container": "#001a88",
+            "secondary-fixed-dim": "#bbc3ff",
+            "primary": "#000000",
+            "surface-container-lowest": "#ffffff",
+            "on-error": "#ffffff",
+            "on-background": "#1a1c1b"
           },
           "borderRadius": {
             "DEFAULT": "0.25rem",
@@ -67,229 +68,206 @@
             "full": "9999px"
           },
           "spacing": {
-            "margin": "1.5rem",
-            "space-3xl": "48px",
-            "space-md": "12px",
-            "gutter": "1rem",
             "space-lg": "16px",
-            "space-xs": "4px",
-            "space-sm": "8px",
-            "space-xl": "24px",
             "space-2xl": "32px",
-            "space-4xl": "64px"
+            "space-3xl": "48px",
+            "space-4xl": "64px",
+            "margin": "1.5rem",
+            "space-sm": "8px",
+            "space-md": "12px",
+            "space-xs": "4px",
+            "space-xl": "24px",
+            "gutter": "1rem"
           },
           "fontFamily": {
-            "h1": ["Inter"],
-            "body-sm": ["Inter"],
-            "body": ["Inter"],
             "label": ["Inter"],
+            "h3": ["Inter"],
+            "h1": ["Inter"],
+            "display": ["Inter"],
+            "body": ["Inter"],
             "h2": ["Inter"],
             "display-mobile": ["Inter"],
-            "display": ["Inter"],
-            "h3": ["Inter"]
+            "body-sm": ["Inter"]
           },
           "fontSize": {
-            "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
-            "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "normal", "fontWeight": "400" }],
-            "body": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "400" }],
             "label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "h3": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "600" }],
+            "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "400" }],
             "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "normal", "fontWeight": "600" }],
             "display-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
-            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-            "h3": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "600" }]
+            "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "normal", "fontWeight": "400" }]
           }
         }
       }
     }
   </script>
 </head>
-<body class="h-full bg-background text-on-background font-body antialiased flex flex-col">
-<!-- TopAppBar -->
-<header class="bg-surface sticky top-0 z-30 w-full shadow-sm">
-<div class="flex justify-between items-center w-full px-6 py-4 max-w-[1400px] mx-auto">
-<div class="flex items-center space-x-3">
-<span class="text-h1 font-h1 font-bold text-primary">ELOKA</span>
-<span class="text-on-surface-variant text-body-sm px-2 py-0.5 bg-surface-container rounded">Applicant Portal</span>
-</div>
-<div class="flex items-center space-x-6 text-body-sm font-medium">
-<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Help</a>
-<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Sign out</a>
-</div>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="w-full h-14 px-gutter flex items-center justify-between z-40 bg-surface-container-lowest dark:bg-inverse-surface border-b border-outline-variant dark:border-outline">
+<div class="font-h1 text-h1 font-bold text-on-surface dark:text-inverse-on-surface tracking-tight">ELOKA</div>
+<div class="flex items-center gap-space-xl">
+<a class="font-body-sm text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Help</a>
+<a class="font-body-sm text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Sign out</a>
 </div>
 </header>
-<!-- Main App Shell -->
-<div class="flex flex-1 w-full max-w-[1400px] mx-auto overflow-hidden">
-<!-- SideNavBar (Step Rail) -->
-<aside class="flex flex-col justify-between w-[280px] p-6 shrink-0 bg-surface-container-low h-[calc(100vh-73px)] sticky top-[73px] border-r border-outline-variant overflow-y-auto">
+<div class="flex flex-1 w-full max-w-[1400px] mx-auto">
+<!-- SideNavBar (Left step rail) -->
+<aside class="w-[280px] flex-shrink-0 flex flex-col justify-between py-space-lg px-space-md overflow-y-auto bg-surface-container-low dark:bg-inverse-surface border-r border-outline-variant dark:border-outline sticky top-14 h-[calc(100vh-3.5rem)]">
 <div>
-<div class="mb-6">
-<h2 class="text-h2 font-h2 font-semibold text-primary">Your steps</h2>
-<p class="text-body-sm text-on-surface-variant mt-1">13 Steps Remaining</p>
+<div class="mb-space-lg px-space-sm">
+<div class="font-h2 text-h2 font-semibold text-on-surface dark:text-inverse-on-surface">Your application</div>
+<div class="mt-space-xs inline-block bg-surface-container px-space-sm py-0.5 rounded text-label font-label text-on-surface-variant">onb_7Q2K9X</div>
 </div>
 <nav class="space-y-1">
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>Personal Info</span>
+<!-- Steps 1-12 -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">Mobile verification</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>Contact Details</span>
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">Consent</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>Employment</span>
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">Program</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>Financials</span>
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">Business PAN</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>ID Upload</span>
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">Business details</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>Address Proof</span>
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">Email</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>Income Tax</span>
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">Signatory KYC</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>Bank Statements</span>
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">Live photo</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>References</span>
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">Documents</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>Background Check</span>
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">Bank account</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>Declarations</span>
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">White-label setup</span>
 </div>
-<div class="flex items-center space-x-3 p-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors text-body-sm">
-<span class="material-symbols-outlined text-green-600 text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-<span>Review</span>
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant font-normal">
+<span class="material-symbols-outlined text-sm text-emerald-700" data-icon="check">check</span>
+<span class="font-body-sm">Declaration</span>
 </div>
-<!-- Active step -->
-<div class="flex items-center space-x-3 p-2.5 bg-secondary-container text-on-secondary-container font-semibold rounded-lg cursor-pointer text-body-sm">
-<span class="material-symbols-outlined text-[20px]">radio_button_checked</span>
-<span>Agreement</span>
+<!-- Step 13: Current -->
+<div class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg bg-secondary text-white font-semibold shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="radio_button_checked" style="font-variation-settings: 'FILL' 1;">radio_button_checked</span>
+<span class="font-body-sm">Agreement</span>
 </div>
 </nav>
 </div>
-<div class="pt-4 border-t border-outline-variant">
-<button class="w-full py-2 px-4 text-center text-body-sm font-medium text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors">Resume Later</button>
-</div>
+<div class="text-xs text-on-surface-variant px-space-sm pt-space-md">
+        ELOKA v3.4.2
+      </div>
 </aside>
-<!-- Content Canvas -->
-<main class="flex-1 p-10 overflow-y-auto max-w-[840px] mx-auto">
-<!-- Back Link & Header -->
-<div class="mb-8">
-<a class="inline-flex items-center space-text text-body-sm text-secondary hover:underline mb-3" href="#">
-<span class="material-symbols-outlined text-[18px] mr-1">arrow_back</span>
-          Application
-        </a>
-<div class="flex justify-between items-end">
+<!-- Main Content Column -->
+<main class="flex-1 py-space-2xl px-space-3xl max-w-[720px] mx-auto">
+<!-- Progress Bar Area -->
+<div class="mb-space-md">
+<div class="flex justify-between items-center mb-space-xs font-label text-label text-on-surface-variant">
+<span>Step 13 of 13</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-full rounded-full"></div>
+</div>
+</div>
+<!-- Title -->
+<h1 class="font-display text-display text-on-surface mb-space-xl">Sign the agreement</h1>
+<!-- Agreement Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-lg mb-space-xl shadow-sm">
+<div class="flex items-center justify-between">
 <div>
-<h1 class="text-display font-display text-primary">Sign the agreement</h1>
-<p class="text-body text-on-surface-variant mt-1">Review the final terms and authorize your electronic signature to complete submission.</p>
+<div class="font-h3 text-h3 text-on-surface">ELOKA platform agreement · Version 3</div>
+<a class="font-body-sm text-secondary hover:underline mt-space-xs inline-block" href="#">View PDF</a>
 </div>
-<span class="text-label text-on-surface-variant font-medium bg-surface-container px-3 py-1.5 rounded-full">Step 13 of 13</span>
-</div>
-</div>
-<!-- Main Agreement Card -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-6 mb-8">
-<div class="flex justify-between items-center pb-4 border-b border-outline-variant mb-6">
-<div class="flex items-center space-x-2">
-<span class="material-symbols-outlined text-primary">description</span>
-<span class="font-h3 text-h3 text-primary">ELOKA platform agreement · Version 3</span>
-</div>
-<span class="text-xs bg-emerald-100 text-emerald-800 font-medium px-2.5 py-1 rounded-full">Latest version</span>
-</div>
-<!-- Document Preview Panel -->
-<div class="bg-surface-container-low border border-outline-variant rounded-lg p-6 h-[320px] overflow-y-auto font-mono text-body-sm text-on-surface-variant space-y-4 mb-4 select-none">
-<div class="font-bold text-primary text-base mb-2">MASTER SERVICES AGREEMENT - ELOKA PLATFORM</div>
-<p>This Master Services Agreement ("Agreement") is entered into by and between ELOKA Technologies Inc. and the applicant executing this document.</p>
-<div class="font-bold text-primary mt-4">1. Definitions</div>
-<p class="text-xs text-outline leading-relaxed">"Platform" means the proprietary financial and identity verification web ecosystem managed by ELOKA. "Services" refers to credit evaluation, compliance logging, and secure data handling provided during onboarding.</p>
-<div class="font-bold text-primary mt-4">2. Services</div>
-<p class="text-xs text-outline leading-relaxed">The applicant agrees to provide accurate, verifiable documentation. ELOKA reserves the right to re-verify records periodically to maintain institutional regulatory standards and prevent fraudulent activities across node clusters.</p>
-<div class="font-bold text-primary mt-4">3. Fees</div>
-<p class="text-xs text-outline leading-relaxed">Processing fees are non-refundable once background checks are initiated. Institutional rates apply as outlined in the supplementary schedule provided during step 4.</p>
-</div>
-<!-- Page Controls & Download -->
-<div class="flex justify-between items-center text-body-sm text-on-surface-variant mb-6">
-<span>Page 1 of 6</span>
-<a class="text-secondary font-medium hover:underline inline-flex items-center" href="#">
-<span class="material-symbols-outlined text-[18px] mr-1">download</span>
-            Download PDF
-          </a>
-</div>
-<!-- Details Disclosure Accordion -->
-<div class="border border-outline-variant rounded-lg overflow-hidden">
-<details class="group">
-<summary class="flex justify-between items-center p-4 bg-surface-container-low cursor-pointer select-none font-medium text-body-sm">
-<span class="flex items-center space-x-2">
-<span class="material-symbols-outlined text-[18px]">fingerprint</span>
-<span>Document fingerprint</span>
-</span>
-<span class="material-symbols-outlined transition-transform group-open:rotate-180">expand_more</span>
-</summary>
-<div class="p-4 bg-surface-container-lowest border-t border-outline-variant text-body-sm font-mono text-on-surface-variant flex items-center justify-between">
-<span>sha256_8849fbc82910aa4bf9281c74827103ab62c</span>
-<button class="text-xs text-secondary hover:underline font-sans font-medium">Copy hash</button>
-</div>
-</details>
+<button class="flex items-center gap-space-xs text-on-surface-variant hover:text-on-surface text-sm font-label">
+            Details
+            <span class="material-symbols-outlined text-base" data-icon="expand_more">expand_more</span>
+</button>
 </div>
 </div>
-<!-- Action Footer -->
-<div class="flex flex-col items-start space-y-4 mb-12">
-<p class="text-body-sm text-on-surface-variant">You'll sign electronically. We'll confirm it's you first.</p>
-<button class="bg-primary text-on-primary font-medium py-3 px-8 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all duration-200 shadow-sm">
-          Sign agreement
-        </button>
+<!-- PDF Preview Panel -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-space-lg mb-space-xl relative flex flex-col justify-between h-[480px]">
+<div class="absolute top-3 right-3 bg-surface-container-highest px-space-sm py-0.5 rounded text-label font-label text-on-surface-variant">
+          Preview
+        </div>
+<!-- Mock document lines -->
+<div class="space-y-space-md pt-space-lg px-space-md opacity-40 select-none">
+<div class="h-4 bg-surface-container-high rounded w-3/4"></div>
+<div class="h-3 bg-surface-container-high rounded w-full"></div>
+<div class="h-3 bg-surface-container-high rounded w-5/6"></div>
+<div class="h-3 bg-surface-container-high rounded w-full"></div>
+<div class="h-3 bg-surface-container-high rounded w-2/3"></div>
+<div class="h-6"></div>
+<div class="h-4 bg-surface-container-high rounded w-1/2"></div>
+<div class="h-3 bg-surface-container-high rounded w-full"></div>
+<div class="h-3 bg-surface-container-high rounded w-4/5"></div>
+<div class="h-3 bg-surface-container-high rounded w-full"></div>
+<div class="h-6"></div>
+<div class="h-4 bg-surface-container-high rounded w-2/3"></div>
+<div class="h-3 bg-surface-container-high rounded w-full"></div>
+<div class="h-3 bg-surface-container-high rounded w-3/4"></div>
 </div>
-<!-- Design Spec Cards / State Variants -->
-<div class="border-t border-outline-variant pt-8 mt-12">
-<h3 class="text-h2 font-h2 text-primary mb-4">Design State Variants (Spec Preview)</h3>
-<div class="grid grid-cols-1 gap-4">
-<!-- Info State -->
-<div class="p-4 bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-between">
-<div class="flex items-center space-x-3">
-<span class="material-symbols-outlined text-secondary">info</span>
-<div>
-<p class="font-semibold text-body-sm">Waiting for your signature…</p>
-<p class="text-xs text-on-surface-variant">Session active on external verification device.</p>
+<div class="text-center font-body-sm text-on-surface-variant pb-space-sm">
+          Page 1 of 4
+        </div>
 </div>
+<!-- Note -->
+<p class="font-body-sm text-on-surface-variant mb-space-lg">
+        You'll sign electronically with our e-sign partner. We'll confirm it's you first.
+      </p>
+<!-- Primary Button -->
+<button class="w-full bg-primary text-on-primary font-h3 py-3 px-space-lg rounded-lg hover:opacity-90 active:translate-y-px transition-all duration-100 mb-space-4xl shadow-sm">
+        Sign agreement
+      </button>
+<!-- Spec Preview States (Variant Cards) -->
+<div class="border-t border-outline-variant pt-space-2xl">
+<h2 class="font-h2 text-h2 text-on-surface mb-space-lg">State variants (Preview)</h2>
+<div class="grid grid-cols-1 gap-space-lg">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-lg flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-secondary animate-spin" data-icon="progress_activity">progress_activity</span>
+<span class="font-body-sm font-medium text-on-surface">Waiting for your signature…</span>
 </div>
-<button class="text-secondary text-body-sm font-medium hover:underline px-3 py-1.5 bg-surface rounded border border-outline-variant">Check status</button>
+<a class="font-body-sm text-secondary hover:underline" href="#">Check status</a>
 </div>
-<!-- Success State -->
-<div class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-between">
-<div class="flex items-center space-x-3">
-<span class="material-symbols-outlined text-emerald-700">check_circle</span>
-<div>
-<p class="font-semibold text-body-sm text-emerald-900">Agreement signed. Submitting your application…</p>
-<p class="text-xs text-emerald-700">All cryptographic hashes matched successfully.</p>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-space-lg flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-secondary animate-spin" data-icon="progress_activity">progress_activity</span>
+<span class="font-body-sm font-medium text-on-surface">Agreement signed. Submitting your application…</span>
 </div>
+<span class="material-symbols-outlined text-on-surface-variant text-base" data-icon="sync">sync</span>
 </div>
-<span class="text-xs bg-emerald-200 text-emerald-900 font-medium px-2.5 py-1 rounded-full">Completed</span>
-</div>
-<!-- Warning State -->
-<div class="p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-between">
-<div class="flex items-center space-x-3">
-<span class="material-symbols-outlined text-amber-700">warning</span>
-<div>
-<p class="font-semibold text-body-sm text-amber-900">Your details changed, so the agreement was updated. Please review and sign the new version.</p>
-<p class="text-xs text-amber-700">Version 3.1 generated 4 mins ago.</p>
-</div>
-</div>
-<button class="text-amber-900 text-body-sm font-medium hover:underline px-3 py-1.5 bg-amber-100 rounded border border-amber-300">Review changes</button>
+<!-- Card 3 -->
+<div class="bg-[#FFFBEB] border border-amber-200 rounded-xl p-space-lg flex items-start gap-space-md">
+<span class="material-symbols-outlined text-[#92400E] text-xl mt-0.5" data-icon="warning">warning</span>
+<p class="font-body-sm text-[#92400E]">
+              Your details changed, so the agreement was updated. Please review and sign the new version.
+            </p>
 </div>
 </div>
 </div>
