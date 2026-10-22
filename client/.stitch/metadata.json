@@ -386,10 +386,10 @@
 			"status": "Created in Stitch by the owner from the hand-off prompts (2026-10-22) and checked against the spec. Awaiting owner review (ST-8d). Transactions shown as cards."
 		},
 		"R1-07-phone": {
-			"id": null,
-			"sourceScreen": null,
+			"id": "5d85e9e2cdae40c9acbea4413476b761",
+			"sourceScreen": "projects/18017913531452476583/screens/5d85e9e2cdae40c9acbea4413476b761",
 			"files": ["designs/R1-07-phone.png", "designs/R1-07-phone.html"],
-			"status": "Phone profile. Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8d)."
+			"status": "Phone profile, created in Stitch by the owner (2026-10-22). Awaiting owner review (ST-8d). Not specs: the full mobile number and email (the build masks them), shop and bank details are samples."
 		},
 		"APP-01-manual": {
 			"id": null,
