@@ -1,8 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
-import { fetcher } from "helpers/apiHelper";
-import { usePinTwin } from "hooks/usePinTwin";
+import { fetcher } from "@/lib/apiHelper";
+import { usePinTwin } from "@/hooks/usePinTwin";
 
-jest.mock("helpers/apiHelper");
+jest.mock("@/lib/apiHelper");
 
 const mockedFetcher = fetcher as jest.Mock;
 

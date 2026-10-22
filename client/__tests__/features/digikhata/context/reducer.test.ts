@@ -1,11 +1,11 @@
-import { digiKhataReducer } from "features/digikhata/context/reducer";
+import { digiKhataReducer } from "@/features/digikhata/context/reducer";
 import {
 	Action,
 	DigiKhataState,
 	initialState,
 	Recipient,
 	WalletData,
-} from "features/digikhata/context/types";
+} from "@/features/digikhata/context/types";
 
 const mockWalletData: WalletData = {
 	walletAcOpened: true,

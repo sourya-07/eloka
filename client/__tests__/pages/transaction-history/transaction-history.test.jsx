@@ -1,4 +1,4 @@
-import TransactionHistory from "pages";
+import TransactionHistory from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("TransactionHistory", () => {

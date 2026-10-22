@@ -69,22 +69,23 @@ Webapp for the Eloka white-labelled SaaS platform to run your business like agen
 - `npm run docker:clean` - Remove containers, images, and volumes
 
 ## 📦 Project Structure
-- **`components/`**: Contains reusable components used across the application.
-- **`constants/`**: Contains constant values, configurations, and settings used throughout the application.
-- **`contexts/`**: Contains context providers for managing global state and data.
-- **`docs/`**: Contains extensive documentation files for the project.
-- **`helpers/`**: Contains helper functions and utilities for various functionalities.
-- **`hooks/`**: Contains custom React hooks for reusable logic.
-- **`layout-components/`**: Contains components related to the layout and structure of the application.
-- **`libs/`**: Contains wrapper functions for third-party libraries.
-- **`memory-bank/`**: Contains the foundational project documentation for Memory Bank to be used by AI Agents.
-- **`page-components/`**: Contains the main page components for the application.
-- **`pages/`**: Contains Next.js page routes and components.
-- **`plop-templates/`**: Contains templates for generating new components, hooks, etc. using Plop.
-- **`public/`**: Contains static assets such as images and icons.
-- **`styles/`**: Contains global styles and theme configurations.
-- **`tf-components/`**: Contains low-code components related to the transaction framework.
-- **`utils/`**: Contains shared utility functions and helpers for various functionalities.
+All app code lives in `src/` and is imported with the `@/` alias (for example `import { Button } from "@/components/ui"`).
+
+- **`src/pages/`**: Next.js page routes. They stay thin and render a screen.
+- **`src/screens/`**: One folder per route screen (`Admin/*`, `LoginPanel`, `Home`, `History`, …).
+- **`src/features/`**: Self-contained features with their own components, context, hooks and screens (onboarding, KYC, DigiKhata, …).
+- **`src/components/ui/`**: Reusable UI building blocks used across the app.
+- **`src/components/layout/`**: The app shell (layouts, popup loader).
+- **`src/components/form-engine/`**: Low-code, config-driven form components of the transaction framework.
+- **`src/contexts/`**: Context providers for global state and data.
+- **`src/hooks/`**: Custom React hooks for reusable logic.
+- **`src/constants/`**: Constant values, configurations and settings.
+- **`src/lib/`**: The API client and proxy helpers, org loading, and wrappers around third-party libraries (CMS, inventory, maps, face detection, Copilot).
+- **`src/utils/`**: Small, pure utility functions.
+- **`src/styles/`**: Global styles and theme configuration.
+- **`public/`**: Static assets such as images and icons.
+- **`tools/`**: Dev-only tooling: `mock-eps/` (dummy backend), `plop-templates/` (code generator templates), `scripts/`.
+- **`docs/`**: Client documentation, including `docs/memory-bank/` (project notes for AI agents).
 - **`__tests__/`**: Contains unit and integration tests for the application. The tests are organized in a similar structure to the main codebase for easy navigation.
 
 
@@ -92,7 +93,7 @@ Webapp for the Eloka white-labelled SaaS platform to run your business like agen
 
 - **[`commit-message-instructions.md`](docs/commit-message-instructions.md)**: Guidelines for writing good commit messages.
 - **[`docker-usage.md`](docs/docker-usage.md)**: Instructions for using Docker with the project.]
-- **[`features/`](docs/features/)**: Contains detailed documentation for various features of the application.
+- **[`src/features/`](docs/features/)**: Contains detailed documentation for various features of the application.
   - **[`android.md`](docs/features/android.md)**: How does Eloka communicate with the Android wrapper app to provide a native experience?
   - **[`dashboard.md`](docs/features/dashboard.md)**: Admin dashboard feature documentation.
   - **[`dynamic-popup-module.md`](docs/features/dynamic-popup-module.md)**: How to use the dynamic popup module to show custom popups throughout the app?
@@ -105,27 +106,27 @@ Webapp for the Eloka white-labelled SaaS platform to run your business like agen
 ## 🎨 UI Features:
 
 - **Global Styles**:
-  - Global CSS styles are defined in [styles/globals.ts](styles/globals.ts).
+  - Global CSS styles are defined in [src/styles/globals.ts](src/styles/globals.ts).
 - **Theme**:
-  - Default color theme configuration (CHakraUI): [styles/themes.tsx](styles/themes.tsx)
-  - A list of predefined color-themes for the organizations to choose from: [constants/colorThemes.js](constants/colorThemes.js)
-  - Component to show theme colors to users to choose from: [components/ColorPair/ColorPair.jsx](components/ColorPair/ColorPair.jsx)
-  -Organization's custom theme is loaded in [pages/_app.tsx](pages/_app.tsx).
+  - Default color theme configuration (CHakraUI): [src/styles/themes.tsx](src/styles/themes.tsx)
+  - A list of predefined color-themes for the organizations to choose from: [src/constants/colorThemes.js](src/constants/colorThemes.js)
+  - Component to show theme colors to users to choose from: [src/components/ui/ColorPair/ColorPair.jsx](src/components/ui/ColorPair/ColorPair.jsx)
+  -Organization's custom theme is loaded in [src/pages/_app.tsx](src/pages/_app.tsx).
 - **Icon Library**:
   - To view available icons, open the webpage: http://localhost:3002/icons_demo
-  - To add new icons, see the file: [constants/IconLibrary.ts](constants/IconLibrary.ts)
+  - To add new icons, see the file: [src/constants/IconLibrary.ts](src/constants/IconLibrary.ts)
   - There are duplicate icon-names as well, same icons with different names (for backward compatibility). Such icons are shown in red background with the pointer to the actual icon name.
   - For optimizing individual SVG icons, use: [SVGOMG - SVGO's Missing GUI](https://jakearchibald.github.io/svgomg/)
-- **Top Navbar** - [components/NavBar/NavBar.jsx](components/NavBar/NavBar.jsx)
+- **Top Navbar** - [src/components/ui/NavBar/NavBar.jsx](src/components/ui/NavBar/NavBar.jsx)
   - Profile-menu (drop-down menu in top-right corner):
     - Rendered in the `MyAccountCard` component in NavBar.jsx.
-    - Items configuration (for internal links, such as, Settings page): [constants/profileCardMenus.js](constants/profileCardMenus.js)
-- **Left Sidebar** - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
-  - Menu items configuration: [constants/SidebarMenu.ts](constants/SidebarMenu.ts)
-  - Menu Context (data fetch after login, and filtered into transaction & other lists for the sidebar & bottom app bar): [contexts/MenuContext.tsx](contexts/MenuContext.tsx)
-  - Menu data filtering & transformation using: [helpers/processTransactionData.js](helpers/processTransactionData.js)
-- **Bottom App Bar** - The `BottomAppBar` is a flexible component that serves as the primary navigation bar at the bottom of the small screen. It adapts to various use cases, allowing for the inclusion of navigation links, actions, and custom components. [components/BottomAppBar/BottomAppBar.tsx](components/BottomAppBar/BottomAppBar.tsx)
-  - _Bottom App Bar Items_ - The items in the Bottom App Bar are configured using the `useBottomAppBarItems` hook. This hook returns an array of objects, each representing an item in the bottom app bar. [components/BottomAppBar/useBottomAppBar.ts](components/BottomAppBar/useBottomAppBar.ts)
+    - Items configuration (for internal links, such as, Settings page): [src/constants/profileCardMenus.js](src/constants/profileCardMenus.js)
+- **Left Sidebar** - [src/components/ui/SideBar/SideBar.jsx](src/components/ui/SideBar/SideBar.jsx)
+  - Menu items configuration: [src/constants/SidebarMenu.ts](src/constants/SidebarMenu.ts)
+  - Menu Context (data fetch after login, and filtered into transaction & other lists for the sidebar & bottom app bar): [src/contexts/MenuContext.tsx](src/contexts/MenuContext.tsx)
+  - Menu data filtering & transformation using: [src/lib/processTransactionData.js](src/lib/processTransactionData.js)
+- **Bottom App Bar** - The `BottomAppBar` is a flexible component that serves as the primary navigation bar at the bottom of the small screen. It adapts to various use cases, allowing for the inclusion of navigation links, actions, and custom components. [src/components/ui/BottomAppBar/BottomAppBar.tsx](src/components/ui/BottomAppBar/BottomAppBar.tsx)
+  - _Bottom App Bar Items_ - The items in the Bottom App Bar are configured using the `useBottomAppBarItems` hook. This hook returns an array of objects, each representing an item in the bottom app bar. [src/components/ui/BottomAppBar/useBottomAppBar.ts](src/components/ui/BottomAppBar/useBottomAppBar.ts)
     - Each item can include the following properties:
         - `name`: A unique identifier for the item.
         - `label`: The text label displayed beneath the icon.
@@ -142,7 +143,7 @@ Webapp for the Eloka white-labelled SaaS platform to run your business like agen
 To add pricing configuration page for a new product in the Admin portal under "Pricing & Commission" left-menu section, use the following steps:
 
 #### For Pricing Configuration using File Upload:
-1. Create a configuration for the product in [`constants/ProductBusinessConfigurations.ts`](constants/ProductBusinessConfigurations.ts) file under the `business_config_slug_map` object.
+1. Create a configuration for the product in [`src/constants/ProductBusinessConfigurations.ts`](src/constants/ProductBusinessConfigurations.ts) file under the `business_config_slug_map` object.
    1. Set a unique slug (for the page URL) and the name of the page-component to display.
    2. Set template="fileupload"
    3. Add set URL & parameters for file-upload and sample-file-download in the `meta` object.
@@ -152,47 +153,47 @@ To add pricing configuration page for a new product in the Admin portal under "P
 1. Create a page-component for the pricing configuration running the command `npm run g`
    1. Select "Component"
    2. Enter the name of the page-component (eg: `TrainTravel`)
-   3. Select Path: `page-components/Admin`
+   3. Select Path: `src/screens/Admin`
    4. Enter sub-folder: `PricingCommission`
 2. Copy sub-components from other existing pricing page-component such as: `TrainTravelDistributor` and `TrainTravelRetailer`
-3. Create a configuration for the product in [`constants/ProductBusinessConfigurations.ts`](constants/ProductBusinessConfigurations.ts) file under the `business_config_slug_map` object.
+3. Create a configuration for the product in [`src/constants/ProductBusinessConfigurations.ts`](src/constants/ProductBusinessConfigurations.ts) file under the `business_config_slug_map` object.
    1. Set a unique slug (for the page URL) and the name of the page-component to display (created in step #1).
    2. Add the slug to `product_pricing_categories` object in the order that you want to display on the product listing page. If not added here, the product will not be displayed on the product listing page.
-4. Create a configuration for the product in [`constants/ProductDetails.js`](constants/ProductDetails.js) page. Set slabs, validations, etc for the pricing configuration.
+4. Create a configuration for the product in [`src/constants/ProductDetails.js`](src/constants/ProductDetails.js) page. Set slabs, validations, etc for the pricing configuration.
 
 
 ## ✨ Other Features:
 
 ### 🚦 Routing (Public vs Private Pages):
-- To add a public page/route (that can be accesseed by anyone, without logging in), add the route in [constants/validRoutes.js](constants/validRoutes.js) within the array: `publicLinks`.
+- To add a public page/route (that can be accesseed by anyone, without logging in), add the route in [src/constants/validRoutes.js](src/constants/validRoutes.js) within the array: `publicLinks`.
 
 
 ## 🛠️ Common Utilities
 
-### 🪝 Custom [**hooks/**](hooks/):
+### 🪝 Custom [**src/hooks/**](src/hooks/):
 - `useAppLink`: For handling app links (deep-links) and redirecting to the appropriate page. Supports old `connect.eko.in` links as well as the `ekoconnect://` links.
 - `useClipboard`: Copy text to clipboard.
 - `useDailyCacheState`: Cache the state in the browser's localStorage. The cache state has a `valid` flag which is set to `false` when the cache is stale (older than 1 day).
 - `useDebouncedState`: Debounce the state update to avoid unnecessary re-renders.
 - `useDelayToggle`: A simple hook to toggle a boolean value after a delay. For example, it can be used to load/show a component after an initial delay.
 - `useExternalResource`: Load an external resource (JS/CSS) dynamically. It returns a state variable (idle, loading, ready, error) and a reload function. The resource is loaded only once.
-- `useFeatureFlag`: Check if a feature is enabled or not. Set the feature-flags with conditions in the [constants/featureFlags.ts](constants/featureFlags.ts) file.
+- `useFeatureFlag`: Check if a feature is enabled or not. Set the feature-flags with conditions in the [src/constants/featureFlags.ts](src/constants/featureFlags.ts) file.
 - `useHotkey`: Register a hotkey (keyboard shortcut) and execute a callback function when the hotkey is pressed. Uses the tinykeys library.
 - `useHslColor`: Get a dynamic color in HSL format based on the input value. Useful for creating a color scale or colored tags.
 - `useLocalStorage`: Read/Write data to the browser's localStorage.
 - `useSessionStorage`: Read/Write data to the browser's sessionStorage.
-- `usePubSub`: Publish/Subscribe to events. Add new topics in the [contexts/PubSubContext.js](contexts/PubSubContext.js) file.
+- `usePubSub`: Publish/Subscribe to events. Add new topics in the [src/contexts/PubSubContext.js](src/contexts/PubSubContext.js) file.
 
-### 📦 Custom [**libs**](libs/):
+### 📦 Custom [**lib**](src/lib/):
 These are wrappers around 3rd-party libraries or associated utility functions.
-- [GoogleMap](libs/GoogleMap.jsx) - Google Maps API wrapper
-- [Map View](libs/MapView.js) - View static maps using iFrame
-- [dateFormat](libs/dateFormat.js) - Date formatting utility (wrapper around `date-fns`)
-- [faceDetector](libs/faceDetector.js) - Dynamically loads MediaPipe Face Detector model (uses wasm)
-- [chakraKeyFrames](libs/chakraKeyFrames.js) - Common keyframes for ChakraUI animations
+- [GoogleMap](src/lib/GoogleMap.jsx) - Google Maps API wrapper
+- [Map View](src/lib/MapView.js) - View static maps using iFrame
+- [dateFormat](src/lib/dateFormat.js) - Date formatting utility (wrapper around `date-fns`)
+- [faceDetector](src/lib/faceDetector.ts) - Dynamically loads MediaPipe Face Detector model (uses wasm)
+- [chakraKeyframes](src/lib/chakraKeyframes.js) - Common keyframes for ChakraUI animations
 
 
-## 💽 Global [Contexts](contexts/) (Data Providers)
+## 💽 Global [Contexts](src/contexts/) (Data Providers)
 1.
 
 
@@ -214,18 +215,18 @@ The following data is stored in the browser (localStorage & sessionStorage):
 
 ## 🧪 Experimental Features
 ### LLM Chatbot
-- Component: [AiChatWidget.jsx](page-components/Home/AiChatWidget.jsx)
+- Component: [AiChatWidget.jsx](src/screens/Home/AiChatWidget.jsx)
 - TODO: use [`react-chatbot-kit`](https://fredrikoseberg.github.io/react-chatbot-kit-docs/) library.
 
 
 ## 📄 [Pages](pages)
 
-### [Admin](pages/admin) Pages:
+### [Admin](src/pages/admin) Pages:
 - Dashboard
-  - _Business Dashboard_: Divided into 4 part i.e. TopPanel, EarningOverview, SuccessRate & TopMerchants with there config in there respective file - [page-components/Admin/Dashboard/BusinessDashboard](page-components/Admin/Dashboard/BusinessDashboard)
+  - _Business Dashboard_: Divided into 4 part i.e. TopPanel, EarningOverview, SuccessRate & TopMerchants with there config in there respective file - [src/screens/Admin/Dashboard/BusinessDashboard](src/screens/Admin/Dashboard/BusinessDashboard)
 
 ### Other Pages
 - Home
-  - [_Know Your Commissions_](page-components/Home/KnowYourCommissionWidget/KnowYourCommissionWidget.jsx):
-	- Commission Data is fetched via [CommissionContext](contexts/CommissionContext.js) when the user signs-in.
+  - [_Know Your Commissions_](src/screens/Home/KnowYourCommissionWidget/KnowYourCommissionWidget.jsx):
+	- Commission Data is fetched via [CommissionContext](src/contexts/CommissionContext.js) when the user signs-in.
 

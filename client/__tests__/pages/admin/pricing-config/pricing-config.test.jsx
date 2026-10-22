@@ -1,4 +1,4 @@
-import PricingConfig from "pages";
+import PricingConfig from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("PricingConfig", () => {

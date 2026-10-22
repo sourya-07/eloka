@@ -1,4 +1,4 @@
-import { useSet } from "hooks";
+import { useSet } from "@/hooks";
 import { act, renderHook } from "test-utils";
 
 describe("useSet Hook", () => {

@@ -1,20 +1,20 @@
 import { act, renderHook } from "@testing-library/react";
-import { useSession, useUser } from "contexts";
-import { fetcher } from "helpers/apiHelper";
-import useAiChat from "hooks/useAiChat";
+import { useSession, useUser } from "@/contexts";
+import { fetcher } from "@/lib/apiHelper";
+import useAiChat from "@/hooks/useAiChat";
 
 // Mock the dependencies
-jest.mock("contexts", () => ({
+jest.mock("@/contexts", () => ({
 	useSession: jest.fn(),
 	useUser: jest.fn(),
 }));
 
-jest.mock("helpers/apiHelper", () => ({
+jest.mock("@/lib/apiHelper", () => ({
 	fetcher: jest.fn(),
 }));
 
 // useRefreshToken needs the UserProvider; it is not under test here
-jest.mock("hooks/useRefreshToken", () => ({
+jest.mock("@/hooks/useRefreshToken", () => ({
 	__esModule: true,
 	default: () => ({ generateNewToken: jest.fn() }),
 }));

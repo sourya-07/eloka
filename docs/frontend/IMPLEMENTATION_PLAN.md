@@ -8,7 +8,7 @@
 The ELOKA web client (Next.js 15.5 Pages Router, React 18, Chakra UI v2, mixed JS/TS) works, but it looks dated and uneven, and the Release 2 Local Admin onboarding has no UI.
 
 **Visual problems today:**
-- **Two token systems.** A newer black-CTA semantic layer exists in `client/styles/themes.tsx` but app code uses it 0 times. Instead, app code uses the raw Chakra palette (884 uses), 400+ hex literals, and font weights that all collapse to 500.
+- **Two token systems.** A newer black-CTA semantic layer exists in `client/src/styles/themes.tsx` but app code uses it 0 times. Instead, app code uses the raw Chakra palette (884 uses), 400+ hex literals, and font weights that all collapse to 500.
 - **Contrast failures.** White on the default accent button measures 2.06:1.
 - **Inter is declared but never loaded.**
 - **Weak accessibility.** 79 clickable divs, 27 aria-labels in the whole UI, and a Switch the keyboard cannot reach.
@@ -94,15 +94,15 @@ The full architecture is in [FRONTEND_ARCHITECTURE.md](./FRONTEND_ARCHITECTURE.m
 - `disabled_features`, the menu from `/transactions/wlc`, feature flags
 - the Android bridge in `Layout`
 - print rules for receipts
-- the `tf-components/Form` engine
+- the `src/components/form-engine/Form` engine
 - the e-sign provider adapters
 
 **Reusable:**
-- `components/Stepper`, `features/onboarding/components/OnboardingLayout.tsx`
-- `components/{OtpInput,Dropzone,Camera,LocationCapture,Table,Modal,Drawer,Breadcrumb,PageTitle,OrgLogo,ColorPickerWidget}`
-- `page-components/Admin/Configurations/{ThemeConfig,AppPreview}`
-- `features/onboarding/services/esign/*`
-- `constants/validation.ts`
+- `src/components/ui/Stepper`, `src/features/onboarding/components/OnboardingLayout.tsx`
+- `src/components/ui/{OtpInput,Dropzone,Camera,LocationCapture,Table,Modal,Drawer,Breadcrumb,PageTitle,OrgLogo,ColorPickerWidget}`
+- `src/screens/Admin/Configurations/{ThemeConfig,AppPreview}`
+- `src/features/onboarding/services/esign/*`
+- `src/constants/validation.ts`
 
 **Needs refactoring** (visual layer only):
 
@@ -125,7 +125,7 @@ The full architecture is in [FRONTEND_ARCHITECTURE.md](./FRONTEND_ARCHITECTURE.m
 
 **Found, not fixed here** (logged in [OPEN_QUESTIONS.md](./OPEN_QUESTIONS.md) FQ-6):
 - the refresh-token result may be lost in `useRefreshToken`
-- sibling files under `pages/` are reachable as routes
+- sibling files under `src/pages/` are reachable as routes
 - hard-coded identity fields in the 518/151/677 payloads
 - security headers are off unless an env flag is set
 
@@ -184,22 +184,22 @@ The full direction is in [UI_UX_PLAN.md](./UI_UX_PLAN.md) §1–3. In short: "qu
 The full detail is in [FRONTEND_ARCHITECTURE.md](./FRONTEND_ARCHITECTURE.md) §6–8.
 
 **Foundation:**
-- extend `styles/themes.tsx`
-- new pure `helpers/buildOrgTheme.ts`, called by `_app.tsx`; a test locks the legacy output
+- extend `src/styles/themes.tsx`
+- new pure `src/lib/buildOrgTheme.ts`, called by `_app.tsx`; a test locks the legacy output
 - platform-host mode in `_app.tsx`
 - Storybook themed
 
-**Shared components:** 11 new primitives in `components/`. Six existing components get compatible accessibility and variant upgrades.
+**Shared components:** 11 new primitives in `src/components/ui/`. Six existing components get compatible accessibility and variant upgrades.
 
 **Applicant:**
-- code in `features/la-onboarding/`
-- routes `pages/partner/onboarding/*`, layout `LayoutPlatform`
+- code in `src/features/la-onboarding/`
+- routes `src/pages/partner/onboarding/*`, layout `LayoutPlatform`
 - its own REST client covering problem+json, ETag, Idempotency-Key, re-auth and refresh
 - its own session (`la_*` keys)
 
 **Staff:**
-- code in `features/staff-console/`
-- routes `pages/staff/*`, layout `LayoutStaff`
+- code in `src/features/staff-console/`
+- routes `src/pages/staff/*`, layout `LayoutStaff`
 - `STAFF` session; actions shown or hidden from `/me` permissions
 
 **Route guard:** `publicSections += partner, staff`. These areas are guarded by their own layouts.
@@ -216,7 +216,7 @@ See [FRONTEND_ARCHITECTURE.md](./FRONTEND_ARCHITECTURE.md) §7 (component mappin
 
 ## 9. API and business-logic preservation
 
-- **No change** to `server/**`, interaction ids, EPS payloads, `helpers/{apiHelper,loginHelper,proxyHelper,fetchOrgDetailsHelper}.js` logic, `contexts/{UserContext,UserReducer,MenuContext,OrgDetailContext}.js`, `hooks/{useLogin,useRefreshToken,useApiFetch}.js`, `pages/api/**`, `tf-components/**` logic, `features/onboarding/services/**` or `constants/EpsTransactions.js`.
+- **No change** to `server/**`, interaction ids, EPS payloads, `src/lib/{apiHelper,loginHelper,proxyHelper,fetchOrgDetailsHelper}.js` logic, `src/contexts/{UserContext,UserReducer,MenuContext,OrgDetailContext}.js`, `src/hooks/{useLogin,useRefreshToken,useApiFetch}.js`, `src/pages/api/**`, `src/components/form-engine/**` logic, `src/features/onboarding/services/**` or `src/constants/EpsTransactions.js`.
 - **FE-R2 uses only endpoints that exist.** Server-side validation stays the authority; the client mirrors the regexes only for early feedback. Any missing endpoint is written down as a gap, never faked.
 - **Tenant theme parity:** a test asserts that `buildOrgTheme` produces exactly the legacy `primary`, `accent`, `navbar`, `sidebar`, `status` and `logo` values for every preset.
 - **Session isolation:** applicant and staff tokens never touch `UserContext` storage keys.

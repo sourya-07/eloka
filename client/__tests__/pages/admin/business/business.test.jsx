@@ -1,5 +1,5 @@
 import { pageRender, mockRouter } from "test-utils";
-import Business from "pages";
+import Business from "@/pages";
 
 describe("Business", () => {
 	beforeEach(() => {

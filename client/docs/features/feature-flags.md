@@ -5,12 +5,12 @@ Feature flags are used to enable/disable a specific feature, permanently or cond
 Features can also be allowed for specific environments, user-types, user-ids, etc. Especially helpful for experimental features.
 
 ## 🛠️ Implementation
-- To add a new feature-flag, add a new entry in the [constants/featureFlags.ts](constants/featureFlags.ts) file.
-- To test for a feature-flag, use the `useFeatureFlag` hook from [hooks/useFeatureFlag.tsx](hooks/useFeatureFlag.tsx).
+- To add a new feature-flag, add a new entry in the [src/constants/featureFlags.ts](src/constants/featureFlags.ts) file.
+- To test for a feature-flag, use the `useFeatureFlag` hook from [src/hooks/useFeatureFlag.tsx](src/hooks/useFeatureFlag.tsx).
   - Eg: `const [isFeatureEnabled] = useFeatureFlag('MY_FEATURE');`
   - to dynamically check for feature flags, use the `checkFeatureFlag` function:
 	```jsx
-	import { useFeatureFlag } from 'hooks/useFeatureFlag';
+	import { useFeatureFlag } from 'src/hooks/useFeatureFlag';
 	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
 
 	const isAnotherFeatureEnabled = checkFeatureFlag('ANOTHER_FEATURE');

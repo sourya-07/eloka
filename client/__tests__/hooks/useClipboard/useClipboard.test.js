@@ -1,4 +1,4 @@
-import { useClipboard } from "hooks";
+import { useClipboard } from "@/hooks";
 import { act, renderHook } from "test-utils";
 
 /**

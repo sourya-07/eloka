@@ -7,7 +7,7 @@ import {
 	nullRemover,
 	numberRemover,
 	toKebabCase,
-} from "utils/textFormat";
+} from "@/utils/textFormat";
 
 describe("textFormat utilities", () => {
 	describe("limitText", () => {

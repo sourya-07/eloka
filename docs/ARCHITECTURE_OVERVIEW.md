@@ -70,13 +70,14 @@ eloka/
 │   ├── adr/                       # architecture decision records
 │   └── onboarding/                # Local Admin onboarding blueprint (Phase 0)
 ├── client/                   # frontend (Next.js). Has its own CLAUDE.md
-│   └── mock-eps/             # dummy EPS backend for local login/testing
+│   ├── src/                  # app code (pages, screens, features, components, lib, …)
+│   └── tools/mock-eps/       # dummy EPS backend for local login/testing
 └── server/                   # backend (Spring Boot). Has its own CLAUDE.md
 ```
 
 ## 4. Client (frontend) in one paragraph
 
-Next.js 15 (pages router), React 18, Chakra UI, TypeScript where new. Component-based: `components/` (reusable UI), `page-components/` (one per route), `features/` (self-contained modules such as onboarding, KYC, DigiKhata), `contexts/` (global state), `hooks/`, `tf-components/` (config-driven forms). Every backend call goes through `pages/api/transaction.js`, a server-side proxy to `NEXT_PUBLIC_API_BASE_URL` (our `server/`; EPS only in the legacy `npm run dev` setup). The tenant (branding, features) is resolved from the sub-domain. Details: [`client/CLAUDE.md`](../client/CLAUDE.md).
+Next.js 15 (pages router), React 18, Chakra UI, TypeScript where new. Component-based: `src/components/ui/` (reusable UI), `src/screens/` (one per route), `src/features/` (self-contained modules such as onboarding, KYC, DigiKhata), `src/contexts/` (global state), `src/hooks/`, `src/components/form-engine/` (config-driven forms). Every backend call goes through `src/pages/api/transaction.js`, a server-side proxy to `NEXT_PUBLIC_API_BASE_URL` (our `server/`; EPS only in the legacy `npm run dev` setup). The tenant (branding, features) is resolved from the sub-domain. Details: [`client/CLAUDE.md`](../client/CLAUDE.md).
 
 ## 5. Server (backend) in one paragraph
 
@@ -105,7 +106,7 @@ flowchart TB
 |---|---|---|---|
 | Client | `npm run dev:server` (real backend) or `npm run dev:mock` (mock only) | `dev` branch build | `main` branch build |
 | Server | `./gradlew bootRun`, profile `local`, MySQL in Docker | profile `prod`, staging DB | profile `prod`, production DB |
-| Backend for the client | `server/` (or `client/mock-eps`) | `server/` | `server/` |
+| Backend for the client | `server/` (or `client/tools/mock-eps`) | `server/` | `server/` |
 | Data | dummy users only | test data | real data |
 | Secrets | none needed / `client/.env.local` | secrets manager | secrets manager |
 | How it runs | `bootRun` + `npm run dev:server` | `deploy/docker-compose.yml` (mysql, migrate, server, client, Caddy edge) | same |
@@ -130,7 +131,7 @@ sequenceDiagram
 
 ## 8. Next steps (rough order)
 
-`client/mock-eps` (`npm run dev:mock`) answers the same calls without Java, for UI-only work.
+`client/tools/mock-eps` (`npm run dev:mock`) answers the same calls without Java, for UI-only work.
 
 1. **Finish P6:** run the stack on a real staging host, tag `v1.0.0` ([`BACKEND_PLAN.md`](./BACKEND_PLAN.md), [`deploy/RUNBOOK.md`](./deploy/RUNBOOK.md)).
 2. **Real providers:** SMS, email, DigiLocker, e-sign (production cannot finish agent onboarding without them, see [`deploy/RUNBOOK.md`](./deploy/RUNBOOK.md)).

@@ -1,4 +1,4 @@
-import AssistedOnboarding from "pages/agent-onboarding";
+import AssistedOnboarding from "@/pages/agent-onboarding";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("AssistedOnboarding", () => {

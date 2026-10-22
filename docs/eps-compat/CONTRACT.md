@@ -1,6 +1,6 @@
 # EPS wire-format contract (what `server/` must answer)
 
-The client (`client/`) was written against EPS. `server/` answers the same requests so the client works unchanged (ADR-0004). This file is the checklist. The executable version is `client/mock-eps/test/` (run against the server with `EPS_CONTRACT_BASE_URL`).
+The client (`client/`) was written against EPS. `server/` answers the same requests so the client works unchanged (ADR-0004). This file is the checklist. The executable version is `client/tools/mock-eps/test/` (run against the server with `EPS_CONTRACT_BASE_URL`).
 
 Status: ✅ implemented in `server/` · ⬜ not yet · ➖ out of scope (runs in the EkoConnect widget or a later release)
 
@@ -8,7 +8,7 @@ Status: ✅ implemented in `server/` · ⬜ not yet · ➖ out of scope (runs in
 
 | Rule | Detail |
 |---|---|
-| Entry points | `POST /` (proxied by `client/pages/api/transaction.js`), `POST /transactions/do`, `/transactions/dojson`, `/transactions/wlc`, `/transactions/upload`, `/transactions/customupload` (POST/PUT), `/transactions/getip`, `/authentication/{revoke,token,refresh-profile}`, any method under `/ekoicici/**`, `POST /reports/agent-subnetwork` |
+| Entry points | `POST /` (proxied by `client/src/pages/api/transaction.js`), `POST /transactions/do`, `/transactions/dojson`, `/transactions/wlc`, `/transactions/upload`, `/transactions/customupload` (POST/PUT), `/transactions/getip`, `/authentication/{revoke,token,refresh-profile}`, any method under `/ekoicici/**`, `POST /reports/agent-subnetwork` |
 | Envelope | `{status, response_status_id, response_type_id, message, data, param_attributes?, invalid_params?}`. Success = `status: 0` and `response_status_id: 0` |
 | Interaction | body field `interaction_type_id` (string or number) |
 | tf-req tunnel | headers `tf-req-uri-root-path` (`/ekoicici/v1`, `/v2`, `/v3`, `/v1/marketuat`), `tf-req-uri` (may carry its own query string), `tf-req-method`. Through the proxy it arrives as a real request to `root + uri` with body fields as query params (empty strings dropped) |

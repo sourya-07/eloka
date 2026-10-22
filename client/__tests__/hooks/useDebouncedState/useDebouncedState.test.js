@@ -1,4 +1,4 @@
-import { useDebouncedState } from "hooks";
+import { useDebouncedState } from "@/hooks";
 import { act, renderHook } from "test-utils";
 
 // jest.useFakeTimers();

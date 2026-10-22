@@ -1,4 +1,4 @@
-import { useGeolocation } from "hooks";
+import { useGeolocation } from "@/hooks";
 import { act, renderHook, waitFor } from "test-utils";
 
 // Mock navigator.geolocation

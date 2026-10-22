@@ -44,7 +44,7 @@ Agent features:
 - Follow React best practices (hooks, functional components)
 - Use proper state management techniques
 - Components should be modular and follow single-responsibility principle
-- Use absolute imports for components and utilities (e.g., `import Button from 'components/Button'`)
+- Use absolute imports for components and utilities (e.g., `import Button from 'src/components/ui/Button'`)
 - Avoid Enums: Use constant objects with `as const` assertion.
 - Explicit return types on all functions/components.
 
@@ -68,12 +68,12 @@ Agent features:
 - Ensure proper **cleanup** for event listeners, intervals, and effects (`useEffect` cleanup).
 
 ### Styling
-- Prefer custom components in the `components` folder over Chakra UI's built-in components (e.g., `components/Button`, `components/Input`, `components/Select`).
+- Prefer custom components in the `components` folder over Chakra UI's built-in components (e.g., `src/components/ui/Button`, `src/components/ui/Input`, `src/components/ui/Select`).
 - Exclusively use **Chakra UI** for styling and base components where custom components aren't available.
 - Use [theme variables](../styles/themes.tsx) for colors, fonts, and spacing.
 
 ### File Naming Conventions
-- Directories: lowercase with dashes (e.g., `layout-components`)
+- Directories: lowercase with dashes (e.g., `form-engine`)
 - Component files: PascalCase (`TextArea.tsx`)
 - Utility files: camelCase (`formValidator.ts`)
 - Exports: prefer named exports over defaults.
@@ -89,20 +89,20 @@ Agent features:
 
 ## Repository Structure
 - `__tests__`: All tests (unit/integration), mirroring main code structure
-- `components/`: Reusable React UI components
-- `constants/`: Application-wide constants
-- `contexts/`: React context providers
+- `src/components/ui/`: Reusable React UI components
+- `src/constants/`: Application-wide constants
+- `src/contexts/`: React context providers
 - `docs/`: Comprehensive project documentation
-- `helpers/`: Business-specific helper functions
-- `hooks/`: Custom React hooks
-- `layout-components/`: Components specific to layout and navigation
-- `libs/`: External and shared libraries
-- `page-components/`: Page-specific React components
-- `pages/`: Next.js page routes
+- `src/lib/`: Business-specific helper functions
+- `src/hooks/`: Custom React hooks
+- `src/components/layout/`: Components specific to layout and navigation
+- `src/lib/`: External and shared libraries
+- `src/screens/`: Page-specific React components
+- `src/pages/`: Next.js page routes
 - `public/`: Static assets (images, scripts)
-- `styles/`: Chakra UI theme and global styling
-- `tf-components/`: Components for low-code forms (transaction framework)
-- `utils/`: General-purpose utility functions
+- `src/styles/`: Chakra UI theme and global styling
+- `src/components/form-engine/`: Components for low-code forms (transaction framework)
+- `src/utils/`: General-purpose utility functions
 - `README.md`: Setup and usage documentation
 
 
@@ -132,7 +132,7 @@ Agent features:
 ### Example test structure for standalone components:
 ```js
 import { render, pageRender } from "test-utils";
-import { Button } from "components/Button";
+import { Button } from "src/components/ui/Button";
 
 describe("Button component", () => {
 	it("renders successfully", () => {
@@ -144,7 +144,7 @@ describe("Button component", () => {
 
 ### Example test structure for page components or comonents which depend on global contexts:
 ```js
-import { Home } from "page-components/Home";
+import { Home } from "src/screens/Home";
 import { pageRender } from "test-utils";
 
 describe("Home page", () => {

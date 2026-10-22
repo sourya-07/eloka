@@ -1,5 +1,5 @@
-import { WalletCard } from "features/digikhata/components/WalletCard";
-import { WalletData } from "features/digikhata/context/types";
+import { WalletCard } from "@/features/digikhata/components/WalletCard";
+import { WalletData } from "@/features/digikhata/context/types";
 import { fireEvent, render } from "test-utils";
 
 const mockWalletData: WalletData = {

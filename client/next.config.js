@@ -239,20 +239,7 @@ const nextConfig = {
 	reactStrictMode: isDev ? true : false,
 	poweredByHeader: false,
 	eslint: {
-		dirs: [
-			"components",
-			"page-components",
-			"tf-components",
-			"layout-components",
-			"pages",
-			"features",
-			"libs",
-			"utils",
-			"helpers",
-			"hooks",
-			"contexts",
-			"constants",
-		],
+		dirs: ["src"],
 	},
 	compiler: {
 		reactRemoveProperties: true, // removes ^data-test properties in build

@@ -1,4 +1,4 @@
-import Configurations from "pages";
+import Configurations from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("Configurations", () => {

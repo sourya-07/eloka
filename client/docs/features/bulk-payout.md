@@ -126,7 +126,7 @@ The **Bulk Payout** feature allows agents to perform batch IMPS payout transacti
 
 ### Component Structure
 ```
-page-components/products/bulk-payout/
+src/screens/products/bulk-payout/
 ├── BulkPayout.tsx                    # Main container with context provider
 │                                     # - EkoConnect widget integration
 │                                     # - eko-response event listener
@@ -378,5 +378,5 @@ flowchart TD
 
 ## 8. References
 * **API Documentation:** [Bulk Payout API Specs](https://docs.google.com/document/d/1s9O81RN6V4DU2cuZYqdx2Et-CpGFl0LimyV3txq64vM/edit?tab=t.0)
-* **EkoConnect Widget:** See `components/EkoConnectWidget` and `TestPage.jsx` for usage examples
+* **EkoConnect Widget:** See `src/components/ui/EkoConnectWidget` and `TestPage.jsx` for usage examples
 * **Sample File:** [Download Template](https://files.eko.co.in/docs/sample_files/bulk-upload/bulk_imps_sample.xlsx)

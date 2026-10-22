@@ -1,4 +1,4 @@
-import { useSessionStorage } from "hooks";
+import { useSessionStorage } from "@/hooks";
 import { act, renderHook } from "test-utils";
 
 test("useSessionStorage", () => {

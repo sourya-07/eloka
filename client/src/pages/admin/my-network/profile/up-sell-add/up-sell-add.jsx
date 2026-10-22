@@ -1,0 +1,23 @@
+import { BreadcrumbWrapper, PaddingBox } from "@/components/ui";
+import { MyNetworkBreadcrumbs } from "@/constants";
+import { UpdateSellerAddress } from "@/screens/Admin";
+
+/**
+ *
+ */
+function UpdateSellerAddressPage() {
+	return (
+		<PaddingBox>
+			<BreadcrumbWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
+				<UpdateSellerAddress />
+			</BreadcrumbWrapper>
+		</PaddingBox>
+	);
+}
+
+UpdateSellerAddressPage.pageMeta = {
+	title: "My Network > Update Agent Address | Admin",
+	isFixedBottomAppBar: true,
+};
+
+export default UpdateSellerAddressPage;

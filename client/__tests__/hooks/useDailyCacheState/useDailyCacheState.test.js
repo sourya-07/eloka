@@ -1,5 +1,5 @@
-import { MockUser } from "__tests__/fixtures/session";
-import { useDailyCacheState } from "hooks";
+import { MockUser } from "../../fixtures/session";
+import { useDailyCacheState } from "@/hooks";
 import { act, renderHook } from "test-utils";
 
 const KEY = "test-daily-cache";

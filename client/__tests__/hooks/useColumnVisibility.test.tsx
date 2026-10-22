@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react";
-import { useColumnVisibility } from "hooks/useColumnVisibility";
+import { useColumnVisibility } from "@/hooks/useColumnVisibility";
 
 // Mock localStorage
 const localStorageMock = (() => {

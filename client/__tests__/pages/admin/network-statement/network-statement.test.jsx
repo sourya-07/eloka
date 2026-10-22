@@ -1,4 +1,4 @@
-import NetworkStatement from "pages";
+import NetworkStatement from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("NetworkStatement", () => {

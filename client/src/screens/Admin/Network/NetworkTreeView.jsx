@@ -1,0 +1,463 @@
+import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
+import { Icon } from "@/components/ui/Icon";
+import { UserType } from "@/constants";
+import { useNetworkUsers } from "@/contexts";
+import useHslColor from "@/hooks/useHslColor";
+import { useEffect, useMemo, useState } from "react";
+import {
+	StaticTreeDataProvider,
+	Tree,
+	UncontrolledTreeEnvironment,
+} from "react-complex-tree";
+import "react-complex-tree/lib/style-modern.css";
+import { FaRegUser } from "react-icons/fa6";
+import { FcBusinessman, FcManager } from "react-icons/fc";
+import { MdFolderShared } from "react-icons/md";
+import { RiEBike2Fill } from "react-icons/ri";
+import { formatMobile } from "@/utils";
+import { getInitials } from "@/utils/textFormat";
+import { NetworkMenu } from "./NetworkMenu/NetworkMenu";
+
+// Refresh throttling constants
+const REFRESH_THROTTLE = 2 * 60 * 1000; // 2 minutes
+
+/**
+ * Show network users in an expandable tree view.
+ * @returns {JSX.Element} The tree view component
+ * TODO: Add caching mechanism for the network users data in the NetworkUserContext.
+ * TODO: Move logic for list to tree conversion from NetworkUsersContext to here so that data filtering can be done effectively, and the tree can be updated on the fly.
+ */
+const NetworkTreeView = () => {
+	const [selectedItem, setSelectedItem] = useState(null);
+	// const [userTypeFilterList, setUserTypeFilterList] = useState([]);
+	// const filteredUserSet = useSet([]); // filteredUserTypes, setFilteredUserTypes
+
+	const {
+		networkCount,
+		networkUsersTree,
+		refreshUserList,
+		// userTypeIdList,
+		fetchedAt,
+		loading,
+	} = useNetworkUsers();
+
+	// Fetch Network User List as a tree when tree-view is visible
+	useEffect(() => {
+		refreshUserList();
+	}, [refreshUserList]);
+
+	const [now, setNow] = useState(Date.now());
+
+	// Update 'now' every 30 seconds to trigger re-renders for the timer
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setNow(Date.now());
+		}, 30 * 1000);
+		return () => clearInterval(interval);
+	}, []);
+
+	const timeSinceLastUpdate = fetchedAt
+		? now - new Date(fetchedAt).getTime()
+		: Infinity;
+	const showRefresh = timeSinceLastUpdate >= REFRESH_THROTTLE;
+
+	const handleRefresh = () => {
+		if (loading) return;
+		refreshUserList(true);
+	};
+
+	// Prepare the Tree View Data for react-complex-tree component
+	const dataProvider = useMemo(
+		() =>
+			new StaticTreeDataProvider(networkUsersTree, (item, data) => ({
+				...item,
+				data,
+			})),
+		[networkUsersTree]
+	);
+
+	// Prepare the User-Type Filter
+	// useEffect(() => {
+	// 	if (userTypeIdList.length > 0) {
+	// 		// Set all user types as selected by default
+	// 		filteredUserSet.set([...userTypeIdList]);
+
+	// 		// Create list of options for the filter checkboxes
+	// 		const _userTypeFilterList = userTypeIdList.map((userTypeId) => ({
+	// 			value: userTypeId,
+	// 			label: getUserTypeLabel(userTypeId) || "Type " + userTypeId,	// from useUserTypes()
+	// 		}));
+	// 		setUserTypeFilterList(_userTypeFilterList);
+	// 	}
+	// }, [userTypeIdList]);
+
+	// Show Chakra loader
+	if (loading) {
+		return (
+			<Flex justify="center" align="center" height="100%">
+				<Spinner />
+			</Flex>
+		);
+	}
+
+	return (
+		<>
+			<Flex
+				className="test"
+				direction={{ base: "column", lg: "row" }}
+				w="100%"
+				gap={5}
+			>
+				<Box
+					flex="3"
+					maxW="100%"
+					maxH={{ base: "400px", md: "100%" }}
+					overflowY="auto"
+					bg="white"
+					p={2}
+					borderRadius={6}
+					sx={{
+						"--rct-item-height": "42px",
+						"--rct-arrow-size": "14px",
+						"--rct-arrow-container-size": "20px",
+						// "--rct-bar-color": "red",
+						".rct-tree-item-button": {
+							fontSize: "14px",
+						},
+					}}
+				>
+					<UncontrolledTreeEnvironment
+						dataProvider={dataProvider}
+						getItemTitle={(item) => item.data}
+						// 	(item.data || item.meta.mobile) +
+						// 	(item.isFolder && item.count ? ` [${item.count}]` : "")
+						// }
+						viewState={{}}
+						renderItemTitle={({ item }) => (
+							<NetworkTreeItem {...item} />
+						)}
+						canDragAndDrop={false}
+						disableMultiselect={true}
+						onSelectItems={(items) =>
+							items &&
+							items[0] &&
+							items[0] in networkUsersTree &&
+							setSelectedItem &&
+							setSelectedItem(networkUsersTree[items[0]])
+						}
+					>
+						<Tree
+							treeId="tree-network"
+							rootItem="root"
+							treeLabel="Network Tree"
+						/>
+					</UncontrolledTreeEnvironment>
+				</Box>
+
+				<Box
+					flex="2"
+					order={{ base: -1, lg: 1 }}
+					maxW="100%"
+					boxSizing="border-box"
+					color="light"
+				>
+					<Flex
+						direction="column"
+						gap={3}
+						position={{ lg: "fixed" }}
+						// top={{ lg: "268px" }}
+					>
+						{/* MARK: Filters */}
+						{/* <Box
+							w={{ base: "100%", lg: "unset" }}
+							minW="280px"
+							bg="white"
+							p={{ base: 3, md: 6 }}
+							borderRadius={6}
+							shadow="md"
+						>
+							<Stack spacing={2} direction="column">
+								{userTypeFilterList.map((userType, i) => (
+									<Checkbox
+										key={userType.value || i}
+										value={userType.value}
+										isChecked={filteredUserSet.has(
+											userType.value
+										)}
+										onChange={(e) => {
+											e.target.checked
+												? filteredUserSet.add(
+														+userType.value
+													)
+												: filteredUserSet.delete(
+														+userType.value
+													);
+										}}
+									>
+										{userType.label}
+									</Checkbox>
+								))}
+							</Stack>
+						</Box> */}
+
+						{/* MARK: Info */}
+						<Box
+							w={{ base: "100%", lg: "unset" }}
+							minW="320px"
+							bg="white"
+							p={{ base: 3, md: 5 }}
+							borderRadius={6}
+							shadow="md"
+						>
+							{selectedItem ? (
+								selectedItem.rootCategory ? (
+									<Text>
+										Expand the category and select a user to
+										view details
+									</Text>
+								) : (
+									<Flex
+										direction="column"
+										gap={2}
+										fontSize="14px"
+									>
+										<Flex direction="row" gap="15px">
+											<Text
+												flex={1}
+												fontWeight="bold"
+												fontSize="1.2em"
+												mb={2}
+											>
+												{selectedItem?.meta?.name}
+											</Text>
+											{selectedItem?.meta?.mobile &&
+											selectedItem?.meta?.user_code ? (
+												<NetworkMenu
+													mobile_number={
+														selectedItem?.meta
+															?.mobile
+													}
+													eko_code={
+														selectedItem?.meta
+															?.user_code
+													}
+													account_status_id={
+														selectedItem?.meta
+															?.account_status_id
+													}
+													user_type_id={
+														selectedItem?.meta
+															?.user_type_id
+													}
+												/>
+											) : null}
+										</Flex>
+										<Tag
+											w="fit-content"
+											fontSize="0.9em"
+											fontWeight="500"
+										>
+											{selectedItem?.meta?.user_type}
+										</Tag>
+										<Box>
+											<strong>Mobile: </strong>
+											{formatMobile(
+												selectedItem?.meta?.mobile
+											)}
+										</Box>
+										{selectedItem?.meta?.account_status ? (
+											<Box>
+												<strong>
+													Account Status:{" "}
+												</strong>
+												{
+													selectedItem.meta
+														.account_status
+												}
+											</Box>
+										) : null}
+										{/* <Box>
+											<strong>User Code: </strong>
+											{selectedItem?.meta?.user_code}
+										</Box> */}
+									</Flex>
+								)
+							) : (
+								<Text textStyle="italics">
+									You have{" "}
+									<strong>{networkCount} users</strong> in
+									your network.
+									<br />
+									<br />
+									Expand/select an item for details.
+								</Text>
+							)}
+						</Box>
+					</Flex>
+				</Box>
+			</Flex>
+
+			<Flex justify="center" w="100%" gap={2} mt="2em">
+				<Text fontSize="xxs" color="light">
+					<strong>Last Updated:</strong>{" "}
+					{new Date(fetchedAt).toLocaleString()}
+				</Text>
+				{showRefresh ? (
+					<Icon
+						name="refresh"
+						size="xs"
+						onClick={handleRefresh}
+						_hover={{ cursor: "pointer" }}
+					/>
+				) : null}
+			</Flex>
+		</>
+	);
+};
+
+/**
+ * Network Tree Item (Title) component
+ * MARK: Tree Item
+ * @param {object} props
+ * @param {*} props.data
+ * @param {number} props.count
+ * @param {boolean} props.isFolder
+ * @param {boolean} props.rootCategory
+ * @param {object} props.meta
+ * @returns {JSX.Element | null}
+ */
+const NetworkTreeItem = ({
+	data,
+	count,
+	isFolder = false,
+	rootCategory = false,
+	meta = {},
+}) => {
+	if (!(data || meta)) return null;
+
+	return (
+		<Flex direction="row" align="center" gap="10px">
+			<UserTypeIcon
+				rootCategory={rootCategory}
+				user_type={meta?.user_type || data || "Others"}
+				user_type_id={meta?.user_type_id || 0}
+			/>
+			{rootCategory ? (
+				<Text fontWeight="600" fontSize="1.1em">
+					{data || meta.mobile || ""}
+				</Text>
+			) : (
+				<Text textTransform="capitalize">
+					{(data || meta.mobile || "").toString().toLowerCase()}
+				</Text>
+			)}
+			{meta.parent_user_code !== "root" && meta.user_type ? (
+				<Tag>{meta.user_type}</Tag>
+			) : null}
+			{isFolder && count ? <Tag borderRadius="full">{count}</Tag> : null}
+		</Flex>
+	);
+};
+
+/**
+ * Tag component to show user-type, user count, etc
+ * @param {object} props - Props for the Tag component
+ * @param {React.ReactNode} props.children - Child elements to be displayed inside the tag
+ * @returns {JSX.Element}
+ */
+const Tag = ({ children, ...rest }) => {
+	return (
+		<Flex
+			align="center"
+			justify="center"
+			borderRadius="5px"
+			bg="#DDD"
+			color="#666"
+			fontSize="0.7em"
+			px="0.4em"
+			minW="15px"
+			minH="15px"
+			{...rest}
+		>
+			{children}
+		</Flex>
+	);
+};
+
+/**
+ * Tree item logo: show a folder icon for root folders or an avatar based on the user-type
+ * MARK: Type Icon
+ * @param {object} props - Properties
+ * @param {boolean} props.rootCategory - Whether the item is a root category folder
+ * @param {string} props.user_type - Type of the user
+ * @param {number} props.user_type_id - ID of the user type
+ * @returns {JSX.Element}
+ */
+function UserTypeIcon({ rootCategory, user_type, user_type_id }) {
+	const { h } = useHslColor(user_type);
+
+	if (rootCategory) {
+		return (
+			<MdFolderShared
+				size="28px"
+				color={`hsl(${h},80%,30%)`}
+				title={`${user_type} Folder`}
+			/>
+		);
+	}
+
+	let IconComponent = null;
+	let size = "20px";
+
+	switch (user_type_id) {
+		case UserType.SUPER_DISTRIBUTOR:
+			IconComponent = FcBusinessman;
+			break;
+		case UserType.DISTRIBUTOR:
+			IconComponent = FcManager;
+			break;
+		case UserType.FOS:
+			IconComponent = RiEBike2Fill;
+			size = "18px";
+			break;
+		default:
+			IconComponent = FaRegUser; // Default icon
+			size = "14px";
+	}
+
+	const initials = getInitials(user_type, 2);
+
+	return (
+		<Flex
+			rounded="full"
+			align="center"
+			justify="center"
+			width="28px"
+			height="28px"
+			border={`2px solid hsl(${h},80%,90%)`}
+			bg={`hsl(${h},80%,95%)`}
+			color={`hsl(${h},80%,30%)`}
+			position="relative"
+		>
+			<IconComponent size={size} title={user_type} />
+			<Flex
+				align="center"
+				justify="center"
+				position="absolute"
+				bottom="-4px"
+				right="-4px"
+				rounded="full"
+				bg={`hsl(${h},80%,30%)`}
+				color="white"
+				fontSize="0.5em"
+				fontWeight="700"
+				minW="14px"
+				minH="14px"
+			>
+				{initials}
+			</Flex>
+		</Flex>
+	);
+}
+
+export default NetworkTreeView;

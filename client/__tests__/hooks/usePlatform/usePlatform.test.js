@@ -1,4 +1,4 @@
-import { usePlatform } from "hooks";
+import { usePlatform } from "@/hooks";
 import { renderHook } from "test-utils";
 
 // The hook reads navigator.userAgent. jsdom's default agent depends on the machine

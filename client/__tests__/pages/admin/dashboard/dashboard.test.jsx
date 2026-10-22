@@ -1,4 +1,4 @@
-import Dashboard from "pages";
+import Dashboard from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("Dashboard", () => {

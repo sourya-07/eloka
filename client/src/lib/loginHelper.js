@@ -1,0 +1,506 @@
+import { Endpoints } from "@/constants/EndPoints";
+import { ANDROID_ACTION, buildUserObjectState, doAndroidAction } from "@/utils";
+import { fetcher } from "./apiHelper";
+
+const EKO_RESPONSE_TYPE_ID = {
+	SEND_OTP_LIMIT_EXHAUSTED: 2377,
+};
+
+/**
+ * Verify OTP and get user details to login the user.
+ * MARK: Send OTP
+ * @param {number} org_id	Organization ID
+ * @param {number} number	User's mobile number
+ * @param {Function} toast		Function to show toast messages
+ * @param {string} sendState	"send" or "resend" for showing proper toast message
+ * @param {boolean} isAndroid	Is the user using the Android wrapper app?
+ * @param {boolean} isMobileMappedUserId Is the user mobile mapped?
+ * @param {string} org_token	A JWT token with org details (including org_id)
+ * @returns {boolean} Is SEND-OTP request successful?
+ */
+async function sendOtpRequest(
+	org_id,
+	number,
+	toast,
+	sendState = "send",
+	isAndroid = false,
+	isMobileMappedUserId = false,
+	org_token = ""
+) {
+	let success = false;
+	let errMsg = "";
+	let _otp = ""; // Only for UAT
+	let _otpLength = 4; // Default OTP length; overridden by API response when available
+	let _verifiedMobileNumber = "";
+	let _sendOtpLimitExhausted = false;
+	let _retryAfter = null;
+
+	if (isAndroid) {
+		doAndroidAction(ANDROID_ACTION.OTP_FETCH_REQUEST);
+	}
+
+	const PostData = {
+		platform: isAndroid ? "android" : "web",
+		mobile: number,
+		// client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
+		app: "Eloka",
+		org_id: org_id,
+		org_token: org_token,
+		...(isMobileMappedUserId && { is_mobile_mapped_user_id: true }),
+		interaction_type_id: "515",
+		user_code: "99029899",
+		initiator_id: "1234567891",
+		user_identity_type: "mobile_number",
+		intent_id: "0",
+		user_identity: number,
+	};
+
+	try {
+		const data = await fetcher("/api/transaction", {
+			body: PostData,
+			timeout: 30000,
+		});
+		if (data?.status == 0) {
+			success = true;
+			_otp = data?.data?.otp; // Only for UAT
+			_verifiedMobileNumber = data?.data?.mobile; // Verified mobile number
+			// Infer OTP length from actual OTP value (UAT) or explicit otp_length field (production)
+			if (_otp?.length > 0) _otpLength = _otp.length;
+			else if (data?.data?.otp_length > 0)
+				_otpLength = data.data.otp_length;
+		} else {
+			errMsg = data?.message || data?.invalid_params?.csp_id;
+			_sendOtpLimitExhausted =
+				data?.response_type_id ===
+				EKO_RESPONSE_TYPE_ID.SEND_OTP_LIMIT_EXHAUSTED;
+			_retryAfter = +data?.data?.description; // Time in minutes to retry OTP request
+		}
+	} catch (err) {
+		success = false;
+		console.error("[ERROR] sendOtpRequest: ", err);
+	}
+
+	if (success) {
+		// Only show the OTP in local dev — tied to NODE_ENV so it is
+		// structurally impossible to ship to production builds.
+		if (process.env.NODE_ENV !== "production" && toast) {
+			toast({
+				title: `Demo OTP: ${_otp}`,
+				status: "success",
+				duration: 5000,
+				position: "top-right",
+			});
+		}
+	} else {
+		// Failure toast
+		if (toast) {
+			// Request OTP limit exhausted
+			if (_sendOtpLimitExhausted && _retryAfter != null) {
+				let _otpLimitExhaustedMsgSuffix =
+					_retryAfter > 1 ? `${_retryAfter} minutes.` : "some time";
+				toast({
+					title: `You have requested too many OTPs. Please try again after ${_otpLimitExhaustedMsgSuffix}`,
+					status: "error",
+					duration: 6000,
+				});
+			} else {
+				toast({
+					title:
+						`Failed to ${
+							sendState === "resend" ? "resend" : "send"
+						} OTP. ` + (errMsg ? errMsg : "Please try again."),
+					status: "error",
+					duration: 6000,
+				});
+			}
+		}
+	}
+
+	return {
+		otp_sent: success,
+		verifiedMobileNumber: _verifiedMobileNumber,
+		otpLength: _otpLength,
+	};
+}
+
+/**
+ * Calculates the expiry time of the token which is 75% of the actual token lifetime.
+ * MARK: TokenExpiry Time
+ * @param {object} data The response data from the login API
+ * @param {number} data.token_timeout Already calculated expiry time of the token in milliseconds
+ * @param {number} data.token_expiration The token lifetime in seconds
+ * @returns {number} The expiry time of the token in milliseconds
+ */
+function getTokenExpiryTime(data) {
+	// console.log("getTokenExpiryTime: data=", data);
+	if (!data) return 0;
+	if (data.token_timeout) return data.token_timeout;
+	if (data.token_expiration) {
+		const token_lifetime_75percent = data.token_expiration * 0.75;
+		return Date.now() + token_lifetime_75percent * 1000;
+	}
+	return 0;
+}
+
+/**
+ * Create userState
+ * MARK: User State
+ * @param data
+ */
+function createUserState(data) {
+	let token_timeout = getTokenExpiryTime(data);
+	const state = buildUserObjectState({
+		...data,
+		token_timeout: token_timeout,
+	});
+	return state;
+}
+
+/**
+ * Set user details in the session storage after a successful login.
+ * MARK: Set Usr Details
+ * @param {object} data
+ * @param {object} data.userDetails	User details
+ * @param {object} data.personalDetails	Personal details
+ * @param {object} data.shopDetails	Shop details
+ * @param {object} data.accountDetails	Account details
+ * @param {number} data.token_timeout	Expiry time of the token in milliseconds
+ */
+function setUserDetails(data) {
+	try {
+		sessionStorage.setItem("token_timeout", data.token_timeout);
+		sessionStorage.setItem(
+			"user_details",
+			JSON.stringify(data.userDetails)
+		);
+		sessionStorage.setItem(
+			"personal_details",
+			JSON.stringify(data.personalDetails)
+		);
+		sessionStorage.setItem(
+			"shop_details",
+			JSON.stringify(data.shopDetails)
+		);
+		sessionStorage.setItem(
+			"account_details",
+			JSON.stringify(data.accountDetails)
+		);
+		sessionStorage.setItem(
+			"business_details",
+			JSON.stringify(data.businessDetails)
+		);
+
+		// Cache the original login-type (Google / Mobile) and user details in LocalStorage after a sucessful login
+		if (
+			data?.userDetails?.mobile &&
+			data.userDetails.mobile.toString().length > 8
+		) {
+			const user_login_type = sessionStorage.getItem("login_type") || "";
+			const lastLogin = {
+				type: user_login_type,
+				name: data.userDetails.name,
+				mobile: data.userDetails.mobile,
+				user_id: data.userDetails.user_id,
+			};
+			localStorage.setItem("inf-last-login", JSON.stringify(lastLogin));
+		}
+	} catch (err) {
+		console.warn("Updating to session-storage failed: ", err);
+	}
+}
+
+/**
+ * Set the auth tokens in the session storage.
+ * If running under Android wrapper app, send details to the app for caching.
+ * MARK: Set Tokens
+ * @param {object} data	The object with auth tokens
+ * @param {string} data.access_token	The full access token used to get transactions for the user based on assigned roles
+ * @param {string} data.refresh_token	The refresh token
+ * @param {string} data.access_token_lite	The light-weight access token for authenticating regular transactions
+ * @param {string} data.access_token_crm	The access token for the CRM API
+ * @param {boolean} isAndroid	Is the user using the Android wrapper app?
+ * @param {boolean} isNewLogin	Is this a new login?
+ */
+function setandUpdateAuthTokens(data, isAndroid, isNewLogin = false) {
+	try {
+		// Missing tokens are removed, not stored as the string "undefined" (which later
+		// went out as "Bearer undefined" after a page reload).
+		[
+			"access_token",
+			"refresh_token",
+			"access_token_lite",
+			"access_token_crm",
+		].forEach((key) => {
+			if (data?.[key]) {
+				sessionStorage.setItem(key, data[key]);
+			} else {
+				sessionStorage.removeItem(key);
+			}
+		});
+	} catch (err) {
+		console.warn("Updating to session-storage failed: ", err);
+	}
+
+	if (isAndroid) {
+		doAndroidAction(
+			ANDROID_ACTION.SAVE_REFRESH_TOKEN,
+			JSON.stringify({
+				refresh_token: data?.refresh_token,
+				long_session: data?.long_session,
+				new_login: isNewLogin,
+			})
+		);
+	}
+}
+
+/**
+ * Get the auth tokens from the session storage.
+ * MARK: Get Tokens
+ * @returns {object} The auth tokens
+ */
+function getAuthTokens() {
+	const tokenData = {
+		access_token: sessionStorage.getItem("access_token"),
+		refresh_token: sessionStorage.getItem("refresh_token"),
+		access_token_lite: sessionStorage.getItem("access_token_lite"),
+		access_token_crm: sessionStorage.getItem("access_token_crm"),
+	};
+
+	return tokenData;
+}
+
+/**
+ * Parse JSON string safely. The string "undefined" is also treated as undefined.
+ * MARK: Parse JSON
+ * @param data
+ */
+function parseJson(data) {
+	if (data === null || typeof data === "undefined" || data === "undefined")
+		return "";
+
+	try {
+		return JSON.parse(data);
+	} catch (err) {
+		console.warn("Parsing JSON failed: ", { data, err });
+	}
+
+	return "";
+}
+
+/**
+ * Get stored session from sessionStorage
+ * MARK: Get Sessions
+ * @returns {object} The stored session data (user details, auth tokens, etc.)
+ */
+function getSessions() {
+	const userData = {
+		...getAuthTokens(),
+		token_timeout: sessionStorage.getItem("token_timeout"),
+		details: parseJson(sessionStorage.getItem("user_details")),
+		account_details: parseJson(sessionStorage.getItem("account_details")),
+		personal_details: parseJson(sessionStorage.getItem("personal_details")),
+		shop_details: parseJson(sessionStorage.getItem("shop_details")),
+		business_details: parseJson(sessionStorage.getItem("business_details")),
+	};
+	return userData;
+}
+
+/**
+ * Clears all the auth tokens from the session storage.
+ * MARK: Clear Tokens
+ * @param {boolean} isAndroid - Is the user using the Android wrapper app?
+ */
+function clearAuthTokens(isAndroid) {
+	console.log("Clearing all auth tokens from session storage.");
+
+	// Important session-storage keys to keep even after logout
+	const IMP_SESSION_KEYS = ["org_detail", "inf-forced-logout"];
+
+	// Backup important keys
+	const backup = {};
+	IMP_SESSION_KEYS.forEach((key) => {
+		const _val = sessionStorage.getItem(key);
+		if (_val !== null) {
+			backup[key] = _val;
+		}
+	});
+
+	// Clear all session keys
+	sessionStorage.clear();
+
+	// Restore important keys
+	IMP_SESSION_KEYS.forEach((key) => {
+		if (key in backup) {
+			sessionStorage.setItem(key, backup[key]);
+		}
+	});
+
+	if (isAndroid) {
+		doAndroidAction(ANDROID_ACTION.CLEAR_REFRESH_TOKEN);
+	}
+}
+
+/**
+ * Revoke server-side refresh-token for this session. Used during logout.
+ * MARK: Revoke Token
+ * @param {*} user_id	The User-ID of the user
+ */
+function revokeSession(user_id) {
+	if (user_id === 1) {
+		console.log("Refresh token already revoked");
+		return;
+	}
+
+	const refresh_token = sessionStorage.getItem("refresh_token");
+
+	console.log("Revoking refresh token on backend: ", refresh_token);
+
+	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.LOGOUT, {
+		body: {
+			user_id: user_id,
+			refresh_token: refresh_token,
+		},
+		token: sessionStorage.getItem("access_token"),
+		timeout: 5000,
+	})
+		// .then((data) => console.log("REFRESH TOKEN REVOKED: ", data))
+		.catch((err) => console.error("Refresh Token Revoke Error: ", err));
+}
+
+/**
+ * Generate a new access token using the refresh token.
+ * MARK: Generate Token
+ * @param {string} refresh_token	The refresh token
+ * @param {Function} updateUserInfo	Function to update the userState
+ * @param {boolean} isTokenUpdating	Is the token already being updated?
+ * @param {Function} setIsTokenUpdating	Function to set the token update status
+ * @param {Function} logout	Function to logout the user
+ * @returns
+ */
+function generateNewAccessToken(
+	refresh_token,
+	updateUserInfo,
+	isTokenUpdating,
+	setIsTokenUpdating,
+	logout
+) {
+	console.log("[generateNewAccessToken] refresh_token:", refresh_token);
+
+	if (!(refresh_token && refresh_token.length > 1)) {
+		console.warn("[generateNewAccessToken] Invalid refresh token.");
+		return false;
+	}
+
+	if (isTokenUpdating) {
+		console.warn("[generateNewAccessToken] Already refreshing token.");
+		return false;
+	}
+
+	setIsTokenUpdating(true);
+
+	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GENERATE_TOKEN, {
+		body: {
+			refresh_token: refresh_token,
+		},
+		timeout: 60000,
+	})
+		.then((data) => {
+			console.log(
+				"[generateNewAccessToken] token generated. Updating user info:",
+				data
+			);
+			updateUserInfo(data);
+			return true;
+		})
+		.catch((err) => {
+			console.error(
+				"[generateNewAccessToken] Error refreshing token: ",
+				err
+			);
+			logout && logout();
+			return false;
+		})
+		.finally(setIsTokenUpdating(false));
+}
+
+/**
+ * Login using refresh token on Android platform.
+ * MARK: Login Android
+ * @param refresh_token
+ * @param updateUserInfo
+ * @param login
+ * @param logout
+ * @param isAndroid
+ */
+function loginUsingRefreshTokenAndroid(
+	refresh_token,
+	updateUserInfo,
+	login,
+	logout,
+	isAndroid
+) {
+	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GENERATE_TOKEN, {
+		method: "post",
+		headers: { "Content-type": "application/x-www-form-urlencoded" },
+		body: "refresh_token=" + refresh_token,
+	})
+		.then((res) => {
+			if (!res.ok) {
+				throw new Error("Network response was not ok");
+			}
+			return res.json();
+		})
+		.then((data) => {
+			setandUpdateAuthTokens(data);
+			refreshUserProfile(login, updateUserInfo);
+		})
+		.catch((err) => {
+			console.log([loginUsingRefreshTokenAndroid], err);
+			logout && logout();
+
+			if (isAndroid) {
+				doAndroidAction(ANDROID_ACTION.CLEAR_REFRESH_TOKEN);
+			}
+		});
+}
+
+/**
+ * Refresh user profile after login or token refresh.
+ * MARK: Refresh Profile
+ * @param {Function} login - Function to login the user
+ * @param {Function} updateUserInfo - Function to update the userState
+ * @param {boolean} isAndroid - Is the user using the Android wrapper app?
+ */
+const refreshUserProfile = (login, updateUserInfo, isAndroid = false) => {
+	const refresh_token = sessionStorage.getItem("refresh_token");
+	const access_token = sessionStorage.getItem("access_token");
+
+	let platform = isAndroid ? "android" : "web";
+	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.REFRESH_PROFILE, {
+		body: {
+			platform: platform,
+			last_refresh_token: refresh_token,
+		},
+		token: access_token,
+	})
+		.then((res) => {
+			console.log("refreshProfile", JSON.stringify(res));
+			updateUserInfo(res);
+			login(res);
+		})
+		.catch((err) => console.error("[refreshUser] Error:", err));
+};
+
+export {
+	clearAuthTokens,
+	createUserState,
+	generateNewAccessToken,
+	getAuthTokens,
+	getSessions,
+	getTokenExpiryTime,
+	loginUsingRefreshTokenAndroid,
+	revokeSession,
+	sendOtpRequest,
+	setandUpdateAuthTokens,
+	setUserDetails,
+};

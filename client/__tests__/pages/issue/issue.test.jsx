@@ -1,4 +1,4 @@
-import Issue from "pages";
+import Issue from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("Issue", () => {

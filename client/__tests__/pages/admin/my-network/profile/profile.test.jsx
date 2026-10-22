@@ -1,4 +1,4 @@
-import Profile from "pages";
+import Profile from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("Profile", () => {

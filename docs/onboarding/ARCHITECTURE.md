@@ -17,7 +17,7 @@ Labels: **CONFIRMED** · **EXISTING FRONTEND BEHAVIOUR** · **PROPOSED / RECOMME
 |---|---|---|
 | Eloka tenant web app (`wlc-webapp`, Next.js) | ✅ | Serves every tenant by sub-domain or custom domain; resolves the org via the org-metadata service (interaction `677`) |
 | EPS backend ("Eko Platform Services") behind `NEXT_PUBLIC_API_BASE_URL` | ✅ (not in this repo) | Interaction-ID envelope (`/transactions/do`, `/dojson`, `/upload`, `/customupload`) + "tf-req" REST tunnel (`/ekoicici/v1/v2/v3/...`); auth at `/authentication/*` |
-| Agent onboarding (self + assisted) | ✅ | `features/onboarding`; uses EPS interactions 521/522/523/205/550-552/287/293/454/5 |
+| Agent onboarding (self + assisted) | ✅ | `src/features/onboarding`; uses EPS interactions 521/522/523/205/550-552/287/293/454/5 |
 | **Local Admin onboarding** | ❌ in this repo | Spread over **Eko Connect** (sign-up), the **Go-Live Admin tool** (staff), email, the admin's own domain (Agreement Signing) and **manual** CRM / DLT / logo / Play Store / domain tickets |
 | Onboarding state, review queue, audit, provisioning automation | ❌ | — |
 
@@ -42,7 +42,7 @@ flowchart LR
     end
 
     subgraph Frontends
-        OBUI[Onboarding UI<br/>Next.js route group or app<br/>reuses features/onboarding]
+        OBUI[Onboarding UI<br/>Next.js route group or app<br/>reuses src/features/onboarding]
         STAFF[Staff console<br/>Next.js, SSO-protected]
         WLC[wlc-webapp<br/>tenant portals by host]
     end
@@ -655,7 +655,7 @@ Background-processing options compared:
 
 - **Decision:** resource-oriented REST under `/v1`, RFC 9457 problem+json errors with stable `code`s, `Idempotency-Key` on every POST with side effects, `ETag` / `If-Match` on application writes, cursor pagination for staff lists.
 - **Rejected:** GraphQL (authorization per field is harder; no benefit for a step workflow); reusing the EPS envelope (HTTP 200 for errors; no concurrency semantics).
-- **Compatibility:** a thin frontend adapter maps responses into the existing `PipelineResult` shape so `features/onboarding` step components can be reused.
+- **Compatibility:** a thin frontend adapter maps responses into the existing `PipelineResult` shape so `src/features/onboarding` step components can be reused.
 
 ### ADR-010 — Integrations: ports and adapters, EPS-first where EPS already integrates
 
@@ -666,8 +666,8 @@ Background-processing options compared:
 
 ### ADR-011 — Where the onboarding UI lives
 
-- **Options:** (a) new route group in `wlc-webapp` on a platform host (e.g. `onboard.{zone}`); (b) Eko Connect; (c) a new small Next.js app sharing `features/onboarding` as a package.
-- **Recommendation:** **(c) or (a)**. Both reuse `features/onboarding`. (a) needs `_app.tsx` to support a host without an org (today `1829` → 404).
+- **Options:** (a) new route group in `wlc-webapp` on a platform host (e.g. `onboard.{zone}`); (b) Eko Connect; (c) a new small Next.js app sharing `src/features/onboarding` as a package.
+- **Recommendation:** **(c) or (a)**. Both reuse `src/features/onboarding`. (a) needs `_app.tsx` to support a host without an org (today `1829` → 404).
 - **Decision owner:** product + frontend leads (**OPEN**, OQ-P2).
 
 ---

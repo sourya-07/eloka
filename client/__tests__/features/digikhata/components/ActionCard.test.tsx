@@ -1,4 +1,4 @@
-import { ActionCard } from "features/digikhata/components/ActionCard";
+import { ActionCard } from "@/features/digikhata/components/ActionCard";
 import { FiEye } from "react-icons/fi";
 import { fireEvent, render } from "test-utils";
 

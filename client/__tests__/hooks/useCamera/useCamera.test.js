@@ -1,4 +1,4 @@
-import { useCamera } from "hooks";
+import { useCamera } from "@/hooks";
 import { renderHook } from "test-utils";
 
 test("renders hook", () => {

@@ -1,4 +1,4 @@
-import { useLocalStorage } from "hooks";
+import { useLocalStorage } from "@/hooks";
 import { act, renderHook } from "test-utils";
 
 test("useLocalStorage", () => {

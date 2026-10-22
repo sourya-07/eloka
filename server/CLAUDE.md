@@ -69,7 +69,7 @@ src/main/resources/
    - `routes()`: `RouteKey.interaction(9)`, `RouteKey.tf("/ekoicici/v1", HttpMethod.GET, "/network/agents")` or `RouteKey.path(...)`
    - `access()`: `PUBLIC`, `SESSION`, `USER`, `DISTRIBUTOR_OR_ADMIN` or `ORG_ADMIN` (required; startup fails without it)
    - `handle()`: read params with `call.params().string/requireString/integer`, identity **only** from `call.caller()`, build the reply with `EpsEnvelope.ok()...build()` / `EpsEnvelope.list(...)` / `new EpsResponse.File(...)`.
-4. Tests: domain unit test, a case in an integration test (`gateway/*IntegrationTest`), and the contract test in `client/mock-eps/test` (phase-gated with `until(n)`).
+4. Tests: domain unit test, a case in an integration test (`gateway/*IntegrationTest`), and the contract test in `client/tools/mock-eps/test` (phase-gated with `until(n)`).
 5. Mark the row ✅ in CONTRACT.md.
 
 ## Rules (OOP + safety)

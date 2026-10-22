@@ -1,4 +1,4 @@
-import { useDelayToggle } from "hooks";
+import { useDelayToggle } from "@/hooks";
 import { act, renderHook } from "test-utils";
 
 describe("useDelayToggle", () => {

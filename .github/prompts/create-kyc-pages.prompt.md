@@ -20,16 +20,16 @@ Ask for the API documentation if not provided.
 
 ### 2. Page Structure & Routing
 
-- All new KYC pages must be created under: `pages/products/kyc`
-  - Add the KYC product details in the `KycTools` array in [KycVerificationTools](../../page-components/products/kyc/KycVerificationTools.tsx)
+- All new KYC pages must be created under: `src/pages/products/kyc`
+  - Add the KYC product details in the `KycTools` array in [KycVerificationTools](../../client/src/screens/products/kyc/KycVerificationTools.tsx)
   - Ensure to include the necessary details such as label, description, icon, and URL for each KYC product.
-  - For each new KYC product, create a corresponding page under `pages/products/kyc` with the appropriate form and API integration.
+  - For each new KYC product, create a corresponding page under `src/pages/products/kyc` with the appropriate form and API integration.
 - If there are multiple related APIs (e.g., PAN lookup, GSTIN verify), group them in sub-pages:
 	- Example:
-	  `pages/products/kyc/gstin/pan.tsx`
-	  `pages/products/kyc/gstin/verify.tsx`
+	  `src/pages/products/kyc/gstin/pan.tsx`
+	  `src/pages/products/kyc/gstin/verify.tsx`
 - If an API depends on the result of another API, integrate these APIs as serial calls in the same page.
-- Use `pages/products/kyc` & `pages/products/kyc/gstin/` as a reference for structure, naming, and component usage.
+- Use `src/pages/products/kyc` & `src/pages/products/kyc/gstin/` as a reference for structure, naming, and component usage.
 
 ### 3. Technical & UI Implementation
 - Use `useEpsV3Fetch` hook for API calls.
@@ -46,12 +46,12 @@ Ask for the API documentation if not provided.
 ### 4. Component Reuse & Modularity
 
 - **Reuse all available UI and logic components from:**
-  `page-components/products/common/`
+  `src/screens/products/common/`
 	- Available Components:
 		- `ResponseToolbar` (for Back, Reset, Copy JSON actions at the end of the response card)
 		- `ResponseSection` (for displaying a section of the API responses. It shows the section heading and a left border. For nested JSON, use a nested `ResponseSection` for each level of nesting. For displaying a list of objects, use a `ResponseSection` for each object in the list and pass `index` as a prop to the `ResponseSection` component, starting with 1. Ensure to handle the rendering of the index correctly to maintain the order of items in the list.)
-	- Example Import: `import { ResponseSection, ResponseToolbar } from 'page-components/products/common';`
-- Place any new reusable logic/UI in `page-components/products/common/` for future use.
+	- Example Import: `import { ResponseSection, ResponseToolbar } from 'src/screens/products/common';`
+- Place any new reusable logic/UI in `src/screens/products/common/` for future use.
 - For all page components, wrap the page contents inside a `PaddingBox` component.
 - For sub-pages, use the `BreadcrumbWrapper` component for navigation (inside the `PaddingBox` component)
 - Before using any internal component, verify if it actually exists.
@@ -63,7 +63,7 @@ Ask for the API documentation if not provided.
 ### 6. Example Structure (for GSTIN)
 
 ```
-pages/
+src/pages/
 └── products/
     └── kyc/
         ├── index.tsx
@@ -71,7 +71,7 @@ pages/
             ├── index.tsx
             ├── pan.tsx
             └── verify.tsx
-page-components/
+src/screens/
 └── products/
     ├── common/
     │   └── ResponseToolbar.tsx

@@ -18,7 +18,7 @@ The client today depends on EPS (Eko Platform Services) for login, users, networ
 
 ## Consequences
 
-- One contract to honour: `docs/eps-compat/CONTRACT.md`, enforced by the contract tests in `client/mock-eps/test`.
+- One contract to honour: `docs/eps-compat/CONTRACT.md`, enforced by the contract tests in `client/tools/mock-eps/test`.
 - Handlers never trust identity fields in the body (`user_code`, `initiator_id`, `org_id`, `bc`); identity comes only from the session token.
 - Real tenants start with zero balances and empty history until a funding/import source exists.
-- `client/mock-eps` becomes redundant after Release 1 and will be retired; its tests stay as the contract.
+- `client/tools/mock-eps` becomes redundant after Release 1 and will be retired; its tests stay as the contract.

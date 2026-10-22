@@ -1,4 +1,4 @@
-import { useVoiceCapture } from "hooks";
+import { useVoiceCapture } from "@/hooks";
 import { act, renderHook } from "test-utils";
 
 // Use fake timers for testing time-dependent functionality

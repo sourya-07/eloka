@@ -62,9 +62,9 @@ These popups can be displayed on any page within the application, allowing for a
 
 ```typescript
 import { usePubSub } from "contexts";
-import { Button } from "components/Button"; // Assuming a custom Button component
-import { TOPICS } from "constants/PubSubTopics"; // Assuming TOPICS are defined here
-import { ModuleNameType } from "layout-components/DynamicPopupModuleLoader"; // Import the type
+import { Button } from "src/components/ui/Button"; // Assuming a custom Button component
+import { TOPICS } from "src/constants/PubSubTopics"; // Assuming TOPICS are defined here
+import { ModuleNameType } from "src/components/layout/DynamicPopupModuleLoader"; // Import the type
 
 // Example component triggering the Feedback popup
 const MyComponent = (): JSX.Element => {
@@ -102,10 +102,10 @@ Managing the pub/sub logic directly (creating unique result topics, subscribing,
 This hook encapsulates the core logic of triggering a popup and waiting for its result using Promises.
 
 ```typescript
-// helpers/useDynamicPopup.ts
+// src/hooks/useDynamicPopup.ts
 import { usePubSub } from "contexts";
-import { TOPICS } from "constants/PubSubTopics";
-import { ModuleNameType } from "layout-components/DynamicPopupModuleLoader";
+import { TOPICS } from "src/constants/PubSubTopics";
+import { ModuleNameType } from "src/components/layout/DynamicPopupModuleLoader";
 import { useCallback } from "react";
 
 interface TriggerPopupOptions {
@@ -162,8 +162,8 @@ export const useDynamicPopup = <TResult = any>(): ((
 Create specific hooks for each module type for better type safety and developer experience.
 
 ```typescript
-// hooks/useFeedbackPopup.ts
-import { useDynamicPopup } from "helpers/useDynamicPopup"; // Adjust path if needed
+// src/hooks/useFeedbackPopup.ts
+import { useDynamicPopup } from "@/hooks/useDynamicPopup"; // Adjust path if needed
 import { useCallback } from "react";
 
 // Define expected props for the Feedback component if known
@@ -198,8 +198,8 @@ export const useFeedbackPopup = (): ((
 	return openFeedbackPopup;
 };
 
-// hooks/useFileViewerPopup.ts
-import { useDynamicPopup } from "helpers/useDynamicPopup";
+// src/hooks/useFileViewerPopup.ts
+import { useDynamicPopup } from "@/hooks/useDynamicPopup";
 import { useCallback } from "react";
 
 interface FileViewerOptions {
@@ -239,9 +239,9 @@ export const useFileViewerPopup = (): ((
 **3. Using the Specific Hooks**
 
 ```typescript
-import { Button } from "components/Button";
-import { useFeedbackPopup } from "hooks/useFeedbackPopup"; // Adjust path
-import { useFileViewerPopup } from "hooks/useFileViewerPopup"; // Adjust path
+import { Button } from "src/components/ui/Button";
+import { useFeedbackPopup } from "@/hooks/useFeedbackPopup"; // Adjust path
+import { useFileViewerPopup } from "@/hooks/useFileViewerPopup"; // Adjust path
 
 const MyComponentWithHooks = (): JSX.Element => {
 	const openFeedback = useFeedbackPopup();
@@ -281,7 +281,7 @@ export default MyComponentWithHooks;
 
 ## How to Add a New Module
 
-1.  **Create the Module Component**: Create a new component for the module you want to add. Ensure it follows the expected structure and props. Example: [RaiseIssueCard.tsx](page-components/RaiseIssueCard/RaiseIssueCard.tsx).
-2.  **Update `moduleList`**: Add the new module to the `moduleList` in [DynamicPopupModuleLoader.tsx](layout-components/DynamicPopupModuleLoader/DynamicPopupModuleLoader.tsx). Ensure the key matches the `feature` string used when triggering the popup.
+1.  **Create the Module Component**: Create a new component for the module you want to add. Ensure it follows the expected structure and props. Example: [RaiseIssueCard.tsx](src/screens/RaiseIssueCard/RaiseIssueCard.tsx).
+2.  **Update `moduleList`**: Add the new module to the `moduleList` in [DynamicPopupModuleLoader.tsx](src/components/layout/DynamicPopupModuleLoader/DynamicPopupModuleLoader.tsx). Ensure the key matches the `feature` string used when triggering the popup.
 3.  **Update `DefaultOptions`**: Add default options for the new module in `DefaultOptions` to ensure consistent styling and behavior.
-4.  **Create a Custom Hook (Optional)**: If the module is complex or requires specific props, consider creating a custom hook (like [useRaiseIssue](hooks/useRaiseIssue.js)) to simplify its usage.
+4.  **Create a Custom Hook (Optional)**: If the module is complex or requires specific props, consider creating a custom hook (like [useRaiseIssue](src/hooks/useRaiseIssue.js)) to simplify its usage.

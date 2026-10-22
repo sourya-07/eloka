@@ -1,4 +1,4 @@
-import DetailedStatement from "pages";
+import DetailedStatement from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("DetailedStatement", () => {

@@ -64,7 +64,7 @@ server ─ gateway (EPS wire format) ─► domain modules ─► MySQL
 
 ## Local mode (fixed creds)
 
-- `devdata/LocalSeedRunner` (local profile only, idempotent) loads `server/src/main/resources/devdata/local-seed.json`, ported from `client/mock-eps/data/users.js` + `catalog.js`. Seed orgs: `demo` (tenant), `partners` (Local Admin applications), `staff`.
+- `devdata/LocalSeedRunner` (local profile only, idempotent) loads `server/src/main/resources/devdata/local-seed.json`, ported from `client/tools/mock-eps/data/users.js` + `catalog.js`. Seed orgs: `demo` (tenant), `partners` (Local Admin applications), `staff`.
 
   | Mobile | Who |
   |---|---|
@@ -122,7 +122,7 @@ Provisioning creates an org + Local Admin in our own DB, in **one transaction** 
 
 | Phase | Deliverables | Done when |
 |---|---|---|
-| P0 Contract | ADR-0004 (standalone + EPS wire format), ADR-0005 (opaque tokens), ADR-0006 (logging/secrets). `docs/eps-compat/CONTRACT.md` (one row per interaction). **Extend `client/mock-eps/test` to every Release 1 interaction**; it becomes the executable spec. Update CLAUDE.md / ARCHITECTURE_OVERVIEW (they still say EPS is the system of record) | Contract reviewed; `npm run test:mock` green |
+| P0 Contract | ADR-0004 (standalone + EPS wire format), ADR-0005 (opaque tokens), ADR-0006 (logging/secrets). `docs/eps-compat/CONTRACT.md` (one row per interaction). **Extend `client/tools/mock-eps/test` to every Release 1 interaction**; it becomes the executable spec. Update CLAUDE.md / ARCHITECTURE_OVERVIEW (they still say EPS is the system of record) | Contract reviewed; `npm run test:mock` green |
 | P1 Foundation + login | Logging, request id, crypto, audit, safety guard; gateway core; identity (515/518/151, revoke, token, refresh-profile, getip); tenant (677, 774); seeder; server Dockerfile (layered); `deploy/docker-compose.yml` full stack | Logins 9000000001/2/3 reach their homes via `npm run dev` against the server; contract "login" block green against Java |
 | P2 Homes + dashboards | 9, `/transactions/wlc`, 10010/10012/10023, 623, 154, pricing_commission, 818, 1044, 682, 817/683/727 | Both home pages and both dashboard tabs render; no "unsupported" in logs |
 | P3 Network, history, profile | `/network/agents` (paging, filters), agent-list, agent profile + documents, updateStatus 1831, changeRole 1842/1967/1872, personalInfo/address update, 792, demo delete, statements, 154 network/self + 183 export, `/reports/agent-subnetwork`, 401, 373 | Admin + distributor network flows end to end; cross-org and cross-subtree access denied |
@@ -137,7 +137,7 @@ Provisioning creates an org + Local Admin in our own DB, in **one transaction** 
 | P7 Applicant API | A1–A30 with fakes for PAN, DigiLocker, bank, e-sign; state machine + ETag/If-Match + Idempotency-Key | Applicant goes from OTP to SUBMITTED. **Done 2026-10-16** ([design note](./onboarding/P7_APPLICANT_API.md), 11 integration scenarios) |
 | P8 Staff review API | S1–S13, S21, maker-checker | Reviewer approves/rejects/corrects; same person cannot recommend and approve. **Done 2026-10-16** ([design note](./onboarding/P8_STAFF_REVIEW.md), 8 integration scenarios) |
 | P9 Provisioning + go-live | Listener on `ApplicationApproved` → org + domain + metadata + Local Admin + default products; S14–S18 activation | Approved applicant logs in at `{label}.{root}` as Local Admin |
-| FE-R2 (parallel to P7–P9) | `client/features/la-onboarding/` (routes `pages/partner/onboarding/*` on `partners.<root>`), reusing `features/onboarding` step components, `components/Dropzone` and the `VerifyOtp` UI; `client/features/staff-console/` (`pages/staff/*` on `staff.<root>`); typed client generated from springdoc OpenAPI | Full journey clickable locally with fixed creds |
+| FE-R2 (parallel to P7–P9) | `client/src/features/la-onboarding/` (routes `src/pages/partner/onboarding/*` on `partners.<root>`), reusing `src/features/onboarding` step components, `src/components/ui/Dropzone` and the `VerifyOtp` UI; `client/src/features/staff-console/` (`src/pages/staff/*` on `staff.<root>`); typed client generated from springdoc OpenAPI | Full journey clickable locally with fixed creds |
 
 ## Frontend changes (kept small)
 
@@ -151,14 +151,14 @@ Provisioning creates an org + Local Admin in our own DB, in **one transaction** 
 
   | Id | Fix | File |
   |---|---|---|
-  | FE-1 | Proxies forward the 401 status, `X-Forwarded-For` and `X-Request-Id` | `pages/api/transaction.js`, `transactionjson.js`, `upload.js` |
-  | FE-2 | Logout sends Authorization | `helpers/loginHelper.js` |
-  | FE-3 | Keep `refresh_token` / `token_expiration` from the 518 response | `hooks/useLogin.js` |
-  | FE-4 | Auth header on `/reports/agent-subnetwork` | `page-components/Admin/Network/Network.jsx` |
+  | FE-1 | Proxies forward the 401 status, `X-Forwarded-For` and `X-Request-Id` | `src/pages/api/transaction.js`, `transactionjson.js`, `upload.js` |
+  | FE-2 | Logout sends Authorization | `src/lib/loginHelper.js` |
+  | FE-3 | Keep `refresh_token` / `token_expiration` from the 518 response | `src/hooks/useLogin.js` |
+  | FE-4 | Auth header on `/reports/agent-subnetwork` | `src/screens/Admin/Network/Network.jsx` |
   | FE-5 | API domain in CSP `img-src` | `next.config.js` |
 
 - `client/Dockerfile` gets build `ARG`s for `NEXT_PUBLIC_*` (baked in at build time → one client image per environment).
-- `client/mock-eps`: kept as the fast UI-only tool until P5. After Release 1 the server is the default and the mock code is retired; the contract tests stay and run against the server (`EPS_CONTRACT_BASE_URL`).
+- `client/tools/mock-eps`: kept as the fast UI-only tool until P5. After Release 1 the server is the default and the mock code is retired; the contract tests stay and run against the server (`EPS_CONTRACT_BASE_URL`).
 
 ## Deployment (runs anywhere)
 
@@ -186,7 +186,7 @@ Provisioning creates an org + Local Admin in our own DB, in **one transaction** 
 ## Critical files
 
 - **Modify:** `server/.../shared/security/SecurityConfig.java` (ordered chains), `shared/web/ApiExceptionHandler.java` (scope to `/v1`, add `invalid_params`/`retry_after`), `server/build.gradle.kts`, `application*.yaml`, `server/Dockerfile`, `CLAUDE.md`, `docs/ARCHITECTURE_OVERVIEW.md`, `client/Dockerfile`, FE-1..FE-5 files.
-- **Reuse:** `DomainException`, `ClockConfig`, `ModularityTests`, `compose.yaml`; `client/mock-eps/lib/MockEpsServer.js` (routing order/envelope reference), `client/mock-eps/data/*` (seed source), `client/mock-eps/test/MockEpsServer.test.js` (executable contract); `features/onboarding` step components.
+- **Reuse:** `DomainException`, `ClockConfig`, `ModularityTests`, `compose.yaml`; `client/tools/mock-eps/lib/MockEpsServer.js` (routing order/envelope reference), `client/tools/mock-eps/data/*` (seed source), `client/tools/mock-eps/test/MockEpsServer.test.js` (executable contract); `src/features/onboarding` step components.
 - **New:** `gateway/`, `network/`, `wallet/`, `history/`, `pricing/`, `support/`, `agentonboarding/`, `devdata/`, `logback-spring.xml`, `V2–V17` migrations, `deploy/`, `docs/eps-compat/CONTRACT.md`, `docs/deploy/RUNBOOK.md`, ADRs 0004–0006.
 
 ## Verification (every phase)

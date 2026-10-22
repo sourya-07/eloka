@@ -1,4 +1,4 @@
-import { useFileView } from "hooks";
+import { useFileView } from "@/hooks";
 import { renderHook } from "test-utils";
 
 test("renders hook - useFileView", () => {

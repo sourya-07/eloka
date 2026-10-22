@@ -6,7 +6,7 @@
 
 **Counts** (update with every change): **total 79** · `[x]` 15 · `[~]` 0 · `[!]` 0 · `[ ]` 64
 
-> **2026-10-21 — DESIGN ONLY for now (owner).** Do not start any code task (CMP, APP, STF, R1, DS-3…DS-5). Only Stitch design tasks (ST-*) continue until the owner says to build. Already committed: DS-1 (`d048c65`) and DS-2 (`2038532`). Unfinished component code (StatusBadge, EmptyState, ErrorState, FormField, PageHeader, SectionCard, KeyValueList, Timeline) is kept in `git stash` ("CMP components WIP"), not in the repo.
+> **2026-10-21 — DESIGN ONLY for now (owner).** Do not start any code task (CMP, APP, STF, R1, DS-3…DS-5). Only Stitch design tasks (ST-*) continue until the owner says to build. Already committed: DS-1 (`d048c65`) and DS-2 (`2038532`). Unfinished component code (StatusBadge, EmptyState, ErrorState, FormField, PageHeader, SectionCard, KeyValueList, Timeline) is kept in `git stash` ("CMP components WIP"), not in the repo. The stash was made before the 2026-10-22 folder restructure, so its files land in the old `client/components/<Name>/`: after `git stash pop`, move them with `git mv client/components/<Name> client/src/components/ui/<Name>` (the colocated `StatusBadge.test.tsx` goes to `client/__tests__/components/ui/StatusBadge/`) and write imports as `@/…`.
 
 ## How to use this file
 
@@ -65,7 +65,7 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
   - The platform brand matches decision D3.
   - The rules for the tenant `brand.*` slot are written down.
   - No real data appears in it.
-- **Verify:** compare it against `client/styles/themes.tsx` and UI_UX_PLAN §2.
+- **Verify:** compare it against `client/src/styles/themes.tsx` and UI_UX_PLAN §2.
 
 ### [x] ST-2 Owner approval of the design system (skill checkpoint)
 - **P0 · S · deps:** ST-1
@@ -176,7 +176,7 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
 
 ### [x] DS-1 Semantic tokens, status tokens, weights and contrast
 - **P0 · M · deps:** ST-8a
-- **Deliverable:** `client/styles/themes.tsx` and `styles/theme_system/theme/foundations/*`:
+- **Deliverable:** `client/src/styles/themes.tsx` and `src/styles/theme_system/theme/foundations/*`:
   - new `bg.inverse`, `text.inverse`, `text.link`, `focus.ring`, `overlay` and `status.*` tokens
   - `fontWeights` restored (400 / 500 / 600 / 700)
   - `text.tertiary` darkened to `#767676`
@@ -186,24 +186,24 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
   - Every text token passes 4.5:1 on `bg.surface` and `bg.canvas`.
 - **Verify:** a new contrast unit test; the regression gate; a look at login, home and network on `dev:mock`.
 - **Progress 2026-10-21:**
-  - **Added** to `styles/themes.tsx`: `bg.inverse`, `text.inverse`, `text.link`, `border.input`, `focus.ring`, `overlay`, `neutral.{bg,fg,border}`, the shadows `focusRing`/`e1`/`e2`/`e3`, and the font weights `title` 600 / `display` 700.
+  - **Added** to `src/styles/themes.tsx`: `bg.inverse`, `text.inverse`, `text.link`, `border.input`, `focus.ring`, `overlay`, `neutral.{bg,fg,border}`, the shadows `focusRing`/`e1`/`e2`/`e3`, and the font weights `title` 600 / `display` 700.
   - **Changed:** `text.secondary` to `#5C5C57` and `text.tertiary` to `#6F6F6A` (contrast fixes).
   - **Deferred to R1-01** (both visible on every Release 1 screen; they need the visual check there):
     - restoring `semibold`/`bold` to 600/700 (the theme deliberately collapses them to 500)
     - moving the global Input/Select borders to `border.input`
   - **Not done here:** the Card/Modal/Alert component themes. New components use the tokens directly.
-  - **Contrast helpers fixed:** `utils/colorUtils` `contrast()` returned NaN (it passed an object to `luminance(r,g,b)`). It is now `contrastRatio(hex, hex)`. The helpers were unused, so no behaviour changes.
+  - **Contrast helpers fixed:** `src/utils/colorUtils` `contrast()` returned NaN (it passed an object to `luminance(r,g,b)`). It is now `contrastRatio(hex, hex)`. The helpers were unused, so no behaviour changes.
   - **Tests:** `__tests__/utils/colorUtils.test.js`, `__tests__/styles/themeTokens.test.ts`.
 
-### [x] DS-2 `helpers/buildOrgTheme.ts` and the `_app.tsx` refactor
+### [x] DS-2 `src/lib/buildOrgTheme.ts` and the `_app.tsx` refactor
 - **P0 · M · deps:** DS-1
 - **Deliverable:**
   - a pure `buildOrgTheme(org, base)` built from the code in `_app.tsx` lines 84–151
   - new `brand.{solid,solidHover,fg,subtle,emphasis}` tokens, with `fg` picked by contrast and a fallback to `primary.dark`
   - `_app.tsx` calls the new helper
-- **Accept:** for all 6 presets in `constants/colorThemes.js`, plus no theme and both `navstyle` values, the legacy keys (`primary`, `accent`, `navbar`, `sidebar`, `status`, `logo`) deep-equal the old output, and `brand.fg` passes 4.5:1.
+- **Accept:** for all 6 presets in `src/constants/colorThemes.js`, plus no theme and both `navstyle` values, the legacy keys (`primary`, `accent`, `navbar`, `sidebar`, `status`, `logo`) deep-equal the old output, and `brand.fg` passes 4.5:1.
 - **Verify:** a new parity test; the regression gate; a manual check of 2 presets on `dev:mock`.
-- **Done 2026-10-21:** `client/helpers/buildOrgTheme.ts` (`buildOrgTheme`, `computeBrandTokens`, `PLATFORM_BRAND`); `_app.tsx` calls it. `__tests__/helpers/buildOrgTheme.test.ts` (38 tests) compares the output with a copy of the old inline code for no org, an org without a theme, all 6 presets with dark and light nav, a primary-only theme and invalid colours; it also checks `brand.fg` contrast. `make ci-client` green (250 suites). On screen, only the default tenant's login page was checked (`dev:mock` at 1280 and 390 px); the presets are covered by the parity tests.
+- **Done 2026-10-21:** `client/src/lib/buildOrgTheme.ts` (`buildOrgTheme`, `computeBrandTokens`, `PLATFORM_BRAND`); `_app.tsx` calls it. `__tests__/lib/buildOrgTheme.test.ts` (38 tests) compares the output with a copy of the old inline code for no org, an org without a theme, all 6 presets with dark and light nav, a primary-only theme and invalid colours; it also checks `brand.fg` contrast. `make ci-client` green (250 suites). On screen, only the default tenant's login page was checked (`dev:mock` at 1280 and 390 px); the presets are covered by the parity tests.
 
 ### [ ] DS-3 Load Inter with `next/font`
 - **P1 · S · deps:** DS-1
@@ -233,7 +233,7 @@ Priority: **P0** blocks the release · **P1** needed for quality · **P2** later
 
 ## CMP — Shared components
 
-Every new component lives in its own folder under `client/components/<Name>/` with `index`, `.tsx`, `.stories.tsx` and a test in `client/__tests__/components/<Name>/`.
+Every new component lives in its own folder under `client/src/components/ui/<Name>/` with `index`, `.tsx`, `.stories.tsx` and a test in `client/__tests__/components/ui/<Name>/`.
 
 ### [ ] CMP-1 StatusBadge
 - **P0 · S · deps:** DS-1
@@ -325,7 +325,7 @@ Every new component lives in its own folder under `client/components/<Name>/` wi
 
 ---
 
-## APP — Applicant (Local Admin) flow: `features/la-onboarding/`
+## APP — Applicant (Local Admin) flow: `src/features/la-onboarding/`
 
 ### [ ] APP-A API client, types and session
 - **P0 · L · deps:** DS-5
@@ -346,9 +346,9 @@ Every new component lives in its own folder under `client/components/<Name>/` wi
 ### [ ] APP-B LayoutPlatform, routes and guard entry
 - **P0 · S · deps:** APP-A, CMP-5
 - **Deliverable:**
-  - `layout-components/LayoutPlatform/` (header with the ELOKA wordmark, help link, sign-out)
-  - `pages/partner/onboarding/{index,[step],status}.tsx`
-  - `constants/validRoutes.js` gains `publicSections += "partner", "staff"`
+  - `src/components/layout/LayoutPlatform/` (header with the ELOKA wordmark, help link, sign-out)
+  - `src/pages/partner/onboarding/{index,[step],status}.tsx`
+  - `src/constants/validRoutes.js` gains `publicSections += "partner", "staff"`
 - **Accept:** `RouteProtecter` does not redirect `/partner/*`; Release 1 routes behave as before.
 - **Verify:** a `RouteProtecter` test for the new sections; the existing guard tests stay green.
 
@@ -462,17 +462,17 @@ Every new component lives in its own folder under `client/components/<Name>/` wi
 
 ---
 
-## STF — Staff console: `features/staff-console/`
+## STF — Staff console: `src/features/staff-console/`
 
 ### [ ] STF-A Client, session and sign-in (STF-01)
 - **P0 · L · deps:** APP-A (shared client pieces), DS-5
-- **Deliverable:** the staff API client (`STAFF` session); `StaffSessionContext` loaded from `/me`; Google sign-in through `@react-oauth/google`; local OTP sign-in in development; `LayoutStaff`; `pages/staff/index.tsx`; CSP origins for Google.
+- **Deliverable:** the staff API client (`STAFF` session); `StaffSessionContext` loaded from `/me`; Google sign-in through `@react-oauth/google`; local OTP sign-in in development; `LayoutStaff`; `src/pages/staff/index.tsx`; CSP origins for Google.
 - **Accept:** `PROVIDER_NOT_CONFIGURED` and `STAFF_NOT_ALLOWED` are shown clearly; actions are hidden when the permission is missing.
 - **Verify:** feature tests; manual run with `9000000006` and OTP `123456`.
 
 ### [ ] STF-B STF-02 Review queue
 - **P0 · M · deps:** STF-A, CMP-1, CMP-2
-- **Deliverable:** S1 with status filter, "assigned to me", search, cursor pagination; table on desktop, cards below 860 px (reusing `components/Table`).
+- **Deliverable:** S1 with status filter, "assigned to me", search, cursor pagination; table on desktop, cards below 860 px (reusing `src/components/ui/Table`).
 - **Accept:** as UI_UX_PLAN STF-02.
 - **Verify:** feature tests.
 
@@ -530,14 +530,14 @@ Every R1 task follows the same rules:
 | ID | Group | Priority | Effort | Deps |
 |---|---|---|---|---|
 | [ ] R1-01 | App shell: NavBar, SideBar, BottomAppBar, PageTitle; decide the Button default (FQ-4); `Text` user-select; restore `semibold`/`bold` weights to 600/700; global Input/Select borders → `border.input` (both deferred from DS-1) | P1 | L | ST-8d, CMP-12, CMP-14 |
-| [ ] R1-02 | Login and OTP (`page-components/LoginPanel/**`), removing the "Secured by DemoPortal" literal per FQ-8 | P1 | M | R1-01 |
-| [ ] R1-03 | Agent home (`page-components/Home/**`) | P1 | M | R1-01 |
-| [ ] R1-04 | Admin dashboards (`page-components/Admin/Dashboard/**`), chart colours from tokens | P2 | L | R1-01 |
-| [ ] R1-05 | Network (`page-components/Admin/Network/**`, profile sub-pages) | P1 | L | R1-01 |
-| [ ] R1-06 | History and statements (`page-components/History/**`, `Admin/TransactionHistory`, `AccountStatement`, `DetailedStatement`) | P1 | L | R1-01 |
-| [ ] R1-07 | Profile (`page-components/Profile/**`, `Admin/ProfilePanel/**`, `Admin/Update*`) | P2 | M | R1-01 |
+| [ ] R1-02 | Login and OTP (`src/screens/LoginPanel/**`), removing the "Secured by DemoPortal" literal per FQ-8 | P1 | M | R1-01 |
+| [ ] R1-03 | Agent home (`src/screens/Home/**`) | P1 | M | R1-01 |
+| [ ] R1-04 | Admin dashboards (`src/screens/Admin/Dashboard/**`), chart colours from tokens | P2 | L | R1-01 |
+| [ ] R1-05 | Network (`src/screens/Admin/Network/**`, profile sub-pages) | P1 | L | R1-01 |
+| [ ] R1-06 | History and statements (`src/screens/History/**`, `Admin/TransactionHistory`, `AccountStatement`, `DetailedStatement`) | P1 | L | R1-01 |
+| [ ] R1-07 | Profile (`src/screens/Profile/**`, `Admin/ProfilePanel/**`, `Admin/Update*`) | P2 | M | R1-01 |
 | [ ] R1-08 | Business settings and pricing form shell (`Admin/PricingConfig`, `Admin/PricingCommission` layout only) | P2 | L | R1-01 |
-| [ ] R1-09 | Agent onboarding (`features/onboarding/**` presentation only) | P1 | L | R1-01 |
+| [ ] R1-09 | Agent onboarding (`src/features/onboarding/**` presentation only) | P1 | L | R1-01 |
 | [ ] R1-10 | Query center and raise issue | P2 | M | R1-01 |
 | [ ] R1-11 | Shared 404, error boundary, empty states | P1 | S | R1-01, CMP-2, CMP-3 |
 

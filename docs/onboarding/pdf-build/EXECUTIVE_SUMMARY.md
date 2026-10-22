@@ -7,7 +7,7 @@
 ## 1. Frontend findings
 
 - `wlc-webapp` is a **Next.js 14** white-label tenant app. It serves existing tenants by sub-domain or custom domain (org-metadata lookup, interaction `677`). It calls the external EPS backend through an interaction-ID envelope and a "tf-req" REST tunnel.
-- It has **no Local Admin / tenant onboarding**. `/signup` is agent onboarding into an existing tenant (`features/onboarding`). The "Enterprise Partner" role exists but is hidden.
+- It has **no Local Admin / tenant onboarding**. `/signup` is agent onboarding into an existing tenant (`src/features/onboarding`). The "Enterprise Partner" role exists but is hidden.
 - **Reusable pieces:**
   - a config-driven step pipeline,
   - `BusinessDetailsStep`, `AddBankAccountStep`, `DigilockerRedirectionStep`, `VideoKycStep`, `SignAgreementStep`,

@@ -17,4 +17,4 @@
 
 Frontend-only docs (animations, feature notes, Docker for the web app) stay in [`client/docs/`](../client/docs).
 
-Note on paths: the onboarding blueprint was written before the split, so code paths in it such as `features/onboarding` or `pages/api/transaction.js` are now under `client/`.
+Note on paths: the onboarding blueprint was written before the split, so code paths in it such as `src/features/onboarding` or `src/pages/api/transaction.js` are now under `client/`.

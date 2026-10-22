@@ -1,4 +1,4 @@
-import TrxnHistory from "pages";
+import TrxnHistory from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("TrxnHistory", () => {

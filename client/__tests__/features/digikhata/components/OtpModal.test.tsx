@@ -1,4 +1,4 @@
-import { OtpModal } from "features/digikhata/components/OtpModal";
+import { OtpModal } from "@/features/digikhata/components/OtpModal";
 import { fireEvent, render } from "test-utils";
 
 describe("OtpModal", () => {

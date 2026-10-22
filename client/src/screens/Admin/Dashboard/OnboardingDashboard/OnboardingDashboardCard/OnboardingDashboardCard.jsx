@@ -1,0 +1,61 @@
+import { Box, Flex } from "@chakra-ui/react";
+import { getNameStyle } from "@/lib";
+
+/**
+ * A <OnboardingDashboardCard> component
+ * TODO: Write more description here
+ * @param 	{object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.item
+ * @example	`<OnboardingDashboardCard></OnboardingDashboardCard>`
+ */
+const OnboardingDashboardCard = ({ item }) => {
+	if (!item) {
+		return null;
+	}
+
+	return (
+		<Flex direction="column" bg="white" p="10px">
+			<Flex justifyContent="space-between">
+				{getNameStyle(item.name)}
+			</Flex>
+
+			<Flex direction="column" fontSize="xs" gap="2">
+				<Flex gap="2">
+					<Box as="span" color="light">
+						User Code:
+					</Box>
+					<Box as="span" color="dark" fontWeight={"medium"}>
+						{item.user_code}
+					</Box>
+				</Flex>
+				<Flex gap="2">
+					<Box as="span" color="light">
+						Location:
+					</Box>
+					<Box as="span" color="dark" fontWeight={"medium"}>
+						{item.location}
+					</Box>
+				</Flex>
+				<Flex gap="2">
+					<Box as="span" color="light">
+						Business Type:
+					</Box>
+					<Box as="span" color="dark" fontWeight={"medium"}>
+						{item.business_type}
+					</Box>
+				</Flex>
+				<Flex gap="2">
+					<Box as="span" color="dark">
+						Onboarded on:
+						<Box as="span" color="dark" fontWeight={"medium"}>
+							{item.onboardedOn}
+						</Box>
+					</Box>
+				</Flex>
+			</Flex>
+		</Flex>
+	);
+};
+
+export default OnboardingDashboardCard;

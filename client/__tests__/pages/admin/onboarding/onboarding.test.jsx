@@ -1,4 +1,4 @@
-import Onboarding from "pages";
+import Onboarding from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("Onboarding", () => {

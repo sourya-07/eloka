@@ -1,5 +1,5 @@
 import { expect } from "@storybook/test";
-import { useImageEditor } from "hooks";
+import { useImageEditor } from "@/hooks";
 import { renderHook } from "test-utils";
 
 test("renders hook", () => {

@@ -9,16 +9,16 @@ Labels: **CONFIRMED** · **EXISTING FRONTEND BEHAVIOUR** · **PROPOSED / RECOMME
 
 ## 1. What already exists (and what we must not duplicate)
 
-`wlc-webapp` has **no database of its own**. It is a Next.js frontend. All data lives behind the EPS (Eko Platform Services) backend that the app reaches through `pages/api/transaction.js` → `NEXT_PUBLIC_API_BASE_URL`, and behind the org-metadata service used by `helpers/fetchOrgDetailsHelper.js`. That backend's source and schema are **not available** to this analysis.
+`wlc-webapp` has **no database of its own**. It is a Next.js frontend. All data lives behind the EPS (Eko Platform Services) backend that the app reaches through `src/pages/api/transaction.js` → `NEXT_PUBLIC_API_BASE_URL`, and behind the org-metadata service used by `src/lib/fetchOrgDetailsHelper.js`. That backend's source and schema are **not available** to this analysis.
 
 What the frontend tells us about the existing data model (EXISTING FRONTEND BEHAVIOUR):
 
 | Existing concept | Evidence in the frontend | Owner | Reuse decision |
 |---|---|---|---|
-| Organisation / tenant: `org_id`, `app_name`, `logo`, colours, `metadata.onboarding`, `metadata.disable_self_onboarding`, `bc` | `OrgDetailContext`, `fetchOrgDetailsHelper.js`, `features/onboarding/context/OnboardingContext.tsx` | EPS / org-metadata service | **Reuse.** The onboarding service stores only `org_id` as a foreign reference and never copies the org master. |
-| User: `user_code` / `code`, `mobile`, `signup_mobile`, `user_type`, `name`, `agreement_id`, `onboarding` flag, `onboarding_steps[]`, `role_list` | `UserContext`, `features/onboarding/utils/dataExtractors.ts`, `SelfOnboarding/Onboarding.tsx` | EPS | **Reuse.** The Local Admin user is created **in EPS** during provisioning. This service keeps `eps_user_code` only. |
-| User types: `ENTERPRISE_PARTNER_ADMIN = 23`, `ORG_ADMIN = 24`, `ORG_EMPLOYEE = 25`, `DISTRIBUTOR = 1`, `MERCHANT = 2`, `I_MERCHANT = 3`, … | `constants/UserTypes.js` | EPS | **Reuse.** Which value a Local Admin gets is **OPEN** (OQ-B2). |
-| Documents: `doc_type` 1 Aadhaar, 2 PAN, 3 selfie, 7 bank passbook; `UPLOAD_DOCUMENT = 523` | `features/onboarding/constants.ts` | EPS | Keep the codes as `eps_doc_type` for sync. This service owns the document **metadata and review**. |
+| Organisation / tenant: `org_id`, `app_name`, `logo`, colours, `metadata.onboarding`, `metadata.disable_self_onboarding`, `bc` | `OrgDetailContext`, `fetchOrgDetailsHelper.js`, `src/features/onboarding/context/OnboardingContext.tsx` | EPS / org-metadata service | **Reuse.** The onboarding service stores only `org_id` as a foreign reference and never copies the org master. |
+| User: `user_code` / `code`, `mobile`, `signup_mobile`, `user_type`, `name`, `agreement_id`, `onboarding` flag, `onboarding_steps[]`, `role_list` | `UserContext`, `src/features/onboarding/utils/dataExtractors.ts`, `SelfOnboarding/Onboarding.tsx` | EPS | **Reuse.** The Local Admin user is created **in EPS** during provisioning. This service keeps `eps_user_code` only. |
+| User types: `ENTERPRISE_PARTNER_ADMIN = 23`, `ORG_ADMIN = 24`, `ORG_EMPLOYEE = 25`, `DISTRIBUTOR = 1`, `MERCHANT = 2`, `I_MERCHANT = 3`, … | `src/constants/UserTypes.js` | EPS | **Reuse.** Which value a Local Admin gets is **OPEN** (OQ-B2). |
+| Documents: `doc_type` 1 Aadhaar, 2 PAN, 3 selfie, 7 bank passbook; `UPLOAD_DOCUMENT = 523` | `src/features/onboarding/constants.ts` | EPS | Keep the codes as `eps_doc_type` for sync. This service owns the document **metadata and review**. |
 | Agreement: `agreement_id`, e-sign `document_id`, `pipe` (provider 0 Digio, 1 Karza, 2 Signzy, 3 Leegality) | `services/esign/*`, `useSignAgreement.ts` | EPS | Reuse the provider integrations through EPS (or directly, per INTEGRATIONS.md). Store our own `esign_request` with the provider reference. |
 | Bank: `bank_code`, `bank_id`, `account`, `ifsc`; bank list API `155`; add account `454` | `AddBankAccountStep.tsx` | EPS | Reuse the bank master list. Store the verification result. |
 | Company types: Private Ltd (1), LLP (2), Partnership (3), Sole Proprietorship (4) | `BusinessDetailsStep.tsx` `COMPANY_TYPE_OPTIONS` | Frontend constant | Reuse the same codes for `business_profile.company_type` (the list itself is **OPEN**, OQ-B4). |

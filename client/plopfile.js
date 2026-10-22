@@ -42,16 +42,16 @@ export default function (plop) {
 
 	/**
 	 * Create a new React component (with unit-test & storybook) in any of the following folders:
-	 * - components
-	 * - page-components
-	 * - tf-components
-	 * - layout-components
+	 * - src/components/ui
+	 * - src/screens
+	 * - src/components/form-engine
+	 * - src/components/layout
 	 *
 	 * Option to use Typescript or Javascript.
 	 * Option to include hooks like useEffect, useState, useReducer.
 	 *
 	 * This generator will:
-	 * - Create a new folder for the component. Supports multiple component folders like page-components, etc.
+	 * - Create a new folder for the component. Supports multiple component folders like screens, etc.
 	 * - Create a new component file with optional hooks
 	 * - Create a new storybook file
 	 * - Create a new index file
@@ -73,14 +73,17 @@ export default function (plop) {
 				message:
 					"Where do you want to create the component? (Enter to select)",
 				choices: [
-					{ name: "components/", value: "components" },
-					{ name: "tf-components/", value: "tf-components" },
-					{ name: "page-components/", value: "page-components" },
+					{ name: "components/ui/", value: "components/ui" },
 					{
-						name: "page-components/Admin/",
-						value: "page-components/Admin",
+						name: "components/form-engine/",
+						value: "components/form-engine",
 					},
-					{ name: "layout-components/", value: "layout-components" },
+					{ name: "screens/", value: "screens" },
+					{
+						name: "screens/Admin/",
+						value: "screens/Admin",
+					},
+					{ name: "components/layout/", value: "components/layout" },
 				],
 				default: "component",
 			},
@@ -142,31 +145,31 @@ export default function (plop) {
 						{
 							// Add component
 							type: "add",
-							path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.{{ext options}}", // Use Typescript if selected
+							path: "src/{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.{{ext options}}", // Use Typescript if selected
 							templateFile:
-								"plop-templates/Component/Component.{{ext options}}.hbs",
+								"tools/plop-templates/Component/Component.{{ext options}}.hbs",
 							skipIfExists: true,
 						},
 						{
 							// Add component index file
 							type: "add",
-							path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/index.js",
+							path: "src/{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/index.js",
 							templateFile:
-								"plop-templates/Component/index.js.hbs",
+								"tools/plop-templates/Component/index.js.hbs",
 							skipIfExists: true,
 						},
 						{
 							// Add components index file (if it does not already exist)
 							type: "add",
-							path: "{{componentfolder}}/{{subPath subfolders}}index.js",
+							path: "src/{{componentfolder}}/{{subPath subfolders}}index.js",
 							templateFile:
-								"plop-templates/injectable-index.js.hbs",
+								"tools/plop-templates/injectable-index.js.hbs",
 							skipIfExists: true,
 						},
 						{
 							// Append component import in the components index file
 							type: "append",
-							path: "{{componentfolder}}/{{subPath subfolders}}index.js",
+							path: "src/{{componentfolder}}/{{subPath subfolders}}index.js",
 							template: `export { {{pascalCase name}} } from "./{{pascalCase name}}";`,
 						},
 					]
@@ -180,7 +183,7 @@ export default function (plop) {
 					type: "add",
 					path: "__tests__/{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.test.jsx",
 					templateFile:
-						"plop-templates/Component/Component.test.jsx.hbs",
+						"tools/plop-templates/Component/Component.test.jsx.hbs",
 					skipIfExists: true,
 				});
 			}
@@ -190,9 +193,9 @@ export default function (plop) {
 				actions.push({
 					// Add Storybook stories file for the component
 					type: "add",
-					path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
+					path: "src/{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
 					templateFile:
-						"plop-templates/Component/Component.stories.jsx.hbs",
+						"tools/plop-templates/Component/Component.stories.jsx.hbs",
 					skipIfExists: true,
 				});
 			}
@@ -265,15 +268,17 @@ export default function (plop) {
 						{
 							// Add page
 							type: "add",
-							path: "{{pagefolder}}/{{lowerCase name}}/{{lowerCase name}}.{{ext options}}", // Use Typescript extension if selected
-							templateFile: "plop-templates/Page/Page.jsx.hbs",
+							path: "src/{{pagefolder}}/{{lowerCase name}}/{{lowerCase name}}.{{ext options}}", // Use Typescript extension if selected
+							templateFile:
+								"tools/plop-templates/Page/Page.jsx.hbs",
 							skipIfExists: true,
 						},
 						{
 							// Add page index file
 							type: "add",
-							path: "{{pagefolder}}/{{lowerCase name}}/index.js",
-							templateFile: "plop-templates/Page/index.js.hbs",
+							path: "src/{{pagefolder}}/{{lowerCase name}}/index.js",
+							templateFile:
+								"tools/plop-templates/Page/index.js.hbs",
 							skipIfExists: true,
 						},
 					]
@@ -286,7 +291,7 @@ export default function (plop) {
 					// Add Jest test for the page
 					type: "add",
 					path: "__tests__/{{pagefolder}}/{{lowerCase name}}/{{lowerCase name}}.test.jsx",
-					templateFile: "plop-templates/Page/Page.test.jsx.hbs",
+					templateFile: "tools/plop-templates/Page/Page.test.jsx.hbs",
 					skipIfExists: true,
 				});
 			}
@@ -314,20 +319,20 @@ export default function (plop) {
 			{
 				// Add hook
 				type: "add",
-				path: "hooks/use{{pascalCase name}}.js",
-				templateFile: "plop-templates/hooks/hook.jsx.hbs",
+				path: "src/hooks/use{{pascalCase name}}.js",
+				templateFile: "tools/plop-templates/hooks/hook.jsx.hbs",
 			},
 			{
 				// Add hooks index file (if it does not already exist)
 				type: "add",
-				path: "hooks/index.js",
+				path: "src/hooks/index.js",
 				template: `/* PLOP_INJECT_EXPORT */\n`,
 				skipIfExists: true,
 			},
 			{
 				// Append hook export in the hooks index file
 				type: "append",
-				path: "hooks/index.js",
+				path: "src/hooks/index.js",
 				pattern: `/* PLOP_INJECT_EXPORT */`,
 				template: `export { default as use{{pascalCase name}} } from "./use{{pascalCase name}}";`,
 			},
@@ -335,7 +340,7 @@ export default function (plop) {
 				// Add Jest test for the hook
 				type: "add",
 				path: "__tests__/hooks/use{{pascalCase name}}/use{{pascalCase name}}.test.js",
-				templateFile: "plop-templates/hooks/hook.test.jsx.hbs",
+				templateFile: "tools/plop-templates/hooks/hook.test.jsx.hbs",
 			},
 		],
 	});
@@ -366,32 +371,32 @@ export default function (plop) {
 	// 			// Add component
 	// 			type: "add",
 	// 			path: "components/{{pascalCase name}}/{{pascalCase name}}.tsx",
-	// 			templateFile: "plop-templates/Component/Component.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Component/Component.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add Storybook stories file for the component
 	// 			type: "add",
 	// 			path: "components/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
 	// 			templateFile:
-	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 				"tools/plop-templates/Component/Component.stories.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add component index file
 	// 			type: "add",
 	// 			path: "components/{{pascalCase name}}/index.js",
-	// 			templateFile: "plop-templates/Component/index.js.hbs",
+	// 			templateFile: "tools/plop-templates/Component/index.js.hbs",
 	// 		},
 	// 		{
 	// 			// Add Jest test for the component
 	// 			type: "add",
 	// 			path: "__tests__/components/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Component/Component.test.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add components index file (if it does not already exist)
 	// 			type: "add",
 	// 			path: "components/index.js",
-	// 			templateFile: "plop-templates/injectable-index.js.hbs",
+	// 			templateFile: "tools/plop-templates/injectable-index.js.hbs",
 	// 			skipIfExists: true,
 	// 		},
 	// 		{
@@ -444,32 +449,32 @@ export default function (plop) {
 	// 			// Add component
 	// 			type: "add",
 	// 			path: "components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.jsx",
-	// 			templateFile: "plop-templates/Component/Component.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Component/Component.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add Storybook stories file for the component
 	// 			type: "add",
 	// 			path: "components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
 	// 			templateFile:
-	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 				"tools/plop-templates/Component/Component.stories.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add component index file
 	// 			type: "add",
 	// 			path: "components/{{path}}/{{pascalCase name}}/index.js",
-	// 			templateFile: "plop-templates/Component/index.js.hbs",
+	// 			templateFile: "tools/plop-templates/Component/index.js.hbs",
 	// 		},
 	// 		{
 	// 			// Add Jest test for the component
 	// 			type: "add",
 	// 			path: "__tests__/components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Component/Component.test.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add components index file (if it does not already exist)
 	// 			type: "add",
 	// 			path: "components/{{path}}/index.js",
-	// 			templateFile: "plop-templates/injectable-index.js.hbs",
+	// 			templateFile: "tools/plop-templates/injectable-index.js.hbs",
 	// 			skipIfExists: true,
 	// 		},
 	// 		{
@@ -515,32 +520,32 @@ export default function (plop) {
 	// 			// Add component
 	// 			type: "add",
 	// 			path: "page-components/{{pascalCase name}}/{{pascalCase name}}.jsx",
-	// 			templateFile: "plop-templates/Component/Component.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Component/Component.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add Storybook stories file for the component
 	// 			type: "add",
 	// 			path: "page-components/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
 	// 			templateFile:
-	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 				"tools/plop-templates/Component/Component.stories.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add component index file
 	// 			type: "add",
 	// 			path: "page-components/{{pascalCase name}}/index.js",
-	// 			templateFile: "plop-templates/Component/index.js.hbs",
+	// 			templateFile: "tools/plop-templates/Component/index.js.hbs",
 	// 		},
 	// 		{
 	// 			// Add Jest test for the component
 	// 			type: "add",
 	// 			path: "__tests__/page-components/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Component/Component.test.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add components index file (if it does not already exist)
 	// 			type: "add",
 	// 			path: "page-components/index.js",
-	// 			templateFile: "plop-templates/injectable-index.js.hbs",
+	// 			templateFile: "tools/plop-templates/injectable-index.js.hbs",
 	// 			skipIfExists: true,
 	// 		},
 	// 		{
@@ -596,26 +601,26 @@ export default function (plop) {
 	// 			// Add component
 	// 			type: "add",
 	// 			path: "page-components/{{role}}/{{path}}/{{pascalCase name}}/{{pascalCase name}}.jsx",
-	// 			templateFile: "plop-templates/Component/Component.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Component/Component.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add Storybook stories file for the component
 	// 			type: "add",
 	// 			path: "page-components/{{role}}/{{path}}/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
 	// 			templateFile:
-	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 				"tools/plop-templates/Component/Component.stories.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add component index file
 	// 			type: "add",
 	// 			path: "page-components/{{role}}/{{path}}/{{pascalCase name}}/index.js",
-	// 			templateFile: "plop-templates/Component/index.js.hbs",
+	// 			templateFile: "tools/plop-templates/Component/index.js.hbs",
 	// 		},
 	// 		{
 	// 			// Add Jest test for the component
 	// 			type: "add",
 	// 			path: "__tests__/page-components/{{role}}/{{path}}/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Component/Component.test.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Append component import in the components index file
@@ -627,7 +632,7 @@ export default function (plop) {
 	// 		//     // Add components index file (if it does not already exist)
 	// 		//     type: "add",
 	// 		//     path: "page-components/{{role}}/{{path}}/index.js",
-	// 		//     templateFile: "plop-templates/injectable-index.js.hbs",
+	// 		//     templateFile: "tools/plop-templates/injectable-index.js.hbs",
 	// 		//     skipIfExists: true,
 	// 		// },
 	// 		// {
@@ -678,32 +683,32 @@ export default function (plop) {
 	// 			// Add component
 	// 			type: "add",
 	// 			path: "page-components/{{role}}/{{pascalCase name}}/{{pascalCase name}}.jsx",
-	// 			templateFile: "plop-templates/Component/Component.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Component/Component.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add Storybook stories file for the component
 	// 			type: "add",
 	// 			path: "page-components/{{role}}/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
 	// 			templateFile:
-	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 				"tools/plop-templates/Component/Component.stories.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add component index file
 	// 			type: "add",
 	// 			path: "page-components/{{role}}/{{pascalCase name}}/index.js",
-	// 			templateFile: "plop-templates/Component/index.js.hbs",
+	// 			templateFile: "tools/plop-templates/Component/index.js.hbs",
 	// 		},
 	// 		{
 	// 			// Add Jest test for the component
 	// 			type: "add",
 	// 			path: "__tests__/page-components/{{role}}/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Component/Component.test.jsx.hbs",
 	// 		},
 	// 		{
 	// 			// Add components index file (if it does not already exist)
 	// 			type: "add",
 	// 			path: "page-components/{{role}}/index.js",
-	// 			templateFile: "plop-templates/injectable-index.js.hbs",
+	// 			templateFile: "tools/plop-templates/injectable-index.js.hbs",
 	// 			skipIfExists: true,
 	// 		},
 	// 		{
@@ -737,17 +742,17 @@ export default function (plop) {
 	// 		{
 	// 			type: "add",
 	// 			path: "pages/admin/{{lowerCase name}}/{{lowerCase name}}.jsx",
-	// 			templateFile: "plop-templates/Page/Page.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Page/Page.jsx.hbs",
 	// 		},
 	// 		{
 	// 			type: "add",
 	// 			path: "pages/admin/{{lowerCase name}}/index.js",
-	// 			templateFile: "plop-templates/Page/index.js.hbs",
+	// 			templateFile: "tools/plop-templates/Page/index.js.hbs",
 	// 		},
 	// 		{
 	// 			type: "add",
 	// 			path: "__tests__/pages/admin/{{lowerCase name}}/{{lowerCase name}}.test.jsx",
-	// 			templateFile: "plop-templates/Page/Page.test.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Page/Page.test.jsx.hbs",
 	// 		},
 	// 	],
 	// });
@@ -766,7 +771,7 @@ export default function (plop) {
 	// 		{
 	// 			type: "add",
 	// 			path: "__tests__/components/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 			templateFile: "tools/plop-templates/Component/Component.test.jsx.hbs",
 	// 		},
 	// 	],
 	// });
@@ -787,7 +792,7 @@ export default function (plop) {
 	// 			type: "add",
 	// 			path: "components/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
 	// 			templateFile:
-	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 				"tools/plop-templates/Component/Component.stories.jsx.hbs",
 	// 		},
 	// 	],
 	// });

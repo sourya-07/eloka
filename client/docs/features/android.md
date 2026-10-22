@@ -32,14 +32,14 @@ The Eloka web app can be deployed as a standalone web application or embedded wi
 
 ### Initial Setup
 
-In the [Layout component](layout-components/Layout/Layout.tsx), the following one-time setup is performed:
+In the [Layout component](src/components/layout/Layout/Layout.tsx), the following one-time setup is performed:
 
 1. When the web app loads, it sends a `connect_ready` message to notify the Android app that the web app is ready to receive messages
 2. The web app sets up a callback function `callFromAndroid` to handle incoming messages from the Android app
 
 ### Available Utility Functions
 
-The [AndroidUtils.ts](utils/AndroidUtils.ts) file provides the following utility functions:
+The [AndroidUtils.ts](src/utils/AndroidUtils.ts) file provides the following utility functions:
 
 - `isAndroidApp()`: Determines if the web app is running inside the Android wrapper
 - `doAndroidAction(action, data)`: Sends a message to the Android app with the specified action and data
@@ -61,7 +61,7 @@ The Android wrapper app supports various actions including:
 ### Example Usage
 
 ```typescript
-import { doAndroidAction, isAndroidApp, ANDROID_ACTION } from 'utils/AndroidUtils';
+import { doAndroidAction, isAndroidApp, ANDROID_ACTION } from 'src/utils/AndroidUtils';
 
 // Check if running inside Android app
 if (isAndroidApp()) {

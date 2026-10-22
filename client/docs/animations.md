@@ -1,15 +1,15 @@
 # Animation Guide
 
-How to add entry animations in this codebase using Chakra UI and `libs/chakraKeyframes`.
+How to add entry animations in this codebase using Chakra UI and `src/lib/chakraKeyframes`.
 
 ---
 
 ## Core Pattern
 
-Animations are applied via Chakra UI's `sx` prop using CSS keyframes from `libs/chakraKeyframes`. Never use raw CSS classes or `style` attributes for entry animations.
+Animations are applied via Chakra UI's `sx` prop using CSS keyframes from `src/lib/chakraKeyframes`. Never use raw CSS classes or `style` attributes for entry animations.
 
 ```tsx
-import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
+import { fadeSlideInBottom12 } from "src/lib/chakraKeyframes";
 
 <Flex
 	sx={{
@@ -25,7 +25,7 @@ The `both` fill-mode is always required — it holds the element in its pre-anim
 
 ---
 
-## Available Keyframes (`libs/chakraKeyframes`)
+## Available Keyframes (`src/lib/chakraKeyframes`)
 
 Import only what you need. All keyframes fade opacity from `0 → 1` and translate from the named direction/distance.
 
@@ -52,7 +52,7 @@ Import only what you need. All keyframes fade opacity from `0 → 1` and transla
 Centralise all timing in a feature-level `constants.ts` `ANIMATION` object rather than scattering raw strings across components. This makes systematic tuning trivial.
 
 ```ts
-// features/<feature>/constants.ts
+// src/features/<feature>/constants.ts
 export const ANIMATION = {
 	/** Top-anchored hero element (e.g. summary card at top of page) */
 	HERO_IN: "0.22s",
@@ -78,7 +78,7 @@ export const ANIMATION = {
 ### Step / form container (enters from bottom)
 
 ```tsx
-import { fadeSlideInBottom12 } from "libs/chakraKeyframes";
+import { fadeSlideInBottom12 } from "src/lib/chakraKeyframes";
 import { ANIMATION } from "../../constants";
 
 <Flex
@@ -96,7 +96,7 @@ import { ANIMATION } from "../../constants";
 ### Hero / summary card (enters from top)
 
 ```tsx
-import { fadeSlideInTop12 } from "libs/chakraKeyframes";
+import { fadeSlideInTop12 } from "src/lib/chakraKeyframes";
 import { ANIMATION } from "../../constants";
 
 <Box
@@ -163,12 +163,12 @@ Never stagger more than 4–5 items deliberately; beyond that, later items feel 
 
 ## Adding a New Keyframe
 
-1. Open `libs/chakraKeyframes.js`.
+1. Open `src/lib/chakraKeyframes.js`.
 2. Export a new named `keyframes` block following the naming convention: `fade[Direction][Distance]`.
 3. Use pixel offsets (`12px`, `20px`) for subtle UI-level transitions; use percentage offsets (`50%`, `100%`) only for structural/layout transitions.
 
 ```js
-// libs/chakraKeyframes.js
+// src/lib/chakraKeyframes.js
 export const fadeSlideInBottom20 = keyframes`
 	from { opacity: 0; transform: translateY(20px); }
 	to   { opacity: 1; transform: translateY(0); }

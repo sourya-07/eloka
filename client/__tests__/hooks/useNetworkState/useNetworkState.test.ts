@@ -1,4 +1,4 @@
-import { useNetworkState } from "hooks";
+import { useNetworkState } from "@/hooks";
 import { act, renderHook } from "test-utils";
 
 type MockConnection = EventTarget & {

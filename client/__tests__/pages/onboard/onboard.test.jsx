@@ -1,4 +1,4 @@
-import Onboard from "pages/onboard";
+import Onboard from "@/pages/onboard";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("Onboard", () => {

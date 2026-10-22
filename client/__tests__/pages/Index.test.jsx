@@ -1,4 +1,4 @@
-import Index from "pages";
+import Index from "@/pages";
 import { loggedOutPageRender, screen } from "test-utils";
 
 describe("Login (index) page", () => {

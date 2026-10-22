@@ -1,4 +1,4 @@
-import { useAiChatbotPopup } from "hooks";
+import { useAiChatbotPopup } from "@/hooks";
 import { renderHook } from "test-utils";
 
 describe("useAiChatbotPopup", () => {

@@ -4,23 +4,8 @@
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"baseUrl": ".",
 		"paths": {
-			"test-utils": ["./__tests__/test-utils/test-utils"],
-			"components/*": ["./components/*"],
-			"page-components/*": [
-				"./page-components/*",
-				"./page-components/Admin/*"
-			],
-			"tf-components/*": ["./tf-components/*"],
-			"layout-components/*": ["./layout-components/*"],
-			"constants/*": ["./constants/*"],
-			"contexts/*": ["./contexts/*"],
-			"helpers/*": ["./helpers/*"],
-			"libs/*": ["./libs/*"],
-			"utils/*": ["./utils/*"],
-			"hooks/*": ["./hooks/*"],
-			"public/*": ["./public/*"],
-			"pages/*": ["./pages/*"],
-			"@/pages/*": ["pages/*"]
+			"@/*": ["./src/*"],
+			"test-utils": ["./__tests__/test-utils/test-utils"]
 		},
 		"allowJs": true,
 		"skipLibCheck": true,
@@ -44,10 +29,8 @@
 		".swc",
 		".vscode",
 		"coverage",
-		"plop-templates",
+		"tools/plop-templates",
 		"public",
-		"stories",
-		"styles",
-		"db"
+		"src/styles"
 	]
 }

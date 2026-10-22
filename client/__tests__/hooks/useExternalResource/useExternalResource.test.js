@@ -1,4 +1,4 @@
-import { useExternalResource } from "hooks";
+import { useExternalResource } from "@/hooks";
 import { renderHook } from "test-utils";
 
 test("renders hook", () => {

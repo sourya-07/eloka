@@ -16,9 +16,9 @@ docker
 .env
 .env.*
 next-env.d.ts
-plop-templates
+tools/plop-templates
 plopfile.js
-check-deps.js
+tools/scripts/check-deps.js
 commitlint.config.js
 CONTRIBUTING.md
 # docs

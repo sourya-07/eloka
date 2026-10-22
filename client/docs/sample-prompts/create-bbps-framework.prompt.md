@@ -26,11 +26,11 @@ The following structure must be used for all BBPS-related code:
 
 ```
 .
-├── pages/
+├── src/pages/
 │   └── products/
 │       └── bbps/
 │           └── [[...slug]].tsx   # Dynamic route handler for all BBPS pages
-└── page-components/
+└── src/screens/
     └── products/
         └── bbps/
             ├── Bbps.tsx           # Product grid display

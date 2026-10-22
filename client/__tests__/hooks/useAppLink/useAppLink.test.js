@@ -1,4 +1,4 @@
-import { useAppLink } from "hooks";
+import { useAppLink } from "@/hooks";
 import { renderHook } from "test-utils";
 
 test("renders hook", () => {

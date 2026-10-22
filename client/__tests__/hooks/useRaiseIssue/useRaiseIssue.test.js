@@ -1,4 +1,4 @@
-import { useRaiseIssue } from "hooks";
+import { useRaiseIssue } from "@/hooks";
 import { renderHook } from "test-utils";
 
 test("renders hook", () => {

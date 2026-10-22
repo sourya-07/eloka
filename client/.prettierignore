@@ -7,7 +7,7 @@ next-env.d.ts
 .vscode
 yarn.lock
 package-lock.json
-plop-templates
+tools/plop-templates
 public
 .git
 .cache

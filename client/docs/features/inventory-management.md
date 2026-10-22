@@ -14,14 +14,14 @@ This module provides a complete inventory management system for products using *
 ## 📁 Project Structure
 
 ```
-/libs/inventory/
+/src/lib/inventory/
 ├── types.ts          # TypeScript interfaces and types
 ├── gql.ts            # GraphQL client configuration
 ├── queries.ts        # GraphQL queries and mutations
 ├── hooks.ts          # SWR hooks with optimistic updates
 └── index.ts          # Library exports
 
-/page-components/products/inventory/
+/src/screens/products/inventory/
 ├── InventoryCard.tsx         # Product card component
 ├── InventoryFormModal.tsx    # Add/Edit product modal
 ├── ConfirmDialog.tsx         # Delete confirmation dialog

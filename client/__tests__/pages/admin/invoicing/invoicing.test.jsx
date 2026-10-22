@@ -1,4 +1,4 @@
-import Invoicing from "pages";
+import Invoicing from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("Invoicing", () => {

@@ -1,11 +1,11 @@
-import { useRequest } from "hooks";
+import { useRequest } from "@/hooks";
 import { renderHook } from "test-utils";
 
 jest.mock("swr", () =>
 	jest.fn(() => ({ data: null, error: null, mutate: jest.fn() }))
 );
 
-// jest.mock("helpers/apiHelper", () => ({
+// jest.mock("@/lib/apiHelper", () => ({
 // 	fetcher: mockedFetcher,
 // }));
 

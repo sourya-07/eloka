@@ -40,7 +40,7 @@
 - Platform hosts: neutral ink with a Connect Blue accent.
 - Tenant app: the same neutrals, with the tenant's brand colour in the `brand.*` slot.
 
-### 2.1 Colour tokens (Chakra semantic tokens in `client/styles/themes.tsx`)
+### 2.1 Colour tokens (Chakra semantic tokens in `client/src/styles/themes.tsx`)
 
 | Token | Value | Role | Status |
 |---|---|---|---|
@@ -118,12 +118,12 @@
 | FormField + Input / Select / Textarea | new + reuse | Label above, help text, error below, required marker. 48 px tall on mobile. |
 | OtpInput | reuse + a11y | 6 digits; paste fills all; per-digit labels; resend timer next to it |
 | StatusBadge | new | Pill shape. Tone from §3.2, a dot for colour-blind users, text always present. |
-| Stepper / progress rail | reuse `components/Stepper` | Vertical rail on desktop, compact "Step 4 of 13" bar on mobile |
+| Stepper / progress rail | reuse `src/components/ui/Stepper` | Vertical rail on desktop, compact "Step 4 of 13" bar on mobile |
 | SectionCard | new | Header, body and footer slots |
 | KeyValueList | new | Read-only summaries and the staff case view |
 | DocumentTile | new | Type, file name, size, status, reviewer note, actions |
 | Dropzone / Camera | reuse | Uploads, live photo |
-| Table | reuse `components/Table` | Staff queue; cards below 860 px |
+| Table | reuse `src/components/ui/Table` | Staff queue; cards below 860 px |
 | Dialog / ConfirmDialog | reuse `Modal` + new `ConfirmDialog` | Reason field when required |
 | Toast | Chakra `useToast` | Only for asynchronous results; never the only error channel |
 | Timeline | new | Applicant status page, staff history and audit |
@@ -364,7 +364,7 @@ The list comes from the server-side `required-documents` config (FQ-10: expose i
   - App name: company-name regex, ≤ 60
   - Sub-domain label: `^[a-z0-9]([a-z0-9-]{1,38}[a-z0-9])$`, 3–40 characters. A26 runs with a 400 ms debounce. Results: available ✓ with `default_url`; or `INVALID_FORMAT`, `RESERVED_WORD` or `TAKEN`, each with `suggestions[]` as chips.
   - Logo: optional upload, type `LOGO`
-  - Theme: six `#RRGGBB` values (`primary`, `primary_light`, `primary_dark`, `accent`, `accent_light`, `accent_dark`). Presets come from `constants/colorThemes.js`, with custom values through `ColorPickerWidget`.
+  - Theme: six `#RRGGBB` values (`primary`, `primary_light`, `primary_dark`, `accent`, `accent_light`, `accent_dark`). Presets come from `src/constants/colorThemes.js`, with custom values through `ColorPickerWidget`.
   - `navstyle`: dark / light
 - **Live preview:** the reused `AppPreview`, themed through `buildOrgTheme`. A contrast warning appears when the tenant's primary colour falls back.
 - **Errors:** `409 SUBDOMAIN_TAKEN` on submit → refresh the suggestions.
@@ -379,7 +379,7 @@ The list comes from the server-side `required-documents` config (FQ-10: expose i
 ### APP-15 Agreement and e-sign (A27–A29; re-auth)
 - **Flow:**
   1. A27 creates or returns the agreement. Show the version and a preview (PDF link, `GET …/pdf`) plus `content_sha256` in "Details".
-  2. "Sign agreement" → re-auth → A28 → open `signing_url` (`provider_pipe` decides the provider adapter in `features/onboarding/services/esign/*`).
+  2. "Sign agreement" → re-auth → A28 → open `signing_url` (`provider_pipe` decides the provider adapter in `src/features/onboarding/services/esign/*`).
   3. On return, finalise with A29.
 - **States:** `READY`, `SIGNING` (pending), `SIGNED` (success, then auto-submit → APP-16), `SUPERSEDED` (show "Your details changed; review the new agreement"), and `already_signed`.
 - **Accept:** the client never sets "signed" itself; the result comes only from A29. No reliance on `postMessage`.
@@ -501,17 +501,17 @@ The list comes from the server-side `required-documents` config (FQ-10: expose i
 
 | ID | Group | Main files | Key changes |
 |---|---|---|---|
-| R1-01 | App shell | `components/{NavBar,SideBar,BottomAppBar,PageTitle}` | Tokens; brand slot; focus states; label icon buttons |
-| R1-02 | Login + OTP | `page-components/LoginPanel/**` | Remove 43 hex values; labelled mobile field; OTP labels |
-| R1-03 | Agent home | `page-components/Home/**` | Skeletons; EmptyState |
-| R1-04 | Admin dashboards | `page-components/Admin/Dashboard/**` | Chart palette from tokens (64 hex values) |
-| R1-05 | Network | `page-components/Admin/Network/**` | Table/card tokens; StatusBadge |
-| R1-06 | History and statements | `page-components/History/**` and related | Merge the duplicate table styling |
-| R1-07 | Profile | `page-components/Profile/**`, `Admin/ProfilePanel/**` | KeyValueList |
+| R1-01 | App shell | `src/components/ui/{NavBar,SideBar,BottomAppBar,PageTitle}` | Tokens; brand slot; focus states; label icon buttons |
+| R1-02 | Login + OTP | `src/screens/LoginPanel/**` | Remove 43 hex values; labelled mobile field; OTP labels |
+| R1-03 | Agent home | `src/screens/Home/**` | Skeletons; EmptyState |
+| R1-04 | Admin dashboards | `src/screens/Admin/Dashboard/**` | Chart palette from tokens (64 hex values) |
+| R1-05 | Network | `src/screens/Admin/Network/**` | Table/card tokens; StatusBadge |
+| R1-06 | History and statements | `src/screens/History/**` and related | Merge the duplicate table styling |
+| R1-07 | Profile | `src/screens/Profile/**`, `Admin/ProfilePanel/**` | KeyValueList |
 | R1-08 | Business settings / pricing | `Admin/PricingConfig`, `Admin/PricingCommission` (layout) | SectionCard; FormField look |
-| R1-09 | Agent onboarding | `features/onboarding/**` (presentation) | Align with the APP visual language |
+| R1-09 | Agent onboarding | `src/features/onboarding/**` (presentation) | Align with the APP visual language |
 | R1-10 | Query center / raise issue | `Admin/QueryCenter`, `RaiseIssueCard` | EmptyState; StatusBadge |
-| R1-11 | Shared states | `pages/404`, `ErrorBoundary` | ErrorState / EmptyState |
+| R1-11 | Shared states | `src/pages/404`, `ErrorBoundary` | ErrorState / EmptyState |
 
 **Token-only, no redesign:** `products/*` transaction framework, the EkoConnect iframe, CMS landing pages.
 

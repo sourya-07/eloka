@@ -11,7 +11,7 @@ Labels: **CONFIRMED** · **EXISTING FRONTEND BEHAVIOUR** · **PROPOSED / RECOMME
 
 | # | Source | What it is | How it was read |
 |---|---|---|---|
-| S1 | `wlc-webapp` frontend (`/Users/souryagupta/Eko/wlc-webapp`) | The tenant-facing Eloka web app (Next.js 14). Contains **agent** self/assisted onboarding (`features/onboarding`), admin Business Settings incl. **Agreement Signing** (`page-components/Admin/PricingCommission/AgreementSigning.jsx`), theme configuration, org resolution by sub-domain. | Code read directly + two repo-wide sweeps |
+| S1 | `wlc-webapp` frontend (`/Users/souryagupta/Eko/wlc-webapp`) | The tenant-facing Eloka web app (Next.js 14). Contains **agent** self/assisted onboarding (`src/features/onboarding`), admin Business Settings incl. **Agreement Signing** (`src/screens/Admin/PricingCommission/AgreementSigning.jsx`), theme configuration, org resolution by sub-domain. | Code read directly + two repo-wide sweeps |
 | S2 | `Eloka Onbaording Process.docx` | Step-by-step of today's process across **Eko Connect** (sign-up), the internal **Go-Live Admin "Eloka Assistance Tool"**, the new admin's own Eloka domain, CS + CRM, then the go-live process (DLT, logo, Play Store, domain). 18 screenshots. | Text + every screenshot |
 | S3 | Whiteboard photo + two handwritten note pages | Business context: SBI → Eloka → products, white label, Lead → Eloka admin → call → onboarding, the 6 "pages", RBI/DP Act, "Build Bank Grade", Task 1 = onboarding journey, Task 2 = products (DMT) | Images |
 | S4 | Task specification (the request for this blueprint) | Lead → … → Local Admin Activated, plus concepts (onboarding_id, resume, bank, documents, review, tenant, audit, idempotency, isolation) | Text |
@@ -251,7 +251,7 @@ Each step uses the same template. APIs are defined in [API_SPECIFICATION.md](./A
 | **Classification** | CONFIRMED (S2 step 1, S3 page 1, S4) |
 | **Business purpose** | Identify the applicant. Anchor resume and contact. |
 | **User action** | Enter a 10-digit mobile, receive an OTP, enter the OTP |
-| **Frontend screen** | New. Pattern to reuse: `page-components/LoginPanel` (`Login` → `VerifyOtp`) |
+| **Frontend screen** | New. Pattern to reuse: `src/screens/LoginPanel` (`Login` → `VerifyOtp`) |
 | **Backend responsibility** | Rate-limited OTP issue. Verify OTP. Create or find `applicant`. Find an existing non-terminal application (resume) or create a new one with `onboarding_id`. Create the step rows from `step_policy`. Issue the applicant session. |
 | **API** | `POST /v1/onboarding/otp`, `POST /v1/onboarding/otp/verify` |
 | **Request data** | `mobile`, optional `invite_token`; then `otp_ref`, `otp` |
@@ -300,7 +300,7 @@ Each step uses the same template. APIs are defined in [API_SPECIFICATION.md](./A
 | **Classification** | CONFIRMED (S2 steps 2 and 4; S3 page 2) |
 | **Business purpose** | Decide the program (White Label portal vs Partner APIs) and entity type. This selects the `step_policy`. |
 | **User action** | Choose "Enterprise" and "White Label portal". Choose the legal entity type. |
-| **Frontend screen** | Reuse the visual pattern of `features/onboarding/components/RoleSelection.tsx` (role cards). The Enterprise card already exists but is hidden. |
+| **Frontend screen** | Reuse the visual pattern of `src/features/onboarding/components/RoleSelection.tsx` (role cards). The Enterprise card already exists but is hidden. |
 | **Backend responsibility** | Persist the choice. Apply the step policy (required / optional / N/A steps). If "Partner APIs" is selected → **out of scope**: hand off to the existing API-partner flow (**OPEN**, OQ-B11). |
 | **API** | `PUT /v1/onboarding/applications/{id}/steps/PROGRAM_SELECTION` + `/submit` |
 | **Request data** | `applicant_category: "ENTERPRISE"`, `product_type: "WHITE_LABEL"`, `entity_type: 1..4` (Pvt Ltd, LLP, Partnership, Sole Proprietorship, mirroring `COMPANY_TYPE_OPTIONS`) |
@@ -346,11 +346,11 @@ Each step uses the same template. APIs are defined in [API_SPECIFICATION.md](./A
 | **Classification** | CONFIRMED (S2 step 11; S1 `BusinessDetailsStep` + admin `AgreementSigning`) |
 | **Business purpose** | Legal and contact details for the agreement, CRM and tenant |
 | **User action** | Fill company/firm name, company type, authorised signatory full name, contact mobile, alternate mobile, registered address (line 1, line 2, city, state, pincode); upload the signatory's specimen signature |
-| **Frontend screen** | Reuse `features/onboarding/components/custom/BusinessDetailsStep.tsx` (fields and validations already exist) + the signature dropzone pattern from `AgreementSigning.jsx` (jpeg/png, aspect 1.5) |
+| **Frontend screen** | Reuse `src/features/onboarding/components/custom/BusinessDetailsStep.tsx` (fields and validations already exist) + the signature dropzone pattern from `AgreementSigning.jsx` (jpeg/png, aspect 1.5) |
 | **Backend responsibility** | Validate. Name match against name-as-per-PAN. Store. Signature stored as a document (`doc_type SIGNATURE`, EPS `doc_type 19`). |
 | **API** | `PUT …/steps/BUSINESS_DETAILS` (draft), `POST …/steps/BUSINESS_DETAILS/submit`; signature via the document upload flow |
 | **Request data** | Exactly the `BusinessDetailsStep` payload: `name`, `company_type`, `authorized_signatory_name`, `contact_person_cell`, `alternate_mobile`, `current_address_line1`, `current_address_line2`, `current_address_district`, `current_address_state`, `current_address_pincode` + `signature_document_id`. GSTIN / CIN / LLPIN are **OPEN** (OQ-P5). |
-| **Validation** | Reuse `constants/validation.ts` rules (shop name, name, phone, address, pincode); city `^[a-zA-Z ]+$` 2–50; state from the state list (`useCountryStates`, EPS 387); signatory `^[A-Za-z\s]+$` |
+| **Validation** | Reuse `src/constants/validation.ts` rules (shop name, name, phone, address, pincode); city `^[a-zA-Z ]+$` 2–50; state from the state list (`useCountryStates`, EPS 387); signatory `^[A-Za-z\s]+$` |
 | **Database changes** | `business_profile` upsert; `document` (signature) |
 | **State transition** | Step `BUSINESS_DETAILS → COMPLETED`, or `MANUAL_REVIEW` flag if the name match is low |
 | **External dependency** | Optional name-match service (KYC product has "Name Match 80557"; **EXTERNAL API DETAILS REQUIRED**) |
@@ -416,7 +416,7 @@ Each step uses the same template. APIs are defined in [API_SPECIFICATION.md](./A
 | **Frontend screen** | Reuse `components/custom/VideoKycStep.tsx` (selfie + `captured_latlong`) |
 | **Backend responsibility** | Accept the upload (document flow), optional liveness + face match vs the Aadhaar photo, store the location |
 | **API** | Document upload (`doc_type LIVE_PHOTO`) + `POST …/steps/LIVE_PHOTO/submit` |
-| **Validation** | JPEG/PNG; ≤ 5 MB (ASSUMPTION); face detected (the frontend has MediaPipe `libs/faceDetector.js`, but the server must re-check) |
+| **Validation** | JPEG/PNG; ≤ 5 MB (ASSUMPTION); face detected (the frontend has MediaPipe `src/lib/faceDetector.ts`, but the server must re-check) |
 | **Database changes** | `document`, `verification` (LIVENESS) |
 | **State transition** | `LIVE_PHOTO → COMPLETED / FAILED / MANUAL_REVIEW` |
 | **External dependency** | Liveness/face-match provider (**EXTERNAL API DETAILS REQUIRED**) |
@@ -433,7 +433,7 @@ Each step uses the same template. APIs are defined in [API_SPECIFICATION.md](./A
 | **Classification** | CONFIRMED (S2 step 13, S4). Exact list **OPEN** |
 | **Business purpose** | Evidence for the review and the CRM record |
 | **User action** | Upload the required documents for the entity type |
-| **Frontend screen** | New list screen; reuse the `tf-components` FILE field + `LocalStepForm` |
+| **Frontend screen** | New list screen; reuse the `form-engine` FILE field + `LocalStepForm` |
 | **Backend responsibility** | Presigned upload, server-side validation (magic bytes, size, page count), malware scan, version, review status |
 | **API** | `POST …/documents` (create + upload URL), `POST …/documents/{docId}/complete`, `GET …/documents`, `DELETE …/documents/{docId}` (only before submit) |
 | **Request data** | `doc_type`, `file_name`, `mime_type`, `size_bytes`, `sha256` |
@@ -478,7 +478,7 @@ Each step uses the same template. APIs are defined in [API_SPECIFICATION.md](./A
 | **Classification** | CONFIRMED (S2 step 4 app name + sub-domain; go-live logo; S1 theme config) |
 | **Business purpose** | Brand identity and default URL of the tenant portal |
 | **User action** | Enter the app/brand name, choose a sub-domain label (live availability check), upload the logo (optional), pick colours from the predefined themes |
-| **Frontend screen** | New. Reuse the `constants/colorThemes.js` palette + `ThemeConfig` preview. Show "Your default URL is https://{label}.{zone}" exactly like the Connect screen. |
+| **Frontend screen** | New. Reuse the `src/constants/colorThemes.js` palette + `ThemeConfig` preview. Show "Your default URL is https://{label}.{zone}" exactly like the Connect screen. |
 | **Backend responsibility** | Availability check (reserved words, profanity list, uniqueness). **Reserve** the label with an expiry tied to the application. Store the branding **draft**. Validate the logo (PNG/SVG sanitised, dimensions). |
 | **API** | `GET /v1/onboarding/subdomains/availability?label=`, `PUT …/steps/WHITE_LABEL_SETUP`, `POST …/steps/WHITE_LABEL_SETUP/submit` |
 | **Request data** | `app_name`, `subdomain_label`, `logo_document_id?`, `theme { primary, accent, navstyle }` |

@@ -4,8 +4,8 @@ import {
 	renderHook as defaultRenderHook,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MockAdminUser, MockOrg, MockUser } from "__tests__/fixtures/session";
-import { KBarLazyProvider } from "components/CommandBar";
+import { MockAdminUser, MockOrg, MockUser } from "../fixtures/session";
+import { KBarLazyProvider } from "@/components/ui/CommandBar";
 import {
 	AppSourceProvider,
 	CommissionSummaryProvider,
@@ -19,10 +19,10 @@ import {
 	TodoProvider,
 	UserProvider,
 	WalletProvider,
-} from "contexts";
-import { localStorageProvider } from "helpers";
-import { Layout } from "layout-components";
-import { light } from "styles/themes";
+} from "@/contexts";
+import { localStorageProvider } from "@/lib";
+import { Layout } from "@/components/layout";
+import { light } from "@/styles/themes";
 import { SWRConfig } from "swr";
 
 import mockRouter from "next-router-mock";

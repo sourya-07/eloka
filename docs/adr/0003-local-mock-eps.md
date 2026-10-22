@@ -10,7 +10,7 @@ The client talks to EPS (Eko Platform Services), which is not in this repo and n
 
 ## Decision
 
-Add `client/mock-eps/`: a small Node HTTP server (no extra dependencies) that speaks the same envelope and routes as EPS for login, profile, menu, wallet, dashboards, notifications and the agent onboarding steps. It holds dummy users in memory. `npm run dev:mock` starts it with the website pointed at it.
+Add `client/tools/mock-eps/`: a small Node HTTP server (no extra dependencies) that speaks the same envelope and routes as EPS for login, profile, menu, wallet, dashboards, notifications and the agent onboarding steps. It holds dummy users in memory. `npm run dev:mock` starts it with the website pointed at it.
 
 It is a **development tool only**: it is not imported by the app, not part of the production build, and its tokens are fake.
 
@@ -24,5 +24,5 @@ It is a **development tool only**: it is not imported by the app, not part of th
 
 ## Consequences
 
-- When the frontend starts using a new EPS interaction, add a handler + test in `client/mock-eps` so local testing keeps working.
-- The contract tests in `client/mock-eps/test/` document the EPS shapes the frontend relies on.
+- When the frontend starts using a new EPS interaction, add a handler + test in `client/tools/mock-eps` so local testing keeps working.
+- The contract tests in `client/tools/mock-eps/test/` document the EPS shapes the frontend relies on.

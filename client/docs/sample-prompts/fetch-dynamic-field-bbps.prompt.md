@@ -23,7 +23,7 @@ Transform the current static BBPS search form into a dynamic one that fetches an
 ### 1.2 API Integration Setup
 - [ ] **Operators API (GET v2/billpayments/operators?category={categoryId})**
   - defaultUrlEndpoint: `/billpayments/operators?category={categoryId}`
-  - Add API endpoint to `useBbpsApi` hook using `useEpsV3Fetch` hook from `hooks/useEpsV3Fetch.ts` with epsApiVersion as `2` in the settings
+  - Add API endpoint to `useBbpsApi` hook using `useEpsV3Fetch` hook from `src/hooks/useEpsV3Fetch.ts` with epsApiVersion as `2` in the settings
   - Get loading states from `useEpsV3Fetch` hook
   - Add error handling for network/API failures
   - Cache response if appropriate
@@ -65,7 +65,7 @@ Transform the current static BBPS search form into a dynamic one that fetches an
 
 - [ ] **Dynamic Fields API (GET /v2/billpayments/operators/{operator_id})**
   - defaultUrlEndpoint: `/billpayments/operators/{operator_id}`
-  - Add API endpoint to `useBbpsApi` hook using `useEpsV3Fetch` hook from `hooks/useEpsV3Fetch.ts` with epsApiVersion as `2` in the settings
+  - Add API endpoint to `useBbpsApi` hook using `useEpsV3Fetch` hook from `src/hooks/useEpsV3Fetch.ts` with epsApiVersion as `2` in the settings
   - Implement parameter mapping logic
   - Add validation for response structure
   - Handle empty/invalid responses
@@ -148,7 +148,7 @@ Transform the current static BBPS search form into a dynamic one that fetches an
   - Handle operator selection
   - Trigger dynamic field fetch
   - Clear previous dynamic form data
-  - Render this using Form component from tf-components/Form/Form.jsx using `parameter_type_id` to ParamType.LIST.
+  - Render this using Form component from src/components/form-engine/Form/Form.jsx using `parameter_type_id` to ParamType.LIST.
   - create a renderer to be passed with correct mapping of the key and value to the Form component
 
 ### 3.2 Dynamic Parameter Form
@@ -273,8 +273,8 @@ Transform the current static BBPS search form into a dynamic one that fetches an
 12. **Performance**: Minimize unnecessary API calls and re-renders
 
 ### Dependencies
-- Existing Form component from tf-components/
-- Existing Select component from components/
+- Existing Form component from src/components/form-engine/
+- Existing Select component from src/components/ui/
 - react-hook-form integration
 - BbpsContext state management
 - useBbpsApi hook structure

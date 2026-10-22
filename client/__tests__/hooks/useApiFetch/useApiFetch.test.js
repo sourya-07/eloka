@@ -1,4 +1,4 @@
-import { useApiFetch } from "hooks";
+import { useApiFetch } from "@/hooks";
 import { renderHook } from "test-utils";
 
 test("renders hook", () => {

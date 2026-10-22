@@ -1,4 +1,4 @@
-import Query from "pages";
+import Query from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("Query", () => {

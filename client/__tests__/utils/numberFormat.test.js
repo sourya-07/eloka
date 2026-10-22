@@ -2,7 +2,7 @@ import {
 	formatCurrency,
 	formatMobile,
 	getCurrencySymbol,
-} from "utils/numberFormat";
+} from "@/utils/numberFormat";
 
 describe("formatCurrency", () => {
 	describe("default arguments", () => {

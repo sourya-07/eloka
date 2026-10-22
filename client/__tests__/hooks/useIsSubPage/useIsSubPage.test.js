@@ -1,5 +1,5 @@
 import { renderHook } from "test-utils";
-import { useIsSubPage } from "hooks";
+import { useIsSubPage } from "@/hooks";
 
 describe("useIsSubPage", () => {
 	it("renders hook", () => {

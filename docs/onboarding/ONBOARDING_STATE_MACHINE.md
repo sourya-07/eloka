@@ -17,12 +17,12 @@ Labels used in this document:
 
 ## 1. Why a state machine (and not "page 1 → page 2")
 
-**EXISTING FRONTEND BEHAVIOUR.** The agent onboarding widget in `features/onboarding` does not hold a real state. It works out "where the user is" from two fields of the user profile that EPS returns. In committed code this comes from the login / `/authentication/refresh-profile` response. In the uncommitted local work on branch `fix/auto-trigger-balance-api-post-login` it comes from interaction `151`, `response_type_id 369`, through the new `/api/transaction` proxy. The two fields are:
+**EXISTING FRONTEND BEHAVIOUR.** The agent onboarding widget in `src/features/onboarding` does not hold a real state. It works out "where the user is" from two fields of the user profile that EPS returns. In committed code this comes from the login / `/authentication/refresh-profile` response. In the uncommitted local work on branch `fix/auto-trigger-balance-api-post-login` it comes from interaction `151`, `response_type_id 369`, through the new `/api/transaction` proxy. The two fields are:
 
 - `user_detail.onboarding_steps`: a list of `{ role, label }`. Each `role` is a numeric step token (for example `12400` Aadhaar, `12300` PAN, `13300` business, `51700` bank, `12800` agreement).
 - `user_detail.role_list`: the roles that are still **pending**.
 
-`calculateResumeState()` (`features/onboarding/utils/stepGenerator.ts`) marks every step before the first pending role as COMPLETED, the first pending one as IN_PROGRESS, and the rest as NOT_STARTED. Skips (`handleSkip`) and retry state (`pipelineResults`) live only in React memory. They are lost on refresh and never reach the backend.
+`calculateResumeState()` (`src/features/onboarding/utils/stepGenerator.ts`) marks every step before the first pending role as COMPLETED, the first pending one as IN_PROGRESS, and the rest as NOT_STARTED. Skips (`handleSkip`) and retry state (`pipelineResults`) live only in React memory. They are lost on refresh and never reach the backend.
 
 This is a positional model. It cannot express:
 

@@ -3,7 +3,7 @@ import {
 	getFirstContrastColor,
 	getHighContrastColor,
 	hasMinimumContrast,
-} from "utils/colorUtils";
+} from "@/utils/colorUtils";
 
 describe("colorUtils contrast helpers", () => {
 	describe("contrastRatio", () => {

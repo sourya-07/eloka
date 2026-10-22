@@ -1,4 +1,4 @@
-import Company from "pages";
+import Company from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("Company", () => {

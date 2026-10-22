@@ -45,7 +45,7 @@ curl -X POST localhost:4010/__mock/reset    # undo sign-ups and onboarding progr
 
 The mock keeps everything in memory, so restarting it also resets the data. If the browser still shows an old session after a reset, log out (or close the tab: sessions live in `sessionStorage`).
 
-**What is not mocked:** the transaction screens themselves (Money Transfer, AePS, bill pay...) run inside the EkoConnect widget, which loads from Eko's servers. Calls the mock does not know return an error that says `has no mock yet`, and the mock terminal prints `(NOT MOCKED)` with the interaction id. Add a handler in `client/mock-eps/handlers/` and a test in `client/mock-eps/test/`.
+**What is not mocked:** the transaction screens themselves (Money Transfer, AePS, bill pay...) run inside the EkoConnect widget, which loads from Eko's servers. Calls the mock does not know return an error that says `has no mock yet`, and the mock terminal prints `(NOT MOCKED)` with the interaction id. Add a handler in `client/tools/mock-eps/handlers/` and a test in `client/tools/mock-eps/test/`.
 
 ## Run the website against the real backend (`server/`)
 

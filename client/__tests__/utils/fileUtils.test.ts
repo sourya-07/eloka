@@ -2,7 +2,7 @@ import {
 	b64toByteArrays,
 	dataUrlToBlob,
 	saveDataToFile,
-} from "utils/fileUtils";
+} from "@/utils/fileUtils";
 
 // Mock for window.URL
 const mockURL = {

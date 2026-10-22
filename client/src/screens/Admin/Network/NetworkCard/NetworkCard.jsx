@@ -1,0 +1,99 @@
+import { Box, Flex } from "@chakra-ui/react";
+import { getLocationStyle, getNameStyle, getStatusStyle } from "@/lib";
+import { NetworkMenu } from "../NetworkMenu/NetworkMenu";
+
+/**
+ * A <NetworkCard> component
+ * TODO: Write more description here
+ * @param 	{object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<NetworkCard></NetworkCard>`
+ */
+
+const NetworkCard = ({ item }) => {
+	const {
+		mobile_number,
+		eko_code,
+		account_status_id,
+		user_type_label,
+		user_type_id,
+		address_details,
+		agent_name,
+		agent_mobile,
+		onboarded_on,
+		commission_type,
+		account_status,
+		_onStatusUpdate,
+	} = item ?? {};
+
+	const { lattitude, longitude, address } = address_details ?? {};
+	return (
+		<Flex direction="column" bg="white" borderRadius="10px" p="20px">
+			<Flex justifyContent="space-between">
+				<Box color="primary.DEFAULT" fontSize={{ base: "md" }}>
+					{getNameStyle(
+						agent_name,
+						undefined,
+						undefined,
+						account_status_id
+					)}
+				</Box>
+				<NetworkMenu
+					{...{
+						mobile_number,
+						eko_code,
+						account_status_id,
+						user_type_id,
+						onStatusUpdate: _onStatusUpdate,
+					}}
+				/>
+			</Flex>
+			<Flex direction="column" fontSize={{ base: "sm" }} pl="42px">
+				<Flex gap="2">
+					<Box as="span" color="light">
+						Mobile Number:
+					</Box>
+					<Box as="span" color="dark">
+						{agent_mobile}
+					</Box>
+				</Flex>
+				<Flex gap="2">
+					<Box as="span" color="light">
+						Type:
+					</Box>
+					<Box as="span" color="dark">
+						{user_type_label}
+					</Box>
+				</Flex>
+				<Flex gap="2">
+					<Box as="span" color="light">
+						Onboarded on:
+					</Box>
+					<Box as="span" color="dark">
+						{onboarded_on}
+					</Box>
+				</Flex>
+				<Flex gap="2">
+					<Box as="span" color="light">
+						Commission Type:
+					</Box>
+					<Box as="span" color="dark">
+						{commission_type}
+					</Box>
+				</Flex>
+				<Flex
+					justifyContent="space-between"
+					mt="10px"
+					py="10px"
+					gap="4"
+					align="center"
+				>
+					<div>{getStatusStyle(account_status)}</div>
+					<div>{getLocationStyle(address, lattitude, longitude)}</div>
+				</Flex>
+			</Flex>
+		</Flex>
+	);
+};
+
+export default NetworkCard;

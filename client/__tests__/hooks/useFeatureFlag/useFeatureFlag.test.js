@@ -1,4 +1,4 @@
-import { useFeatureFlag } from "hooks";
+import { useFeatureFlag } from "@/hooks";
 import { renderAdminHook, renderHook, renderLoggedOutHook } from "test-utils";
 
 // Mock contexts
@@ -6,23 +6,23 @@ import { renderAdminHook, renderHook, renderLoggedOutHook } from "test-utils";
 // const mockUseSession = jest.fn();
 // const mockUseOrgDetailContext = jest.fn();
 
-// jest.mock("contexts", () => ({
+// jest.mock("@/contexts", () => ({
 // 	useSession: () => mockUseSession(),
 // 	useOrgDetailContext: () => mockUseOrgDetailContext(),
 // }));
 
 // Mock only the specific hooks needed
 // TODO: Uncomment and fix the mocks
-// jest.mock("contexts/UserContext", () => ({
+// jest.mock("@/contexts/UserContext", () => ({
 // 	useUser: () => mockUseUser(),
 // 	useSession: () => mockUseSession(),
 // }));
 
-// jest.mock("contexts/OrgDetailContext", () => ({
+// jest.mock("@/contexts/OrgDetailContext", () => ({
 // 	useOrgDetailContext: () => mockUseOrgDetailContext(),
 // }));
 
-jest.mock("constants/featureFlags", () => ({
+jest.mock("@/constants/featureFlags", () => ({
 	FeatureFlags: {
 		TEST_FEATURE: {
 			enabled: true,

@@ -1,4 +1,4 @@
-import { useSwipe } from "hooks";
+import { useSwipe } from "@/hooks";
 import { renderHook } from "test-utils";
 
 test("renders hook", () => {

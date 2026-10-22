@@ -1,18 +1,18 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { useSession } from "contexts";
-import { fetcher } from "helpers";
-import useBankList, { clearAllBankListCache } from "hooks/useBankList";
+import { useSession } from "@/contexts";
+import { fetcher } from "@/lib";
+import useBankList, { clearAllBankListCache } from "@/hooks/useBankList";
 
 // Mock dependencies
-jest.mock("contexts", () => ({
+jest.mock("@/contexts", () => ({
 	useSession: jest.fn(),
 }));
 
-jest.mock("helpers", () => ({
+jest.mock("@/lib", () => ({
 	fetcher: jest.fn(),
 }));
 
-jest.mock("hooks", () => ({
+jest.mock("@/hooks", () => ({
 	useRefreshToken: jest.fn(),
 }));
 
@@ -28,7 +28,7 @@ describe("useBankList hook", () => {
 	const mockGenerateNewToken = jest.fn();
 	const mockFetcher = fetcher;
 	const mockUseSession = useSession;
-	const mockUseRefreshToken = require("hooks").useRefreshToken;
+	const mockUseRefreshToken = require("@/hooks").useRefreshToken;
 
 	const mockBankListResponse = {
 		status: 0,

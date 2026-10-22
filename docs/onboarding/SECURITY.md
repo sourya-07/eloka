@@ -131,7 +131,7 @@ Automated tests (IMPLEMENTATION_PLAN.md): for every endpoint, a cross-scope test
   - IFSC `^[A-Z]{4}0[A-Z0-9]{6}$`
   - mobile `^[6-9]\d{9}$`
   - pincode 6 digits
-  - names / addresses per `constants/validation.ts`
+  - names / addresses per `src/constants/validation.ts`
   - sub-domain label `^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])$`
 - Length caps on every string; JSON body limit 64 KB (files never go through the API).
 - Output encoding: the API returns JSON only; the staff console escapes everything (no `dangerouslySetInnerHTML` for applicant data).
@@ -258,6 +258,6 @@ Tamper evidence: per-application hash chain, plus a nightly export to WORM stora
 | F9 | `client_ref_id = Date.now()` used as the only request reference | Real idempotency keys |
 | — | Tokens in `sessionStorage` (XSS-readable) | BFF cookie for the onboarding flow |
 | — | `ORG_META_SERVICE_SECRET` sent in the request body | Header or mTLS for new service calls |
-| — | Inventory GraphQL `Authorization: "11205980"` hard-coded (`libs/inventory/gql.ts:17`) | Out of scope; report to the platform team |
+| — | Inventory GraphQL `Authorization: "11205980"` hard-coded (`src/lib/inventory/gql.ts:17`) | Out of scope; report to the platform team |
 | — | Go-Live tool shows raw API responses and uses local passwords (doc screenshots) | Retire it in favour of the SSO staff console |
 | — | Agreements and KYC documents emailed to a named CS person (doc step 12) | Queue + authenticated document access |

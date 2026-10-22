@@ -6,10 +6,10 @@ The Pub/Sub (Publish/Subscribe) pattern provides a way for components to communi
 
 ### Adding a New Topic
 
-Add your new topic in the [constants/PubSubTopics.ts](constants/PubSubTopics.ts) file. This file contains all the topics used in the application.
+Add your new topic in the [src/constants/PubSubTopics.ts](src/constants/PubSubTopics.ts) file. This file contains all the topics used in the application.
 
 ```typescript
-// constants/PubSubTopics.ts
+// src/constants/PubSubTopics.ts
 export const TOPICS = {
   // ...existing topics
   MY_TOPIC: 'my_topic',

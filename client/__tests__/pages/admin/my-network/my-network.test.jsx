@@ -1,4 +1,4 @@
-import MyNetwork from "pages";
+import MyNetwork from "@/pages";
 import { mockRouter, pageRender } from "test-utils";
 
 describe("MyNetwork", () => {

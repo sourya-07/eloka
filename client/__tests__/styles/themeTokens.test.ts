@@ -1,5 +1,5 @@
-import { light } from "styles/themes";
-import { contrastRatio } from "utils/colorUtils";
+import { light } from "@/styles/themes";
+import { contrastRatio } from "@/utils/colorUtils";
 
 const token = (name: string): string =>
 	light.semanticTokens.colors[name].default;
