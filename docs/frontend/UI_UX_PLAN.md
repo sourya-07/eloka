@@ -329,6 +329,12 @@ Frames:
   - name mismatch: info note
 - **Accept:** the client never asks for or stores an Aadhaar number; the flow survives a page reload on return.
 
+### APP-09B Signatory KYC, manual option (owner request 2026-10-22)
+- **Purpose:** verify the signatory without DigiLocker. APP-09 gets two choice cards: "Verify with DigiLocker" and "Upload ID documents".
+- **Fields:** ID type (Aadhaar card, Passport, Voter ID, Driving licence); front and back uploads; signatory PAN card upload. JPEG, PNG or PDF, ≤ 10 MB. For an Aadhaar card the applicant covers the first 8 digits; the UI says so and staff reject an unmasked card.
+- **Flow:** submit → the step shows "Waiting for review"; staff check it in STF-04 (document review); a rejected document comes back with a note and "Replace".
+- **Note:** the backend supports only DigiLocker today (FQ-19), so this is a design only.
+
 ### APP-10 Live photo (`LIVE_PHOTO`)
 - **Content:** framing guide, then capture → preview → retake or use photo (reuses `Camera`). Location capture is optional (`captured_latlong`, 3–60 characters).
 - **Behaviour:** upload as `LIVE_PHOTO` (A21), then A8 with `document_id`.

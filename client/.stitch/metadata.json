@@ -267,6 +267,24 @@
 				"designs/APP-22-desktop.html"
 			],
 			"status": "Desktop DigiLocker 'Check your details', 2026-10-22: 6-step rail, home address from DigiLocker, business address only if not found, mobile from sign-in. Awaiting owner review (ST-8b). LOCAL FIX 2026-10-22: the committed HTML/PNG were corrected by hand (Stitch edits did not save) and re-rendered with headless Chrome, so the Stitch copy is behind; the repo file is the spec."
+		},
+		"APP-04-desktop": {
+			"id": "f363233694024397b311d9bf46981899",
+			"sourceScreen": "projects/18017913531452476583/screens/f363233694024397b311d9bf46981899",
+			"files": [
+				"designs/APP-04-desktop.png",
+				"designs/APP-04-desktop.html"
+			],
+			"status": "Desktop consent step (step 2) with the 13-step rail, 2026-10-22. Program (step 3) has no desktop version; it follows the same layout. Awaiting owner review (ST-8b)."
+		},
+		"APP-09-desktop": {
+			"id": "e4b0dcf62cd04e85a7b69b685bf3a6d6",
+			"sourceScreen": "projects/18017913531452476583/screens/e4b0dcf62cd04e85a7b69b685bf3a6d6",
+			"files": [
+				"designs/APP-09-desktop.png",
+				"designs/APP-09-desktop.html"
+			],
+			"status": "Desktop signatory KYC with DigiLocker (step 7), 2026-10-22. Awaiting owner review (ST-8b). Not specs: 'Need assistance?' link; the manual option is APP-09B."
 		}
 	},
 	"unusedScreens": {
