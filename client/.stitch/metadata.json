@@ -92,13 +92,13 @@
 			"status": "Documents, phone, 2026-10-22: no PAN card tile (PAN already verified). Awaiting owner review (ST-8b). 'STEP 9 OF 13' in capitals is Stitch's; the build uses sentence case."
 		},
 		"APP-11-desktop": {
-			"id": "d93180db5ebd49e4b1e2d372c107eca1",
-			"sourceScreen": "projects/18017913531452476583/screens/d93180db5ebd49e4b1e2d372c107eca1",
+			"id": "50e6beba593345dab311aeac3776b776",
+			"sourceScreen": "projects/18017913531452476583/screens/50e6beba593345dab311aeac3776b776",
 			"files": [
 				"designs/APP-11-desktop.png",
 				"designs/APP-11-desktop.html"
 			],
-			"status": "Desktop applicant layout, generated 2026-10-21, awaiting owner review (ST-8b). 2026-10-22: the 'PAN card' optional tile is not a spec."
+			"status": "Desktop documents, 2026-10-22: no PAN card tile. Awaiting owner review (ST-8b). Not specs: '13 Steps Remaining', 'Resume Later', '69% completed'."
 		},
 		"APP-12": {
 			"id": "b7d7966ea4174bda9ba305bfc2c46efe",
@@ -231,6 +231,24 @@
 			"sourceScreen": "projects/18017913531452476583/screens/cb5bc84ef5424485a2cb396ed1e26d90",
 			"files": ["designs/R1-08-11.png", "designs/R1-08-11.html"],
 			"status": "Reskin design (tenant DS), generated 2026-10-21, awaiting owner review (ST-8d). Sidebar items, badges and helper lines Stitch added are not specs."
+		},
+		"APP-02-desktop": {
+			"id": "ed4602d3522d40f3a519b96e4dcc115e",
+			"sourceScreen": "projects/18017913531452476583/screens/ed4602d3522d40f3a519b96e4dcc115e",
+			"files": [
+				"designs/APP-02-desktop.png",
+				"designs/APP-02-desktop.html"
+			],
+			"status": "Desktop page 2 (both paths): mobile number and code side by side, with the chosen-path chip. Generated 2026-10-22. Awaiting owner review (ST-8b)."
+		},
+		"R1-theme-check": {
+			"id": "4508747eaf484b12b5ef5ca785ab2de1",
+			"sourceScreen": "projects/18017913531452476583/screens/4508747eaf484b12b5ef5ca785ab2de1",
+			"files": [
+				"designs/R1-theme-check.png",
+				"designs/R1-theme-check.html"
+			],
+			"status": "Theme check 2026-10-22: the agent home in a second tenant brand (teal #0F766E, amber accent) to show white-label theming. Awaiting owner review (ST-8d). Not specs: 'Today's volume', commission and settlement lines, 'Terminal Online', agent id, version label; the dates (2023) are sample only."
 		}
 	},
 	"unusedScreens": {
