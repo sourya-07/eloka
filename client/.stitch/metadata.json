@@ -68,10 +68,19 @@
 			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
 		},
 		"APP-13": {
+			"id": "361dfa817f574afb8a75488977503574",
+			"sourceScreen": "projects/18017913531452476583/screens/361dfa817f574afb8a75488977503574",
+			"files": ["designs/APP-13.png", "designs/APP-13.html"],
+			"status": "Phone layout, generated 2026-10-22 because the desktop one was squeezed in the Stitch phone preview. Awaiting owner review (ST-8b). Not specs: swatches are drawn as gradients (the build shows primary + accent halves), and the 'Navigation style' label and the 'Custom' option position differ from the prompt."
+		},
+		"APP-13-desktop": {
 			"id": "d590c9b21ea14f539dec79945346a611",
 			"sourceScreen": "projects/18017913531452476583/screens/d590c9b21ea14f539dec79945346a611",
-			"files": ["designs/APP-13.png", "designs/APP-13.html"],
-			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
+			"files": [
+				"designs/APP-13-desktop.png",
+				"designs/APP-13-desktop.html"
+			],
+			"status": "Desktop layout (form + sticky preview), generated 2026-10-21, awaiting owner review (ST-8b)"
 		},
 		"APP-14-15": {
 			"id": "a0c2053095b04e90bb731b298b8f1c44",
