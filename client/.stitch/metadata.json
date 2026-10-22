@@ -71,7 +71,7 @@
 				"designs/APP-07-desktop.png",
 				"designs/APP-07-desktop.html"
 			],
-			"status": "Desktop business details, 2026-10-22: 13-step rail, name from PAN, mobile from sign-in, home + business address with 'Same as home address'. Awaiting owner review (ST-8b). Not specs: the sample name 'Rahul Sharma' (use RAVI SAMPLE) and the signature limits 'SVG, PNG, JPG, max 2MB' (spec: JPG, PNG or PDF up to 10 MB)."
+			"status": "Desktop business details, 2026-10-22: 13-step rail, name from PAN, mobile from sign-in, home + business address with 'Same as home address'. Awaiting owner review (ST-8b). LOCAL FIX 2026-10-22: the committed HTML/PNG were corrected by hand (Stitch edits did not save) and re-rendered with headless Chrome, so the Stitch copy is behind; the repo file is the spec. (Fixed: sample name Ravi Sample; signature JPG, PNG or PDF up to 10 MB.)"
 		},
 		"APP-08-10": {
 			"id": "99af10dc97994a6d9e7e2a343cab9929",
@@ -257,7 +257,7 @@
 				"designs/APP-01-desktop.png",
 				"designs/APP-01-desktop.html"
 			],
-			"status": "Desktop page 1, 2026-10-22: the two path cards side by side, no time estimate. Awaiting owner review (ST-8b). Stitch dropped the 'Faster' pill and the step counts; the build shows them as on the phone screen."
+			"status": "Desktop page 1, 2026-10-22: the two path cards side by side with 'Faster' and step counts, no time estimate. Awaiting owner review (ST-8b). LOCAL FIX 2026-10-22: the committed HTML/PNG were corrected by hand (Stitch edits did not save) and re-rendered with headless Chrome, so the Stitch copy is behind; the repo file is the spec."
 		},
 		"APP-22-desktop": {
 			"id": "72c20f5a4ccf469a8c815916d0e1efc1",
@@ -266,7 +266,7 @@
 				"designs/APP-22-desktop.png",
 				"designs/APP-22-desktop.html"
 			],
-			"status": "Desktop DigiLocker 'Check your details', 2026-10-22: home address from DigiLocker, business address only if not found, mobile from sign-in. Awaiting owner review (ST-8b). Not spec: the left rail lists the page's cards; it must list the 6 steps (Mobile number, DigiLocker, Check details, Bank account, Platform setup, Declaration and agreement) as in APP-22."
+			"status": "Desktop DigiLocker 'Check your details', 2026-10-22: 6-step rail, home address from DigiLocker, business address only if not found, mobile from sign-in. Awaiting owner review (ST-8b). LOCAL FIX 2026-10-22: the committed HTML/PNG were corrected by hand (Stitch edits did not save) and re-rendered with headless Chrome, so the Stitch copy is behind; the repo file is the spec."
 		}
 	},
 	"unusedScreens": {
