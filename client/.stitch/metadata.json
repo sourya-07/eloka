@@ -324,6 +324,72 @@
 			"sourceScreen": "projects/18017913531452476583/screens/e469e77b74ad467c8f87e90379d768fc",
 			"files": ["designs/R1-10-phone.png", "designs/R1-10-phone.html"],
 			"status": "Generated 2026-10-22 by converting the existing screen. Awaiting owner review (ST-8d). Phone query center with tickets as cards. Not specs: ticket ids, names and the bottom-bar tabs (they come from the app)."
+		},
+		"APP-09B": {
+			"id": null,
+			"sourceScreen": null,
+			"files": ["designs/APP-09B.png", "designs/APP-09B.html"],
+			"status": "Phone. Manual signatory KYC (owner request 2026-10-22). Built locally from the APP-09-desktop Stitch HTML (Stitch kept timing out) and rendered with headless Chrome; no Stitch screen id. Awaiting owner review (ST-8b). Backend gap FQ-19. Not specs: the rail's '13 Steps Remaining' and 'Resume Later'; file names and the reviewer note are samples."
+		},
+		"APP-09B-desktop": {
+			"id": null,
+			"sourceScreen": null,
+			"files": [
+				"designs/APP-09B-desktop.png",
+				"designs/APP-09B-desktop.html"
+			],
+			"status": "Desktop. Manual signatory KYC (owner request 2026-10-22). Built locally from the APP-09-desktop Stitch HTML (Stitch kept timing out) and rendered with headless Chrome; no Stitch screen id. Awaiting owner review (ST-8b). Backend gap FQ-19. Not specs: the rail's '13 Steps Remaining' and 'Resume Later'; file names and the reviewer note are samples."
+		},
+		"APP-06-desktop": {
+			"id": null,
+			"sourceScreen": null,
+			"files": [
+				"designs/APP-06-desktop.png",
+				"designs/APP-06-desktop.html"
+			],
+			"status": "Desktop business PAN with checking, verified and error states. Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8b)."
+		},
+		"APP-12-desktop": {
+			"id": null,
+			"sourceScreen": null,
+			"files": [
+				"designs/APP-12-desktop.png",
+				"designs/APP-12-desktop.html"
+			],
+			"status": "Desktop bank account (IFSC only, account number once). Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8b)."
+		},
+		"APP-14-desktop": {
+			"id": null,
+			"sourceScreen": null,
+			"files": [
+				"designs/APP-14-desktop.png",
+				"designs/APP-14-desktop.html"
+			],
+			"status": "Desktop review + declaration with home and business address. Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8b)."
+		},
+		"R1-04-phone": {
+			"id": null,
+			"sourceScreen": null,
+			"files": ["designs/R1-04-phone.png", "designs/R1-04-phone.html"],
+			"status": "Phone admin dashboard (sidebar hidden, bottom navigation). Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8d)."
+		},
+		"R1-05-phone": {
+			"id": null,
+			"sourceScreen": null,
+			"files": ["designs/R1-05-phone.png", "designs/R1-05-phone.html"],
+			"status": "Phone My Network. Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8d). The table scrolls sideways here; the build shows each agent as a card on phones."
+		},
+		"R1-06-phone": {
+			"id": null,
+			"sourceScreen": null,
+			"files": ["designs/R1-06-phone.png", "designs/R1-06-phone.html"],
+			"status": "Phone transaction history. Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8d). The table scrolls sideways here; the build shows each transaction as a card on phones."
+		},
+		"R1-07-phone": {
+			"id": null,
+			"sourceScreen": null,
+			"files": ["designs/R1-07-phone.png", "designs/R1-07-phone.html"],
+			"status": "Phone profile. Built locally on 2026-10-22 (Stitch kept timing out) from the Stitch HTML and rendered with headless Chrome; no Stitch screen id; the repo file is the spec. Awaiting owner review (ST-8d)."
 		}
 	},
 	"unusedScreens": {

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>APP-09 Signatory KYC (desktop)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-background": "#1a1c1b",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-fixed": "#1c1b1b",
+            "secondary": "#4053c4",
+            "on-tertiary-container": "#84847e",
+            "primary": "#000000",
+            "on-tertiary-fixed-variant": "#474742",
+            "on-tertiary-fixed": "#1b1c18",
+            "secondary-fixed": "#dee0ff",
+            "on-surface-variant": "#444748",
+            "on-secondary-fixed-variant": "#2439ab",
+            "outline": "#747878",
+            "inverse-primary": "#c9c6c5",
+            "error": "#ba1a1a",
+            "surface-tint": "#5f5e5e",
+            "on-primary-fixed-variant": "#474646",
+            "inverse-on-surface": "#f1f1ee",
+            "surface-container": "#eeeeeb",
+            "tertiary": "#000000",
+            "on-secondary": "#ffffff",
+            "primary-container": "#1c1b1b",
+            "on-secondary-fixed": "#000f5d",
+            "surface": "#f9f9f6",
+            "on-tertiary": "#ffffff",
+            "error-container": "#ffdad6",
+            "on-secondary-container": "#001a88",
+            "tertiary-fixed": "#e4e2dc",
+            "outline-variant": "#c4c7c7",
+            "background": "#f9f9f6",
+            "on-error": "#ffffff",
+            "secondary-fixed-dim": "#bbc3ff",
+            "secondary-container": "#778afd",
+            "surface-variant": "#e2e3e0",
+            "primary-fixed-dim": "#c9c6c5",
+            "tertiary-fixed-dim": "#c8c6c0",
+            "tertiary-container": "#1b1c18",
+            "surface-container-highest": "#e2e3e0",
+            "primary-fixed": "#e5e2e1",
+            "on-surface": "#1a1c1b",
+            "on-primary": "#ffffff",
+            "surface-bright": "#f9f9f6",
+            "on-primary-container": "#858383",
+            "inverse-surface": "#2f312f",
+            "surface-dim": "#dadad7",
+            "surface-container-low": "#f4f4f1",
+            "surface-container-high": "#e8e8e5",
+            "on-error-container": "#93000a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "4px",
+            "space-xl": "24px",
+            "space-lg": "16px",
+            "space-sm": "8px",
+            "space-md": "12px",
+            "space-2xl": "32px",
+            "space-4xl": "64px",
+            "margin": "1.5rem",
+            "space-3xl": "48px",
+            "gutter": "1rem"
+          },
+          "fontFamily": {
+            "h3": ["Inter"],
+            "label": ["Inter"],
+            "body": ["Inter"],
+            "h2": ["Inter"],
+            "h1": ["Inter"],
+            "display-mobile": ["Inter"],
+            "display": ["Inter"],
+            "body-sm": ["Inter"]
+          },
+          "fontSize": {
+            "h3": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "600" }],
+            "label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "body": ["16px", { "lineHeight": "24px", "letterSpacing": "normal", "fontWeight": "400" }],
+            "h2": ["20px", { "lineHeight": "28px", "letterSpacing": "normal", "fontWeight": "600" }],
+            "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "normal", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface shadow-sm sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-[1400px] mx-auto">
+<span class="text-h1 font-h1 font-bold text-primary tracking-tight">ELOKA</span>
+<div class="flex items-center gap-6"><a class="text-on-surface-variant font-label text-sm" href="#">Help</a><a class="text-on-surface-variant font-label text-sm" href="#">Sign out</a></div>
+</div>
+</header>
+<div class="flex flex-1 w-full max-w-[1400px] mx-auto">
+<!-- SideNavBar -->
+<aside style="width:280px;flex-shrink:0;padding:24px 16px;border-right:1px solid #E5E5E0;background:#F4F3EE;min-height:calc(100vh - 64px)"><p style="font-weight:600;font-size:18px;margin:0 0 4px 8px;color:#0A0A0A">Your application</p><p style="font-size:13px;color:#5C5C57;margin:0 0 16px 8px;font-family:monospace">onb_7Q2K9X</p><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#5C5C57"><span style="width:22px;text-align:right">1.</span><span>Mobile verification</span><span style="margin-left:auto;color:#1D6B3A;font-size:14px">✓</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#5C5C57"><span style="width:22px;text-align:right">2.</span><span>Consent</span><span style="margin-left:auto;color:#1D6B3A;font-size:14px">✓</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#5C5C57"><span style="width:22px;text-align:right">3.</span><span>Program</span><span style="margin-left:auto;color:#1D6B3A;font-size:14px">✓</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;background:#E8EBFA;color:#11299E;font-weight:600"><span style="width:22px;text-align:right">4.</span><span>Business PAN</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#85857F"><span style="width:22px;text-align:right">5.</span><span>Business details</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#85857F"><span style="width:22px;text-align:right">6.</span><span>Email</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#85857F"><span style="width:22px;text-align:right">7.</span><span>Signatory KYC</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#85857F"><span style="width:22px;text-align:right">8.</span><span>Live photo</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#85857F"><span style="width:22px;text-align:right">9.</span><span>Documents</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#85857F"><span style="width:22px;text-align:right">10.</span><span>Bank account</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#85857F"><span style="width:22px;text-align:right">11.</span><span>White-label setup</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#85857F"><span style="width:22px;text-align:right">12.</span><span>Declaration</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:#85857F"><span style="width:22px;text-align:right">13.</span><span>Agreement</span></div></aside>
+<!-- Main Content Column -->
+<main class="flex-1 flex justify-center items-start p-4 md:p-8 bg-surface">
+<div class="w-full max-w-[720px] flex flex-col gap-6">
+<!-- Header Info -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-sm text-on-surface-variant font-label">
+<span>Step 4 of 13</span>
+<span>31% completed</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 31%;"></div>
+</div>
+</div>
+<!-- Titles -->
+<div class="flex flex-col gap-1"><h1 class="text-h1 font-h1 text-on-background">Business PAN</h1>
+<p class="text-body text-on-surface-variant">We check it against the income tax records.</p></div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-3 p-8 gap-4">
+<label class="text-body-sm font-semibold text-on-background" for="pan">PAN of the business</label>
+<div id="pan" class="border border-[#85857F] rounded-lg px-4 py-3 font-mono text-body tracking-widest text-[#85857F] bg-surface-container-lowest">ABCDE1234F</div>
+<p class="text-xs text-on-surface-variant">For a Private Limited company the 4th letter is C.</p>
+<div class="pt-4 border-t border-outline-variant flex justify-end"><button class="bg-primary text-on-primary px-6 py-3 rounded-lg font-label text-sm font-semibold">Verify PAN</button></div>
+</div>
+<h2 class="text-h3 font-h3 text-on-background mt-2">What the applicant can see next</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-3"><p class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Checking</p>
+<div class="flex items-center gap-3 p-3 rounded-lg bg-[#E8EBFA] text-[#11299E] text-body-sm"><span class="material-symbols-outlined text-base">progress_activity</span>Checking with the income tax records…</div>
+<a class="text-body-sm text-[#11299E] font-medium" href="#">Check again</a></div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-3"><p class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Verified</p>
+<div class="flex items-center gap-2 text-[#1D6B3A] font-semibold text-body-sm"><span class="material-symbols-outlined text-base">check_circle</span>PAN verified</div>
+<dl class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-body-sm"><dt class="text-on-surface-variant">PAN</dt><dd class="font-mono">XXXXX1234X</dd><dt class="text-on-surface-variant">Name as per PAN</dt><dd>SAMPLE TRADERS PRIVATE LIMITED</dd><dt class="text-on-surface-variant">Holder type</dt><dd>Company</dd></dl>
+<button class="self-start bg-primary text-on-primary px-5 py-2.5 rounded-lg text-sm font-semibold">Continue</button></div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-3"><p class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Errors</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="flex flex-col gap-1.5"><div class="border border-[#991B1B] rounded-lg px-4 py-3 font-mono text-body tracking-widest text-on-background bg-surface-container-lowest">ABCDE9999Z</div><p class="text-body-sm text-[#991B1B]">We couldn't verify this PAN. 2 attempts left.</p></div>
+<div class="flex flex-col gap-1.5"><div class="border border-[#991B1B] rounded-lg px-4 py-3 font-mono text-body tracking-widest text-on-background bg-surface-container-lowest">ABCPA1234M</div><p class="text-body-sm text-[#991B1B]">This PAN belongs to an individual. Enter the company's PAN.</p></div>
+<div class="flex flex-col gap-1.5"><div class="border border-[#991B1B] rounded-lg px-4 py-3 font-mono text-body tracking-widest text-on-background bg-surface-container-lowest">AABCC1234D</div><p class="text-body-sm text-[#991B1B]">This PAN is already registered with ELOKA. Contact support.</p></div>
+</div></div>
+</div>
+</main>
+</div>
+</body></html>
