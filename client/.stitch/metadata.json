@@ -20,10 +20,10 @@
 			"status": "approved 2026-10-21 (variant A). Sample text names real providers; copy comes from docs/frontend/UI_UX_PLAN.md, not from this sheet."
 		},
 		"APP-01": {
-			"id": "f87a4ea093f54200891c3eef01e15832",
-			"sourceScreen": "projects/18017913531452476583/screens/f87a4ea093f54200891c3eef01e15832",
+			"id": "d03e670968fa4140afcada3c67b96097",
+			"sourceScreen": "projects/18017913531452476583/screens/d03e670968fa4140afcada3c67b96097",
 			"files": ["designs/APP-01.png", "designs/APP-01.html"],
-			"status": "Page 1: entry + choose how to apply (replaces APP-01B). Revised 2026-10-22 for the owner's rules (mobile is page 2 of both paths, no time estimates, home + business address, nothing asked twice). Awaiting owner review (ST-8b). Stitch dropped the '6 steps' / '13 steps' lines; the build shows them."
+			"status": "Page 1: entry + choose how to apply, with 'Faster', '6 steps' and '13 steps', no time estimate. Switched 2026-10-22 to this copy (the other lacked the step counts). Awaiting owner review (ST-8b)."
 		},
 		"APP-02": {
 			"id": "76d48a7341804488a3801ea400756566",
@@ -59,10 +59,10 @@
 			"status": "generated 2026-10-21, awaiting owner review (ST-8b)"
 		},
 		"APP-07": {
-			"id": "f4325fb355dd4b8aa8833f300a917915",
-			"sourceScreen": "projects/18017913531452476583/screens/f4325fb355dd4b8aa8833f300a917915",
+			"id": "ac56a992595a41e9a775be01afc90b80",
+			"sourceScreen": "projects/18017913531452476583/screens/ac56a992595a41e9a775be01afc90b80",
 			"files": ["designs/APP-07.png", "designs/APP-07.html"],
-			"status": "Business details, phone: name from PAN, mobile from sign-in (read-only), home address, business address with 'Same as home address'. Revised 2026-10-22 for the owner's rules (mobile is page 2 of both paths, no time estimates, home + business address, nothing asked twice). Awaiting owner review (ST-8b)."
+			"status": "Business details, phone: name from PAN, mobile from sign-in, home address, business address with 'Same as home address', signature JPG/PNG/PDF up to 10 MB. Switched 2026-10-22 to this copy (the other had 'Rahul Sharma' and 'max 2MB'). Awaiting owner review (ST-8b)."
 		},
 		"APP-07-desktop": {
 			"id": "553ce425a4544143a02062cb22962af5",
