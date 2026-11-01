@@ -18,12 +18,12 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
               with:
                   fetch-depth: 1
 
             - name: Set up Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version: "20"
                   cache: "npm"
@@ -37,7 +37,7 @@ jobs:
               continue-on-error: true
 
             - name: SonarQube Scan
-              uses: SonarSource/sonarqube-scan-action@v1.2
+              uses: SonarSource/sonarqube-scan-action@v8.4
               env:
                   SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
                   SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
