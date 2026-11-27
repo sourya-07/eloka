@@ -1,6 +1,6 @@
 plugins {
 	java
-	id("org.springframework.boot") version "4.1.1"
+	id("org.springframework.boot") version "4.2.0"
 	id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -33,9 +33,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.flywaydb:flyway-mysql")
-	implementation("org.dhatim:fastexcel:0.20.2") // XLSX exports (history, network)
-	implementation("org.dhatim:fastexcel-reader:0.20.2") // XLSX uploads (bulk agent onboarding)
-	implementation("com.github.librepdf:openpdf:3.0.5") // PDF exports
+	implementation("org.dhatim:fastexcel:0.20.3") // XLSX exports (history, network)
+	implementation("org.dhatim:fastexcel-reader:0.20.3") // XLSX uploads (bulk agent onboarding)
+	implementation("com.github.librepdf:openpdf:3.0.6") // PDF exports
 	implementation("org.springframework.modulith:spring-modulith-starter-core")
 	implementation("org.springframework.modulith:spring-modulith-starter-jpa")
 	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
